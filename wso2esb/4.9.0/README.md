@@ -1,4 +1,4 @@
-# WSO2 ESB 4.8.1 Kubernetes Artifacts
+# WSO2 ESB 4.9.0 Kubernetes Artifacts
 
 - Dockerfile
 - Kubernetes Artifacts

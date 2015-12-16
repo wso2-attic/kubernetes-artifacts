@@ -1,13 +1,13 @@
-# WSO2 ESB 4.8.1 Dockerfile
+# WSO2 ESB 4.9.0 Dockerfile
 
-WSO2 ESB 4.8.1 Dockerfile defines resources for building a Docker image with WSO2 ESB 4.8.1 and runtime configurations. 
+WSO2 ESB 4.9.0 Dockerfile defines resources for building a Docker image with WSO2 ESB 4.9.0 and runtime configurations. 
 
 ## How to build
 
-(1) Copy WSO2 ESB 4.8.1 binary package and the Puppet module to the packages folder:
+(1) Copy WSO2 ESB 4.9.0 binary package and the Puppet module to the packages folder:
 
-* [wso2esb-4.8.1.zip](http://wso2.com/products/enterprise-service-bus/)
-* [wso2esb-4.8.1-puppet-module.tar.gz]
+* [wso2esb-4.9.0.zip](http://wso2.com/products/enterprise-service-bus/)
+* [wso2esb-4.9.0-puppet-module.tar.gz]
 
 (2) Update Hiera configuration data files with environment/product/profile specific values.
 
