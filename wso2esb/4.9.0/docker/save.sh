@@ -20,11 +20,13 @@ set -e
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./build.sh [docker-image-version]"
+    echo "Usage: ./save.sh [docker-image-version]"
     exit
 fi
 
 image_version=$1
-image_id=wso2/esb-4.8.1:${image_version}
-echo "Building docker image ${image_id}..."
-docker build -t ${image_id} .
+image_id="wso2/esb-4.9.0:${image_version}"
+tar_file="wso2esb-4.9.0-${image_version}.tar"
+
+echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
+docker save ${image_id} > ~/docker/images/${tar_file}

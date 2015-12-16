@@ -16,12 +16,15 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./run.sh [docker-image-version]"
+    echo "Usage: ./build.sh [docker-image-version]"
     exit
 fi
 
 image_version=$1
-docker run -it -p 9443:9443 -p 8280:8280 wso2/esb-4.8.1:${image_version}
+image_id=wso2/esb-4.9.0:${image_version}
+echo "Building docker image ${image_id}..."
+docker build -t ${image_id} .

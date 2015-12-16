@@ -16,17 +16,12 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-set -e
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./save.sh [docker-image-version]"
+    echo "Usage: ./run.sh [docker-image-version]"
     exit
 fi
 
 image_version=$1
-image_id="wso2/esb-4.8.1:${image_version}"
-tar_file="wso2esb-4.8.1-${image_version}.tar"
-
-echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
-docker save ${image_id} > ~/docker/images/${tar_file}
+docker run -it -p 9443:9443 -p 8280:8280 wso2/esb-4.9.0:${image_version}

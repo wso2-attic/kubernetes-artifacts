@@ -23,7 +23,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Carbon server and version
 ENV WSO2_SERVER_TYPE esb
-ENV WSO2_SERVER_VERSION 4.8.1
+ENV WSO2_SERVER_VERSION 4.9.0
 
 COPY scripts/init.sh /usr/local/bin/init.sh
 COPY packages/wso2${WSO2_SERVER_TYPE}-${WSO2_SERVER_VERSION}.zip /opt/
