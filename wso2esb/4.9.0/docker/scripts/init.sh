@@ -19,24 +19,21 @@
 
 local_ip=`awk 'NR==1 {print $1}' /etc/hosts`
 server_path=/mnt/${local_ip}
+echo "Creating directory $server_path..."
 mkdir -p $server_path
-unzip /opt/wso2${WSO2_SERVER_TYPE}-${WSO2_SERVER_VERSION}.zip -d $server_path
-rm /opt/wso2${WSO2_SERVER_TYPE}-${WSO2_SERVER_VERSION}.zip
 
-export CARBON_HOME="$server_path/wso2${WSO2_SERVER_TYPE}-${WSO2_SERVER_VERSION}"
-export CONFIG_PARAM_LOCAL_MEMBER_HOST=${local_ip}
+server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
+echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
+mv /mnt/${server_name} ${server_path}/
+export CARBON_HOME="$server_path/${server_name}"
 
 echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
 echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
 
-echo "Copying server artifacts..."
-cp -vr /opt/artifacts/* ${CARBON_HOME}/
-
 if [ "${CONFIG_PARAM_PROFILE}" = 'worker' ]; then
-    echo "Starting wso2 ${WSO2_SERVER_TYPE} as worker..."
+    echo "Starting ${WSO2_SERVER} as worker..."
     ${CARBON_HOME}/bin/wso2server.sh -DworkerNode=true
 else
-    echo "Starting wso2 ${WSO2_SERVER_TYPE} as manager..."
+    echo "Starting ${WSO2_SERVER} in default profile..."
     ${CARBON_HOME}/bin/wso2server.sh
 fi
-

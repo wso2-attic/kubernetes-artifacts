@@ -16,20 +16,31 @@
 #
 # ------------------------------------------------------------------------
 
-FROM wso2/kubernetes-base-image:1.0.0
+FROM wso2/k8s-base:1.0.0
 MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Carbon server and version
-ENV WSO2_SERVER_TYPE esb
+# Carbon server information
+ENV WSO2_SERVER wso2esb
 ENV WSO2_SERVER_VERSION 4.9.0
+ENV WSO2_SERVER_PROFILE default
+ENV WSO2_ENVIRONMENT dev
 
 COPY scripts/init.sh /usr/local/bin/init.sh
-COPY packages/wso2${WSO2_SERVER_TYPE}-${WSO2_SERVER_VERSION}.zip /opt/
+COPY puppet/ /etc/puppet/
 
-# Servlet and pass-through transport ports
+# Export facter variables
+ENV FACTER_product_name=${WSO2_SERVER}
+ENV FACTER_product_version=${WSO2_SERVER_VERSION}
+ENV FACTER_product_profile=${WSO2_SERVER_PROFILE}
+ENV FACTER_environment=${WSO2_ENVIRONMENT}
+ENV FACTER_vm_type=docker
+
+# Execute puppet apply
+RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
+
+# Expose transport ports
 EXPOSE 9763 9443 8280 8243
 
-COPY artifacts/ /opt/artifacts/
 ENTRYPOINT /usr/local/bin/init.sh
