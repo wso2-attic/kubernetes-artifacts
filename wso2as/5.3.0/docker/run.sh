@@ -14,13 +14,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
+
 # ------------------------------------------------------------------------
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
+if [ -z "$1" ]
+  then
+    echo "Usage: ./run.sh [docker-image-version]"
+    exit
 fi
 
-docker build -t wso2/k8s-base:1.0.0 .
+image_version=$1
+docker run -it -p 9443:9443 -p 8280:8280 wso2/as-5.3.0:${image_version}

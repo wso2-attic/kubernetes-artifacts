@@ -14,13 +14,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
-# ------------------------------------------------------------------------
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
+# ------------------------------------------------------------------------
+set -e
+
+if [ -z "$1" ]
+  then
+    echo "Usage: ./save.sh [docker-image-version]"
+    exit
 fi
 
-docker build -t wso2/k8s-base:1.0.0 .
+image_version=$1
+image_id="wso2/as-5.3.0:${image_version}"
+tar_file="wso2as-5.3.0-${image_version}.tar"
+
+echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
+docker save ${image_id} > ~/docker/images/${tar_file}

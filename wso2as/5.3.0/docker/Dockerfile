@@ -1,4 +1,3 @@
-#!/bin/bash
 # ------------------------------------------------------------------------
 #
 # Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
@@ -17,23 +16,31 @@
 #
 # ------------------------------------------------------------------------
 
-local_ip=`awk 'NR==1 {print $1}' /etc/hosts`
-server_path=/mnt/${local_ip}
-echo "Creating directory $server_path..."
-mkdir -p $server_path
+FROM wso2/k8s-base:1.0.0
+MAINTAINER dev@wso2.org
 
-server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
-echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
-mv /mnt/${server_name} ${server_path}/
-export CARBON_HOME="${server_path}/${server_name}"
+ENV DEBIAN_FRONTEND noninteractive
 
-echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
-echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
+# Carbon server information
+ENV WSO2_SERVER wso2as
+ENV WSO2_SERVER_VERSION 5.3.0
+ENV WSO2_SERVER_PROFILE default
+ENV WSO2_ENVIRONMENT dev
 
-if [ "${CONFIG_PARAM_PROFILE}" = 'worker' ]; then
-    echo "Starting ${WSO2_SERVER} as worker..."
-    ${CARBON_HOME}/bin/wso2server.sh -DworkerNode=true
-else
-    echo "Starting ${WSO2_SERVER} in default profile..."
-    ${CARBON_HOME}/bin/wso2server.sh
-fi
+COPY scripts/init.sh /usr/local/bin/init.sh
+COPY puppet/ /etc/puppet/
+
+# Export facter variables
+ENV FACTER_product_name=${WSO2_SERVER}
+ENV FACTER_product_version=${WSO2_SERVER_VERSION}
+ENV FACTER_product_profile=${WSO2_SERVER_PROFILE}
+ENV FACTER_environment=${WSO2_ENVIRONMENT}
+ENV FACTER_vm_type=docker
+
+# Execute puppet apply
+RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
+
+# Expose transport ports
+EXPOSE 9763 9443 8280 8243
+
+ENTRYPOINT /usr/local/bin/init.sh

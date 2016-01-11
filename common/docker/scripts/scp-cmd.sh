@@ -14,13 +14,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
+
 # ------------------------------------------------------------------------
+set -e
+tar_file=$1
+node=$2
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
-fi
-
-docker build -t wso2/k8s-base:1.0.0 .
+echo "scp ~/docker/images/${tar_file} ${node}:"
+scp ~/docker/images/${tar_file} ${node}:
+echo "ssh ${node} \"docker load < ${tar_file}\""
+ssh ${node} "docker load < ${tar_file}"
+echo "ssh ${node} \"rm ${tar_file}\""
+ssh ${node} "rm ${tar_file}"
