@@ -14,26 +14,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
+
 # ------------------------------------------------------------------------
 
-local_ip=`awk 'NR==1 {print $1}' /etc/hosts`
-server_path=/mnt/${local_ip}
-echo "Creating directory $server_path..."
-mkdir -p $server_path
+set -e
 
-server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
-echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
-mv /mnt/${server_name} ${server_path}/
-export CARBON_HOME="${server_path}/${server_name}"
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/docker/scripts/"; pwd`
 
-echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
-echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
-
-if [ "${CONFIG_PARAM_PROFILE}" = 'worker' ]; then
-    echo "Starting ${WSO2_SERVER} as worker..."
-    ${CARBON_HOME}/bin/wso2server.sh -DworkerNode=true
-else
-    echo "Starting ${WSO2_SERVER} in default profile..."
-    ${CARBON_HOME}/bin/wso2server.sh
-fi
+bash ${common_folder}/image-build.sh ${script_path} $1 as-5.3.0

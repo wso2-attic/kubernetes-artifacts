@@ -14,13 +14,31 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-#
-# ------------------------------------------------------------------------
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-    exit 1
+# ------------------------------------------------------------------------
+set -e
+
+if [ -z "$1" ]
+  then
+    echo "Usage: ./scp.sh [docker-image-version]"
+    exit
 fi
 
-docker build -t wso2/k8s-base:1.0.0 .
+image_version=$1
+tar_file="imesh-wso2esb-4.8.1-${image_version}.tar"
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/docker/scripts/"; pwd`
+
+echo "Importing ${tar_file} to knode1"
+bash ${common_folder}/scp-cmd.sh ${tar_file} knode1 &
+pid1=$!
+
+echo "Importing ${tar_file} to knode2"
+bash ${common_folder}/scp-cmd.sh ${tar_file} knode2 &
+pid2=$!
+
+wait $pid1
+wait $pid2
+echo "${tar_file} imported successfully!"
