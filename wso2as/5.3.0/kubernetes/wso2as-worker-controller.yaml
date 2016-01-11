@@ -15,21 +15,8 @@ spec:
     spec:
       containers:
       - name: wso2as-worker
-        image: imesh/wso2as:5.2.1-v1
+        image: wso2/as-5.3.0:0.0.1
         env:
-        -
-          name: CONFIG_PARAM_PROFILE
-          value: 'worker'
-        -
-          name: CONFIG_PARAM_SUB_DOMAIN
-          value: 'worker'
-        -
-          # Carbon cluster discovery parameters
-          name: CONFIG_PARAM_CLUSTERING
-          value: 'true'
-        -
-          name: CONFIG_PARAM_MEMBERSHIP_SCHEME
-          value: kubernetes
         -
           name: KUBERNETES_MASTER
           value: http://172.17.8.101:8080
@@ -39,42 +26,5 @@ spec:
         -
           name: KUBERNETES_SERVICES
           value: 'wso2as-manager,wso2as-worker'
-        -
-          # Pass-through transport ports
-          name: CONFIG_PARAM_PT_HTTP_PROXY_PORT
-          value: '32003'
-        -
-          name: CONFIG_PARAM_PT_HTTPS_PROXY_PORT
-          value: '32004'
-        -
-          # Governance registry database
-          name: CONFIG_PARAM_REGISTRY_DB_URL
-          value: 'jdbc:mysql://mysql:3306/ESB_GOV_REG_DB?autoReconnect=true'
-        -
-          name: CONFIG_PARAM_REGISTRY_DB_USER_NAME
-          value: root
-        -
-          name: CONFIG_PARAM_REGISTRY_DB_PASSWORD
-          value: 'mysql'
-        -
-          # Config registry database
-          name: CONFIG_PARAM_CONFIG_DB_URL
-          value: 'jdbc:mysql://mysql:3306/ESB_CONF_REG_DB?autoReconnect=true'
-        -
-          name: CONFIG_PARAM_CONFIG_DB_USER_NAME
-          value: root
-        -
-          name: CONFIG_PARAM_CONFIG_DB_PASSWORD
-          value: 'mysql'
-        -
-          # User manager database
-          name: CONFIG_PARAM_USER_MGT_DB_URL
-          value: 'jdbc:mysql://mysql:3306/ESB_USER_DB?autoReconnect=true'
-        -
-          name: CONFIG_PARAM_USER_MGT_DB_USER_NAME
-          value: root
-        -
-          name: CONFIG_PARAM_USER_MGT_DB_PASSWORD
-          value: 'mysql'
         ports:
         - containerPort: 8243
