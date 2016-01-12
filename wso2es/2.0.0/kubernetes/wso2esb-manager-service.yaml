@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata: 
+  labels: 
+    name: wso2es-manager
+  name: wso2es-manager
+spec: 
+  type: NodePort
+  sessionAffinity: ClientIP
+  ports:
+    # ports that this service should serve on
+    - 
+      name: 'servlet-http'
+      port: 9763
+      targetPort: 9763
+      nodePort: 32001
+    -
+      name: 'servlet-https'
+      port: 9443
+      targetPort: 9443
+      nodePort: 32002
+  # label keys and values that must match in order to receive traffic for this service
+  selector: 
+    name: wso2es-manager
