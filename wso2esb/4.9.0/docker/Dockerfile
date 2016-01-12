@@ -38,6 +38,7 @@ ENV FACTER_environment=${WSO2_ENVIRONMENT}
 ENV FACTER_vm_type=docker
 
 # Execute puppet apply
+WORKDIR /etc/puppet
 RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
 
 # Expose transport ports
