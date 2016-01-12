@@ -30,10 +30,5 @@ export CARBON_HOME="${server_path}/${server_name}"
 echo "JAVA_HOME=${JAVA_HOME}" >> /etc/environment
 echo "CARBON_HOME=${CARBON_HOME}" >> /etc/environment
 
-if [ "${CONFIG_PARAM_PROFILE}" = 'worker' ]; then
-    echo "Starting ${WSO2_SERVER} as worker..."
-    ${CARBON_HOME}/bin/wso2server.sh -DworkerNode=true
-else
-    echo "Starting ${WSO2_SERVER} in default profile..."
-    ${CARBON_HOME}/bin/wso2server.sh
-fi
+echo "Starting ${WSO2_SERVER}..."
+${CARBON_HOME}/bin/wso2server.sh
