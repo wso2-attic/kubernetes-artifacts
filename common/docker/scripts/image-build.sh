@@ -26,5 +26,19 @@ fi
 
 image_version=$2
 image_id=wso2/$3:${image_version}
+dockerfile_path=$1
+
 echo "Building docker image ${image_id}..."
-docker build -t ${image_id} $1
+
+prgdir2=`dirname "$0"`
+self_path=`cd "$prgdir2"; pwd`
+
+cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
+cp -r $self_path/../../../puppet $dockerfile_path/
+
+docker build -t ${image_id} $dockerfile_path
+
+echo "Cleaning..."
+rm -rf $dockerfile_path/scripts/init.sh
+rm -rf $dockerfile_path/puppet
+echo "Docker image ${image_id} created."
