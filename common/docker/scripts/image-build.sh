@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-if [ -z "$1" ]
+if [ -z "$2" ]
   then
     echo "Usage: ./build.sh [docker-image-version]"
     exit

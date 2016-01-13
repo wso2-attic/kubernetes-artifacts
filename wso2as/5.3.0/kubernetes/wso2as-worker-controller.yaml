@@ -16,15 +16,5 @@ spec:
       containers:
       - name: wso2as-worker
         image: wso2/as-worker-5.3.0:0.0.1
-        env:
-        -
-          name: KUBERNETES_MASTER
-          value: http://172.17.8.101:8080
-        -
-          name: KUBERNETES_NAMESPACE
-          value: default
-        -
-          name: KUBERNETES_SERVICES
-          value: 'wso2as-manager,wso2as-worker'
         ports:
         - containerPort: 8243
