@@ -24,21 +24,36 @@ if [ -z "$2" ]
     exit
 fi
 
-image_version=$2
-image_id=wso2/$3:${image_version}
 dockerfile_path=$1
-
-echo "Building docker image ${image_id}..."
+image_version=$2
+product_name=$3
+product_version=$4
+profiles=$5
 
 prgdir2=`dirname "$0"`
 self_path=`cd "$prgdir2"; pwd`
 
 cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
 cp -r $self_path/../../../puppet $dockerfile_path/
+cp $dockerfile_path/Dockerfile $dockerfile_path/Dockerfile.bck
 
-docker build -t ${image_id} $dockerfile_path
+IFS='|' read -r -a array <<< "${profiles}"
+for element in "${array[@]}"
+do
+    echo "ELEMENT: $element"
+    image_id="wso2/${product_name}-${element}-${product_version}:${image_version}"
+
+    echo "Building docker image ${image_id}..."
+    sed -i "/ENV WSO2_SERVER_PROFILE/c\ENV WSO2_SERVER_PROFILE ${element}" "${dockerfile_path}/Dockerfile"
+    docker build -t ${image_id} $dockerfile_path
+
+    echo "Docker image ${image_id} created."
+done
 
 echo "Cleaning..."
 rm -rf $dockerfile_path/scripts/init.sh
-rm -rf $dockerfile_path/puppet
-echo "Docker image ${image_id} created."
+rm -rf $dockerfile_path/puppet/hiera*
+rm -rf $dockerfile_path/puppet/m*
+rm -rf $dockerfile_path/Dockerfile
+mv $dockerfile_path/Dockerfile.bck $dockerfile_path/Dockerfile
+echo "Done."
