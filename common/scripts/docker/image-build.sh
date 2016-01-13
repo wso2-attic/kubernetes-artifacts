@@ -38,13 +38,16 @@ cp -r $self_path/../../../puppet $dockerfile_path/
 cp $dockerfile_path/Dockerfile $dockerfile_path/Dockerfile.bck
 
 IFS='|' read -r -a array <<< "${profiles}"
-for element in "${array[@]}"
+for profile in "${array[@]}"
 do
-    echo "ELEMENT: $element"
-    image_id="wso2/${product_name}-${element}-${product_version}:${image_version}"
+    if [[ $profile = "default" ]]; then
+        image_id="wso2/${product_name}-${product_version}:${image_version}"
+    else
+        image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
+    fi
 
     echo "Building docker image ${image_id}..."
-    sed -i "/ENV WSO2_SERVER_PROFILE/c\ENV WSO2_SERVER_PROFILE ${element}" "${dockerfile_path}/Dockerfile"
+    sed -i "/ENV WSO2_SERVER_PROFILE/c\ENV WSO2_SERVER_PROFILE ${profile}" "${dockerfile_path}/Dockerfile"
     docker build -t ${image_id} $dockerfile_path
 
     echo "Docker image ${image_id} created."

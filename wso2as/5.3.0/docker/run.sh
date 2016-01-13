@@ -24,4 +24,4 @@ if [ -z "$1" ]
 fi
 
 image_version=$1
-docker run -it -p 9443:9443 -p 8280:8280 wso2/as-default-5.3.0:${image_version}
+docker run -t -p 9443:9443 -p 8280:8280 wso2/as-5.3.0:${image_version}

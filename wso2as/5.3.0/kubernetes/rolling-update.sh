@@ -16,10 +16,5 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-set -e
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
-
-bash ${common_folder}/save-image.sh as 5.3.0 $1 'default|manager|worker'
+kubectl rolling-update --update-period=5s wso2as-worker wso2as-worker-v2 --image=wso2/as-5.3.0:1.0.1

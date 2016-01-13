@@ -27,6 +27,6 @@ fi
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../../common/docker/scripts/"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
 bash ${common_folder}/image-build.sh ${script_path} $1 as 5.3.0 'default|manager|worker'

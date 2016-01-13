@@ -24,7 +24,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Carbon server information
 ENV WSO2_SERVER wso2as
 ENV WSO2_SERVER_VERSION 5.3.0
-ENV WSO2_SERVER_PROFILE $element
+ENV WSO2_SERVER_PROFILE default
 ENV WSO2_ENVIRONMENT dev
 
 COPY scripts/init.sh /usr/local/bin/init.sh
