@@ -17,7 +17,10 @@
 #
 # This class installs WSO2 ESB
 
-class wso2esb inherits wso2base {
+class wso2es inherits wso2base {
+
+  $social_datasources = hiera_hash("wso2::social_datasources")
+
   wso2base::server { "${carbon_home}" :
     maintenance_mode   => $maintenance_mode,
     pack_filename      => $pack_filename,

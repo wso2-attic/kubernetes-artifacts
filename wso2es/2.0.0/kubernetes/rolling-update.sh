@@ -17,4 +17,4 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2esb-worker wso2esb-worker-v2 --image=wso2/es-2.0.0:1.0.1
+kubectl rolling-update --update-period=5s wso2es-worker wso2es-worker-v2 --image=wso2/es-2.0.0:1.0.1
