@@ -51,7 +51,7 @@ do
     {
         docker build -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
     } || {
-        echo "Docker image ${image_id} creation failed"
+        echo "ERROR: Docker image ${image_id} creation failed"
     }
 
 done

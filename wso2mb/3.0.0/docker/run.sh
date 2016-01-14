@@ -1,0 +1,27 @@
+#!/bin/bash
+# ------------------------------------------------------------------------
+#
+# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License
+
+# ------------------------------------------------------------------------
+
+if [ -z "$1" ]
+  then
+    echo "Usage: ./run.sh [docker-image-version]"
+    exit
+fi
+
+image_version=$1
+docker run -t -p 9443:9443 -p 8280:8280 -p 7611:7611 -p 5672:5672 -p 8672:8672 -p 1883:1883 -p 8833:8833 wso2/mb-3.0.0:${image_version}
