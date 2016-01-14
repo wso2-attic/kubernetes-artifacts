@@ -18,11 +18,11 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=greg
+product_name=is
 product_version=5.1.0
+product_profiles=$2
 minions='core@ip1|core@ip2'
 image_version=$1
-product_profiles=$2
 
 if [ -z "$1" ]
   then

@@ -18,8 +18,8 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=greg
-product_version=5.1.0
+product_name=as
+product_version=5.3.0
 minions='core@ip1|core@ip2'
 image_version=$1
 product_profiles=$2

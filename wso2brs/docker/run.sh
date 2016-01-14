@@ -18,15 +18,15 @@
 # ------------------------------------------------------------------------
 set -e
 
-product_name=greg
-product_version=5.1.0
-minions='core@ip1|core@ip2'
+product_name=brs
+product_version=2.2.0
 image_version=$1
 product_profiles=$2
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./scp.sh [docker-image-version] [product_profile_list]"
+    echo "Usage: ./run.sh [docker-image-version] [C for Cluster (Optional)]"
+    echo "eg: ./run.sh 1.0.0 or ./run.sh 1.0.0 C"
     exit
 fi
 
@@ -35,15 +35,8 @@ if [ -z "$2" ]
     product_profiles='default'
 fi
 
-image_version=$1
-
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
 
-echo "Importing docker images to master and minion-1"
-bash ${common_folder}/scp-cmd.sh ${product_name} ${product_version} ${image_version} ${product_version} ${minions}
-pid1=$!
-
-wait $pid1
-echo "Docker images imported successfully!"
+bash ${common_folder}/docker-run.sh ${product_name} ${product_version} ${image_version} ${product_profiles}

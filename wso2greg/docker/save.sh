@@ -25,7 +25,7 @@ product_profiles=$2
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./save.sh [docker-image-version]"
+    echo "Usage: ./save.sh [docker-image-version] [product_profile_list]"
     exit
 fi
 
