@@ -18,6 +18,12 @@
 # ------------------------------------------------------------------------
 set -e
 
+product_name=as
+product_version=5.3.0
+product_profiles='default|manager|worker'
+minions='core@ip1|core@ip2'
+image_version=$1
+
 if [ -z "$1" ]
   then
     echo "Usage: ./scp.sh [docker-image-version]"
@@ -31,7 +37,7 @@ script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
 echo "Importing docker images to master and minion-1"
-bash ${common_folder}/scp-cmd.sh as 5.3.0 $1 'default|manager|worker' 'master|minion-1'
+bash ${common_folder}/scp-cmd.sh ${product_name} ${product_version} ${image_version} ${product_version} ${minions}
 pid1=$!
 
 wait $pid1

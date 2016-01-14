@@ -17,21 +17,24 @@
 
 # ------------------------------------------------------------------------
 
-set -e
+product_name=$1
+product_version=$2
+image_version=$3
+product_profiles=$4
 
-product_name=as
-product_version=5.3.0
-product_profiles='default|manager|worker'
-image_version=$1
+IFS='|' read -r -a array <<< "${product_profiles}"
+for profile in "${array[@]}"
+do
+    name="wso2${product_name}-${profile}"
 
-if [ -z "$1" ]
-  then
-    echo "Usage: ./build.sh [docker-image-version]"
-    exit 1
-fi
+    if [[ $profile = "default" ]]; then
+        container_id=`docker run -d -P --name ${name} wso2/${product_name}-${product_version}:${image_version}`
+    else
+        container_id=`docker run -d -P --name ${name} wso2/${product_name}-${profile}-${product_version}:${image_version}`
+    fi
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+    member_ip=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${container_id}`
+    echo "WSO2 ${product_name^^} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    sleep 1
 
-bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}
+done
