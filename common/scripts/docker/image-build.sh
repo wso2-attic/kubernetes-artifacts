@@ -48,9 +48,12 @@ do
 
     echo "Building docker image ${image_id}..."
     sed -i "/ENV WSO2_SERVER_PROFILE/c\ENV WSO2_SERVER_PROFILE ${profile}" "${dockerfile_path}/Dockerfile"
-    docker build -t ${image_id} $dockerfile_path
+    {
+        docker build -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
+    } || {
+        echo "Docker image ${image_id} creation failed"
+    }
 
-    echo "Docker image ${image_id} created."
 done
 
 echo "Cleaning..."
