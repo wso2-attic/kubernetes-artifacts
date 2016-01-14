@@ -25,16 +25,14 @@ if [ -z "$1" ]
 fi
 
 image_version=$1
-tar_file="imesh-wso2esb-4.8.1-${image_version}.tar"
 
-echo "Importing ${tar_file} to knode1"
-./scp-cmd.sh ${tar_file} knode1 &
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+echo "Importing docker images to master and minion-1"
+bash ${common_folder}/scp-cmd.sh esb 4.9.0 $1 'default|manager|worker' 'master|minion-1'
 pid1=$!
 
-echo "Importing ${tar_file} to knode2"
-./scp-cmd.sh ${tar_file} knode2 &
-pid2=$!
-
 wait $pid1
-wait $pid2
-echo "${tar_file} imported successfully!"
+echo "Docker images imported successfully!"

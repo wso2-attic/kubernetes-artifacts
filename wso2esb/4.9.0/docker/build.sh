@@ -21,10 +21,11 @@ set -e
 if [ -z "$1" ]
   then
     echo "Usage: ./build.sh [docker-image-version]"
-    exit
+    exit 1
 fi
 
-image_version=$1
-image_id=wso2/esb-4.9.0:${image_version}
-echo "Building docker image ${image_id}..."
-docker build -t ${image_id} .
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/image-build.sh ${script_path} $1 esb 4.9.0 'default|manager|worker'

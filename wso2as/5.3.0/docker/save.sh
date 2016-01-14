@@ -18,6 +18,12 @@
 # ------------------------------------------------------------------------
 set -e
 
+if [ -z "$1" ]
+  then
+    echo "Usage: ./save.sh [docker-image-version]"
+    exit
+fi
+
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`

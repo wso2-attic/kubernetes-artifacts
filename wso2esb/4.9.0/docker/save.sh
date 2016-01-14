@@ -24,9 +24,8 @@ if [ -z "$1" ]
     exit
 fi
 
-image_version=$1
-image_id="wso2/esb-4.9.0:${image_version}"
-tar_file="wso2esb-4.9.0-${image_version}.tar"
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
-echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
-docker save ${image_id} > ~/docker/images/${tar_file}
+bash ${common_folder}/save-image.sh esb 4.9.0 $1 'default|manager|worker'
