@@ -33,8 +33,15 @@ profiles=$5
 prgdir2=`dirname "$0"`
 self_path=`cd "$prgdir2"; pwd`
 
+mkdir -p $dockerfile_path/scripts
+mkdir -p $dockerfile_path/puppet/modules
 cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
-cp -r $self_path/../../../puppet $dockerfile_path/
+cp -r $self_path/../../../puppet/modules/wso2base $dockerfile_path/puppet/modules/
+cp -r $self_path/../../../puppet/modules/wso2${product_name} $dockerfile_path/puppet/modules/
+cp -r $self_path/../../../puppet/hiera* $dockerfile_path/puppet/
+cp -r $self_path/../../../puppet/manifests $dockerfile_path/puppet/
+
+echo "Backing up ${dockerfile_path}/Dockerfile"
 cp $dockerfile_path/Dockerfile $dockerfile_path/Dockerfile.bck
 
 IFS='|' read -r -a array <<< "${profiles}"
@@ -47,7 +54,8 @@ do
     fi
 
     echo "Building docker image ${image_id}..."
-    sed -i "/ENV WSO2_SERVER_PROFILE/c\ENV WSO2_SERVER_PROFILE ${profile}" "${dockerfile_path}/Dockerfile"
+    sed -i -e 's/ENV WSO2_SERVER_PROFILE/ENV WSO2_SERVER_PROFILE ${profile}/g' ${dockerfile_path}/Dockerfile
+
     {
         docker build -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
     } || {
@@ -57,9 +65,8 @@ do
 done
 
 echo "Cleaning..."
-rm -rf $dockerfile_path/scripts/init.sh
-rm -rf $dockerfile_path/puppet/hiera*
-rm -rf $dockerfile_path/puppet/m*
+rm -rf $dockerfile_path/scripts
+rm -rf $dockerfile_path/puppet
 rm -rf $dockerfile_path/Dockerfile
 mv $dockerfile_path/Dockerfile.bck $dockerfile_path/Dockerfile
 echo "Done."
