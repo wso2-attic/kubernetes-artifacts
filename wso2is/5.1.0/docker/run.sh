@@ -16,12 +16,27 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
+
+product_name=is
+product_version=5.1.0
+product_profiles='default'
+image_version=$1
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./run.sh [docker-image-version]"
+    echo "Usage: ./run.sh [docker-image-version] [C for Cluster (Optional)]"
+    echo "eg: ./run.sh 1.0.0 or ./run.sh 1.0.0 C"
     exit
 fi
 
-image_version=$1
-docker run -t -p 9443:9443 -p 8280:8280 -p 8000:8000 -p 10500:10500 wso2/is-5.1.0:${image_version}
+if [ -z "$2" ]
+  then
+    product_profiles='default'
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/docker-run.sh ${product_name} ${product_version} ${image_version} ${product_profiles}

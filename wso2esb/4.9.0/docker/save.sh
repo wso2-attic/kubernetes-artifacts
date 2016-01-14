@@ -18,6 +18,11 @@
 # ------------------------------------------------------------------------
 set -e
 
+product_name=esb
+product_version=4.9.0
+product_profiles='default|manager|worker'
+image_version=$1
+
 if [ -z "$1" ]
   then
     echo "Usage: ./save.sh [docker-image-version]"
@@ -28,4 +33,4 @@ prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
-bash ${common_folder}/save-image.sh esb 4.9.0 $1 'default|manager|worker'
+bash ${common_folder}/save-image.sh ${product_name} ${product_version} ${image_version} ${product_profiles}

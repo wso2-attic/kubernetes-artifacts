@@ -16,12 +16,27 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
+
+product_name=mb
+product_version=3.0.0
+product_profiles='default'
+image_version=$1
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./run.sh [docker-image-version]"
+    echo "Usage: ./run.sh [docker-image-version] [C for Cluster (Optional)]"
+    echo "eg: ./run.sh 1.0.0 or ./run.sh 1.0.0 C"
     exit
 fi
 
-image_version=$1
-docker run -t -p 9443:9443 -p 8280:8280 -p 7611:7611 -p 5672:5672 -p 8672:8672 -p 1883:1883 -p 8833:8833 wso2/mb-3.0.0:${image_version}
+if [ -z "$2" ]
+  then
+    product_profiles='default'
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/docker-run.sh ${product_name} ${product_version} ${image_version} ${product_profiles}

@@ -19,6 +19,11 @@
 
 set -e
 
+product_name=mb
+product_version=3.0.0
+product_profiles='default'
+image_version=$1
+
 if [ -z "$1" ]
   then
     echo "Usage: ./build.sh [docker-image-version]"
@@ -29,4 +34,4 @@ prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
-bash ${common_folder}/image-build.sh ${script_path} $1 mb 3.0.0 'default'
+bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}

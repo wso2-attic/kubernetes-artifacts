@@ -16,7 +16,13 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+
 set -e
+
+product_name=esb
+product_version=4.9.0
+product_profiles='default|manager|worker'
+image_version=$1
 
 if [ -z "$1" ]
   then
@@ -28,4 +34,4 @@ prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
 
-bash ${common_folder}/image-build.sh ${script_path} $1 esb 4.9.0 'default|manager|worker'
+bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}
