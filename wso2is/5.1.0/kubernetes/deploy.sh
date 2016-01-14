@@ -17,4 +17,20 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2mb wso2mb-v2 --image=wso2/mb-3.0.0:1.0.1
+host=172.17.8.102
+manager_port=32001
+worker_port=32003
+
+echo "Deploying wso2is service..."
+kubectl create -f wso2is-service.yaml
+
+echo "Deploying wso2is controller..."
+kubectl create -f wso2is-controller.yaml
+
+echo "Waiting wso2is to launch on http://${host}:${manager_port}"
+until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
+    printf '.'
+    sleep 5
+done
+
+echo -e "\nwso2is launched!"

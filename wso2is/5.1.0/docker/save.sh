@@ -16,5 +16,16 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
 
-kubectl rolling-update --update-period=5s wso2mb wso2mb-v2 --image=wso2/mb-3.0.0:1.0.1
+if [ -z "$1" ]
+  then
+    echo "Usage: ./save.sh [docker-image-version]"
+    exit
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/save-image.sh is 5.1.0 $1 'default'

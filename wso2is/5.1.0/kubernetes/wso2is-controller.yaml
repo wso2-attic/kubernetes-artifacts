@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2is
+  labels:
+    name: wso2is
+spec:
+  replicas: 1
+  selector:
+    name: wso2is
+  template:
+    metadata:
+      labels:
+        name: wso2is
+    spec:
+      containers:
+      - name: wso2is
+        image: wso2/is-5.1.0:1.0.0
+        ports:
+        - containerPort: 9443

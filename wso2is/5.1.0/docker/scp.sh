@@ -16,5 +16,23 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
 
-kubectl rolling-update --update-period=5s wso2mb wso2mb-v2 --image=wso2/mb-3.0.0:1.0.1
+if [ -z "$1" ]
+  then
+    echo "Usage: ./scp.sh [docker-image-version]"
+    exit
+fi
+
+image_version=$1
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+echo "Importing docker images to master and minion-1"
+bash ${common_folder}/scp-cmd.sh is 5.1.0 $1 'default' 'master|minion-1'
+pid1=$!
+
+wait $pid1
+echo "Docker images imported successfully!"

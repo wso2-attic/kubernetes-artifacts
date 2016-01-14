@@ -17,4 +17,4 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2mb wso2mb-v2 --image=wso2/mb-3.0.0:1.0.1
+kubectl rolling-update --update-period=5s wso2is wso2esb-v2 --image=wso2/is-5.1.0:1.0.1
