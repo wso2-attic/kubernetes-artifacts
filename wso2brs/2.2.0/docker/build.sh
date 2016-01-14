@@ -17,4 +17,21 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2esb-worker wso2esb-worker-v2 --image=wso2/esb-4.9.0:1.0.1
+set -e
+
+product_name=brs
+product_version=2.2.0
+product_profiles='default|manager|worker'
+image_version=$1
+
+if [ -z "$1" ]
+  then
+    echo "Usage: ./build.sh [docker-image-version]"
+    exit 1
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}

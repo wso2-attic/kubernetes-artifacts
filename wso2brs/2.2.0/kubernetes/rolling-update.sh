@@ -17,4 +17,4 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2esb-worker wso2esb-worker-v2 --image=wso2/esb-4.9.0:1.0.1
+kubectl rolling-update --update-period=5s wso2brs-worker wso2brs-worker-v2 --image=wso2/brs-2.2.0:1.0.1

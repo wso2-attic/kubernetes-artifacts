@@ -16,5 +16,21 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+set -e
 
-kubectl rolling-update --update-period=5s wso2esb-worker wso2esb-worker-v2 --image=wso2/esb-4.9.0:1.0.1
+product_name=brs
+product_version=2.2.0
+product_profiles='default|manager|worker'
+image_version=$1
+
+if [ -z "$1" ]
+  then
+    echo "Usage: ./save.sh [docker-image-version]"
+    exit
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/save-image.sh ${product_name} ${product_version} ${image_version} ${product_profiles}
