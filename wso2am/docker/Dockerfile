@@ -46,6 +46,6 @@ RUN apt-get purge -y --auto-remove puppet
 RUN rm -rf /etc/puppet/*
 
 # Expose transport ports
-EXPOSE 9763 9443 8280 8243 5672 8672 1883 8833 7611
+EXPOSE 9763 9443 8280 8243 7711 10397
 
 ENTRYPOINT /usr/local/bin/init.sh
