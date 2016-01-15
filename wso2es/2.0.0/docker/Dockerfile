@@ -41,6 +41,6 @@ ENV FACTER_vm_type=docker
 RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
 
 # Expose transport ports
-EXPOSE 9763 9443 8280 8243
+EXPOSE 8280 8243 9763 9443
 
 ENTRYPOINT /usr/local/bin/init.sh
