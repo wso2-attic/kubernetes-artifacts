@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2am-store
+  labels:
+    name: wso2am-store
+spec:
+  replicas: 1
+  selector:
+    name: wso2am-store
+  template:
+    metadata:
+      labels:
+        name: wso2am-store
+    spec:
+      containers:
+      -
+        name: wso2am-store
+        image: wso2/am-store-1.9.1:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"

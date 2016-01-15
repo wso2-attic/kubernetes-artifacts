@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2am-key-manager
+  labels:
+    name: wso2am-key-manager
+spec:
+  replicas: 1
+  selector:
+    name: wso2am-key-manager
+  template:
+    metadata:
+      labels:
+        name: wso2am-key-manager
+    spec:
+      containers:
+      -
+        name: wso2am-key-manager
+        image: wso2/am-key-manager-1.9.1:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 10397
+          protocol: "TCP"

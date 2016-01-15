@@ -1,0 +1,39 @@
+  apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      name: wso2am-key-manager
+    name: wso2am-key-manager
+  spec:
+    type: NodePort
+    sessionAffinity: ClientIP
+    ports:
+      # ports that this service should serve on
+      -
+        name: 'pass-through-http'
+        port: 8280
+        targetPort: 8280
+        nodePort: 32001
+      -
+        name: 'pass-through-https'
+        port: 8243
+        targetPort: 8243
+        nodePort: 32002
+      -
+        name: 'servlet-http'
+        port: 9763
+        targetPort: 9763
+        nodePort: 32003
+      -
+        name: 'servlet-https'
+        port: 9443
+        targetPort: 9443
+        nodePort: 32004
+      -
+        name: 'thrift-key-mgt'
+        port: 10397
+        targetPort: 10397
+        nodePort: 32005
+    # label keys and values that must match in order to receive traffic for this service
+    selector:
+      name: wso2am-key-manager

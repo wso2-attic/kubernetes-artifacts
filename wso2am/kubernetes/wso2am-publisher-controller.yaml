@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2am-publisher
+  labels:
+    name: wso2am-publisher
+spec:
+  replicas: 1
+  selector:
+    name: wso2am-publisher
+  template:
+    metadata:
+      labels:
+        name: wso2am-publisher
+    spec:
+      containers:
+      -
+        name: wso2am-publisher
+        image: wso2/am-publisher-1.9.1:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
