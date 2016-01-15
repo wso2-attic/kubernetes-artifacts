@@ -41,6 +41,7 @@ do
     fi
 
     echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
+    mkdir -p ~/docker/images/
     docker save ${image_id} > ~/docker/images/${tar_file}
 
     echo "Docker image ${image_id} saved to ~/docker/images/${tar_file}."
