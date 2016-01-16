@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2bps-manager
+  labels:
+    name: wso2bps-manager
+spec:
+  replicas: 1
+  selector:
+    name: wso2bps-manager
+  template:
+    metadata:
+      labels:
+        name: wso2bps-manager
+    spec:
+      containers:
+      - name: wso2bps-manager
+        image: wso2/bps-manager-3.5.0:1.0.0
+        ports:
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"

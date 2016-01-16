@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2bps-worker
+  labels:
+    name: wso2bps-worker
+spec:
+  replicas: 1
+  selector:
+    name: wso2bps-worker
+  template:
+    metadata:
+      labels:
+        name: wso2bps-worker
+    spec:
+      containers:
+      - name: wso2bps-worker
+        image: wso2/bps-worker-3.5.0:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
