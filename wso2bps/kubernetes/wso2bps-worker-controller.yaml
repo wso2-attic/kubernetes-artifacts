@@ -17,4 +17,9 @@ spec:
       - name: wso2bps-worker
         image: wso2/bps-worker-3.5.0:1.0.0
         ports:
-        - containerPort: 8243
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
