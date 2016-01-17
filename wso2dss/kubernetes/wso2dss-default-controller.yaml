@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2dss
+  labels:
+    name: wso2dss
+spec:
+  replicas: 1
+  selector:
+    name: wso2dss
+  template:
+    metadata:
+      labels:
+        name: wso2dss
+    spec:
+      containers:
+      -
+        name: wso2dss
+        image: wso2/dss-3.5.0:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
