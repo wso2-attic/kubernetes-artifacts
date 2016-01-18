@@ -33,13 +33,20 @@ profiles=$5
 prgdir2=`dirname "$0"`
 self_path=`cd "$prgdir2"; pwd`
 
+if [ -z "$PUPPET_HOME" ]; then
+   echo "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+   exit
+else
+   puppet_path=$PUPPET_HOME
+fi
+
 mkdir -p $dockerfile_path/scripts
 mkdir -p $dockerfile_path/puppet/modules
 cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
-cp -r $self_path/../../../puppet/modules/wso2base $dockerfile_path/puppet/modules/
-cp -r $self_path/../../../puppet/modules/wso2${product_name} $dockerfile_path/puppet/modules/
-cp -r $self_path/../../../puppet/hiera* $dockerfile_path/puppet/
-cp -r $self_path/../../../puppet/manifests $dockerfile_path/puppet/
+cp -r $puppet_path/modules/wso2base $dockerfile_path/puppet/modules/
+cp -r $puppet_path/modules/wso2${product_name} $dockerfile_path/puppet/modules/
+cp -r $puppet_path/hiera* $dockerfile_path/puppet/
+cp -r $puppet_path/manifests $dockerfile_path/puppet/
 
 echo "Backing up ${dockerfile_path}/Dockerfile"
 cp $dockerfile_path/Dockerfile $dockerfile_path/Dockerfile.bck
@@ -69,4 +76,4 @@ rm -rf $dockerfile_path/scripts
 rm -rf $dockerfile_path/puppet
 rm -rf $dockerfile_path/Dockerfile
 mv $dockerfile_path/Dockerfile.bck $dockerfile_path/Dockerfile
-echo "Done."
+echo "Build process completed"
