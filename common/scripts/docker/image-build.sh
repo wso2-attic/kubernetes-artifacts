@@ -61,7 +61,7 @@ do
     fi
 
     echo "Building docker image ${image_id}..."
-    sed -i -e 's/ENV WSO2_SERVER_PROFILE/ENV WSO2_SERVER_PROFILE ${profile}/g' ${dockerfile_path}/Dockerfile
+    sed -i -e "s/ENV WSO2_SERVER_PROFILE default/ENV WSO2_SERVER_PROFILE ${profile}/g" ${dockerfile_path}/Dockerfile
 
     {
         docker build -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
