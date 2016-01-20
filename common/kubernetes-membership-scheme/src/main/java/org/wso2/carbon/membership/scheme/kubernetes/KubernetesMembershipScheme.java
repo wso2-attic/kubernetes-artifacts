@@ -31,14 +31,22 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.clustering.hazelcast.HazelcastCarbonClusterImpl;
 import org.wso2.carbon.core.clustering.hazelcast.HazelcastMembershipScheme;
 import org.wso2.carbon.core.clustering.hazelcast.HazelcastUtil;
+import org.wso2.carbon.core.util.KeyStoreManager;
+import org.wso2.carbon.core.util.SystemFilter;
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Address;
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Endpoints;
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Subset;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.carbon.utils.xml.StringUtils;
 
+import javax.net.ssl.*;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +59,8 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     private static final Log log = LogFactory.getLog(KubernetesMembershipScheme.class);
 
     private static final String PARAMETER_NAME_KUBERNETES_MASTER = "KUBERNETES_MASTER";
+    private static final String PARAMETER_NAME_KUBERNETES_MASTER_USERNAME = "KUBERNETES_MASTER_USERNAME";
+    private static final String PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD = "KUBERNETES_MASTER_PASSWORD";
     private static final String PARAMETER_NAME_KUBERNETES_NAMESPACE = "KUBERNETES_NAMESPACE";
     private static final String PARAMETER_NAME_KUBERNETES_SERVICES = "KUBERNETES_SERVICES";
     private static final String ENDPOINTS_API_CONTEXT = "/api/v1/namespaces/%s/endpoints/";
@@ -100,6 +110,8 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             String kubernetesMaster = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER);
             String kubernetesNamespace = System.getenv(PARAMETER_NAME_KUBERNETES_NAMESPACE);
             String kubernetesServices = System.getenv(PARAMETER_NAME_KUBERNETES_SERVICES);
+            String kubernetesMasterUsername = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
+            String kubernetesMasterPassword = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
@@ -118,12 +130,21 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
                 }
             }
 
+            if(StringUtils.isEmpty(kubernetesMasterUsername)) {
+                kubernetesMasterUsername = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
+            }
+
+            if(StringUtils.isEmpty(kubernetesMasterPassword)) {
+                kubernetesMasterPassword = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
+            }
+
             log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s",
                     kubernetesMaster, kubernetesNamespace, kubernetesServices));
 
             String[] kubernetesServicesArray = kubernetesServices.split(",");
             for (String kubernetesService : kubernetesServicesArray) {
-                List<String> containerIPs = findContainerIPs(kubernetesMaster, kubernetesNamespace, kubernetesService);
+                List<String> containerIPs = findContainerIPs(kubernetesMaster,
+                        kubernetesNamespace, kubernetesService, kubernetesMasterUsername, kubernetesMasterPassword);
                 for(String containerIP : containerIPs) {
                     tcpIpConfig.addMember(containerIP);
                     log.info("Member added to cluster configuration: [container-ip] " + containerIP);
@@ -151,15 +172,47 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         return (String) kubernetesServicesParam.getValue();
     }
 
-    private List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName) throws IOException {
+    private List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName, String username, String password)
+            throws IOException {
         final String path = String.format(ENDPOINTS_API_CONTEXT, namespace);
 
         final List<String> containerIPs = new ArrayList<String>();
+        // TODO: enable certificate verification after finding correct cert for K8s master
+        disableCertificateValidation();
         URL url = new URL(kubernetesMaster + path + serviceName);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
-        ObjectMapper mapper = new ObjectMapper();
-        Endpoints endpoints = mapper.readValue(conn.getInputStream(), Endpoints.class);
+//      SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
+//      conn.setSSLSocketFactory(sslsocketfactory);
+
+        // set basic auth header if username and password are present
+        if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+            String userpass = username + ":" + password;
+            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+            conn.setRequestProperty("Authorization", basicAuth);
+        }
+
+        Endpoints endpoints = null;
+        // TODO find a suitable number of tries
+        for (int tries = 1 ; tries <= 10 ; tries++) {
+            try {
+                endpoints = getEndpoints(conn);
+                break;
+
+            } catch (IOException e) {
+                // retry if the retry count is < 10 and the error is 'FileNotFoundException'
+                if (e.getMessage().contains("FileNotFoundException") && tries < 10) {
+                    log.error("Unable to read from connection: " + e.getMessage() + ", will retry");
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException ignoredException) {}
+                } else {
+                    // either error is not 'FileNotFoundException' or retry count => 10
+                    throw e;
+                }
+            }
+        }
+
         if (endpoints != null) {
             if (endpoints.getSubsets() != null && !endpoints.getSubsets().isEmpty()) {
                 for (Subset subset : endpoints.getSubsets()) {
@@ -170,6 +223,43 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             }
         }
         return containerIPs;
+    }
+
+    private Endpoints getEndpoints(HttpsURLConnection conn) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(conn.getInputStream(), Endpoints.class);
+    }
+
+    public static void disableCertificateValidation() {
+
+        TrustManager[] dummyTrustMgr = new TrustManager[] {
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        // do nothing
+                    }
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        // do nothing
+                    }
+                }};
+
+        // Ignore differences between given hostname and certificate hostname
+        HostnameVerifier dummyHostVerifier = new HostnameVerifier() {
+            public boolean verify(String hostname, SSLSession session) {
+                // always true
+                return true;
+            }
+        };
+
+        // Install the all-trusting trust manager
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, dummyTrustMgr, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(dummyHostVerifier);
+        } catch (Exception e) {}
     }
 
     @Override
