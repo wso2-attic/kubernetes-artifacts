@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2cep
+  labels:
+    name: wso2cep
+spec:
+  replicas: 1
+  selector:
+    name: wso2cep
+  template:
+    metadata:
+      labels:
+        name: wso2cep
+    spec:
+      containers:
+      -
+        name: wso2cep
+        image: wso2/cep-4.0.0:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
