@@ -17,4 +17,9 @@ spec:
       - name: wso2esb-worker
         image: wso2/esb-worker-4.9.0:1.0.0
         ports:
-        - containerPort: 8243
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 8280
+          protocol: "TCP"

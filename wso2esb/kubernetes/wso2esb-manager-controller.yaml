@@ -17,4 +17,9 @@ spec:
       - name: wso2esb-manager
         image: wso2/esb-manager-4.9.0:1.0.0
         ports:
-        - containerPort: 9443
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"

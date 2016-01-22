@@ -17,4 +17,15 @@ spec:
       - name: wso2das
         image: wso2/das-3.0.0:1.0.0
         ports:
-        - containerPort: 9443
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
+        -
+          containerPort: 7711
+          protocol: "TCP"

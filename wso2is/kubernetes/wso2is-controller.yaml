@@ -17,4 +17,15 @@ spec:
       - name: wso2is
         image: wso2/is-5.1.0:1.0.0
         ports:
-        - containerPort: 9443
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 8000
+          protocol: "TCP"
+        -
+          containerPort: 10500
+          protocol: "TCP"

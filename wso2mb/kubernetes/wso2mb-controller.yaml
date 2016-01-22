@@ -17,4 +17,24 @@ spec:
       - name: wso2mb
         image: wso2/mb-3.0.0:1.0.0
         ports:
-        - containerPort: 9443
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
+        -
+          containerPort: 5672
+          protocol: "TCP"
+        -
+          containerPort: 8672
+          protocol: "TCP"
+        -
+          containerPort: 1883
+          protocol: "TCP"
+        -
+          containerPort: 8833
+          protocol: "TCP"
+        -
+          containerPort: 7611
+          protocol: "TCP"
