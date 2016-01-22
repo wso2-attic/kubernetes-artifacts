@@ -17,4 +17,9 @@ spec:
       - name: wso2as-worker
         image: wso2/as-worker-5.3.0:1.0.0
         ports:
-        - containerPort: 8243
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"

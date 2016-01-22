@@ -17,4 +17,9 @@ spec:
       - name: wso2brs-manager
         image: wso2/brs-manager-2.2.0:1.0.0
         ports:
-        - containerPort: 9443
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
