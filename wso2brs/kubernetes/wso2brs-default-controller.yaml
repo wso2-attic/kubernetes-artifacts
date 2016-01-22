@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2brs
+  labels:
+    name: wso2brs
+spec:
+  replicas: 1
+  selector:
+    name: wso2brs
+  template:
+    metadata:
+      labels:
+        name: wso2brs
+    spec:
+      containers:
+      -
+        name: wso2brs
+        image: wso2/brs-2.2.0:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"
