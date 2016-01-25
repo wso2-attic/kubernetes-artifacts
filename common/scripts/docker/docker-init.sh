@@ -18,7 +18,7 @@
 # ------------------------------------------------------------------------
 set -e
 
-local_ip=`awk 'NR==1 {print $1}' /etc/hosts`
+local_ip=`ip route get 1 | awk '{print $NF;exit}'`
 server_path=/mnt/${local_ip}
 echo "Creating directory $server_path..."
 mkdir -p $server_path

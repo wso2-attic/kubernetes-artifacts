@@ -16,15 +16,28 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+
 set -e
+
+product_name=es
+product_version=2.0.0
+image_version=$1
+product_profiles=$2
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./build.sh [docker-image-version]"
-    exit
+    echo "Usage: ./build.sh [docker-image-version] [product_profile_list]"
+    echo "Ex: ./build.sh 1.0.0 'default|manager|worker'"
+    exit 1
 fi
 
-image_version=$1
-image_id=wso2/es-2.0.0:${image_version}
-echo "Building docker image ${image_id}..."
-docker build -t ${image_id} .
+if [ -z "$2" ]
+  then
+    product_profiles='default'
+fi
+
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}

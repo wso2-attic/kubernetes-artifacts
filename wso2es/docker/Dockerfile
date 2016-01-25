@@ -38,9 +38,14 @@ ENV FACTER_environment=${WSO2_ENVIRONMENT}
 ENV FACTER_vm_type=docker
 
 # Execute puppet apply
+WORKDIR /etc/puppet
 RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
 
+# Remove puppet from the system
+RUN apt-get purge -y --auto-remove puppet
+RUN rm -rf /etc/puppet/*
+
 # Expose transport ports
-EXPOSE 8280 8243 9763 9443
+EXPOSE 9763 9443
 
 ENTRYPOINT /usr/local/bin/init.sh

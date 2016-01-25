@@ -18,15 +18,24 @@
 # ------------------------------------------------------------------------
 set -e
 
+product_name=es
+product_version=2.0.0
+image_version=$1
+product_profiles=$2
+
 if [ -z "$1" ]
   then
-    echo "Usage: ./save.sh [docker-image-version]"
+    echo "Usage: ./save.sh [docker-image-version] [product_profile_list]"
     exit
 fi
 
-image_version=$1
-image_id="wso2/es-2.0.0:${image_version}"
-tar_file="wso2es-2.0.0-${image_version}.tar"
+if [ -z "$2" ]
+  then
+    product_profiles='default'
+fi
 
-echo "Saving docker image ${image_id} to ~/docker/images/${tar_file}"
-docker save ${image_id} > ~/docker/images/${tar_file}
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
+
+bash ${common_folder}/save-image.sh ${product_name} ${product_version} ${image_version} ${product_profiles}
