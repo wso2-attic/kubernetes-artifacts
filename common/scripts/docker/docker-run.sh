@@ -38,3 +38,6 @@ do
     sleep 1
 
 done
+
+echo "To get bash into a running container use following command..."
+echo "docker exec -it <containerId or name> bash"
