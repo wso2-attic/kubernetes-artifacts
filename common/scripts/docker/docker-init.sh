@@ -34,22 +34,37 @@ function add_host_mapping {
     if [[ ! -z $1 && $1 != $2 ]];
     then
         echo "$local_ip   $local_member_host" >> /etc/hosts
+        echo "added host mapping for $local_member_host -> $local_ip"
       else
         echo "localMemberHost is not set | already set to local ip"
     fi
 }
 
+# validate ip address
+function is_ip_address {
+    if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]];
+    then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # resolve localMemberHost
-axis2_file_path=${server_path}/repository/conf/axis2/axis2.xml
+axis2_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
 local_member_host=`grep -oP "<parameter\ name=\"localMemberHost\">(.*)</parameter>" $axis2_file_path | cut -d ">" -f 2 | cut -d "<" -f 1`
-echo "found localMemberhost = $local_member_host"
-add_host_mapping "$local_member_host" "$local_ip"
+echo "found localMemberhost=$local_member_host"
+if ! is_ip_address "$local_member_host" ; then
+    add_host_mapping "$local_member_host" "$local_ip"
+else
+    echo "localMemberHost is already an ip address"
+fi
 
 # resolve hostname
 #carbon_file_path=${server_path}/repository/conf/carbon.xml
 #carbon_hostname=`grep -oP "<HostName>(.*)</HostName>" $carbon_file_path | cut -d ">" -f 2 | cut -d "<" -f 1`
 #echo "found carbon host name = $carbon_hostname"
-#add_host_mapping $carbon_hostname $local_ip
+#add_host_mapping "$carbon_hostname" "$local_ip"
 
 export CARBON_HOME="${server_path}/${server_name}"
 
