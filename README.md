@@ -63,6 +63,7 @@ The Dockerfiles define the resources and instructions to build the Docker images
     - Copy any deployable artifacts to the modules' `files` folder. For example, for WSO2 AS, copy any deployable applications to `<REPOSITORY_HOME>/puppet/modules/wso2as/files/configs/repository/deployment/server`. 
 
 * Build the docker images
+    - First build the base image by executing `build.sh` script. (ex: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module needed. (ex: `<REPOSITORY_HOME>/wso2as/docker`).
     - Execute `build.sh` script and provide the image version to be used.
         + `./build.sh 0.0.1`
