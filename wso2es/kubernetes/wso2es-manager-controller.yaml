@@ -16,3 +16,10 @@ spec:
       containers:
       - name: wso2es-manager
         image: wso2/es-manager-2.0.0:0.0.1
+        ports:
+        -
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
+          protocol: "TCP"

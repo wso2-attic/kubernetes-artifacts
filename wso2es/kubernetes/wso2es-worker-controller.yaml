@@ -16,3 +16,10 @@ spec:
       containers:
       - name: wso2es-worker
         image: wso2/es-worker-2.0.0:0.0.1
+        ports:
+        -
+          containerPort: 8243
+          protocol: "TCP"
+        -
+          containerPort: 8280
+          protocol: "TCP"

@@ -54,7 +54,7 @@ The Dockerfiles define the resources and instructions to build the Docker images
 ### Building the Docker Images
 
 * Get Puppet Modules
-    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases). After getting the `wso2-puppet-modules-<version>.zip` file, extract it inside `<REPOSITORY_HOME>/puppet` folder. Modify the Hiera files as needed. 
+    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases). After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set PUPPET_HOME environment variable pointing to extracted folder. Modify the Hiera files as needed. 
 
 * Add product packs and dependencies
     - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<REPOSITORY_HOME>/puppet/modules/wso2base/files`
