@@ -16,7 +16,7 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-product_name=wso2es
+product_name=wso2brs
 product_profiles='manager|worker'
 
 IFS='|' read -r -a array <<< "${product_profiles}"
