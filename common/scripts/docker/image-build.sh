@@ -64,7 +64,7 @@ do
     sed -i -e "s/ENV WSO2_SERVER_PROFILE default/ENV WSO2_SERVER_PROFILE ${profile}/g" ${dockerfile_path}/Dockerfile
 
     {
-        docker build -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
+        docker build --no-cache=true -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
     } || {
         echo "ERROR: Docker image ${image_id} creation failed"
     }
