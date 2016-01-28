@@ -27,6 +27,8 @@ server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
 mv /mnt/${server_name} ${server_path}/
 
+axis2_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
+
 # add host mapping
 # $1 = hostname
 # $2 = ip address
@@ -40,31 +42,64 @@ function add_host_mapping {
     fi
 }
 
+# check if this is localhost ip
+function is_localhost {
+    if [[ $1 = '127.0.0.1' ]];
+    then
+	    return 0
+    else
+	    return 1
+    fi
+}
+
 # validate ip address
-function is_ip_address {
+function is_valid_ip_address {
     if [[ $1 =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]];
     then
+        echo "detected $1 as a valid ip"
         return 0
     else
+	echo "$1 is not a valid ip"
         return 1
     fi
 }
 
-# resolve localMemberHost
-axis2_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
-local_member_host=`grep -oP "<parameter\ name=\"localMemberHost\">(.*)</parameter>" $axis2_file_path | cut -d ">" -f 2 | cut -d "<" -f 1`
-echo "found localMemberhost=$local_member_host"
-if ! is_ip_address "$local_member_host" ; then
-    add_host_mapping "$local_member_host" "$local_ip"
-else
-    echo "localMemberHost is already an ip address"
-fi
+# check if hostname is defined in /etc/hosts
+function is_hostname_defined_in_hosts_file {
+    if [[ ! -z $1 && ! -z `grep -oP "^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}(?=.*$1)" /etc/hosts` ]];
+    then
+	echo "hostname $1 is defined in /etc/hosts file"
+        return 0
+    else
+        echo "hostname $1 is not defined in /etc/hosts file"
+        return 1
+    fi
+}
 
-# resolve hostname
-#carbon_file_path=${server_path}/repository/conf/carbon.xml
-#carbon_hostname=`grep -oP "<HostName>(.*)</HostName>" $carbon_file_path | cut -d ">" -f 2 | cut -d "<" -f 1`
-#echo "found carbon host name = $carbon_hostname"
-#add_host_mapping "$carbon_hostname" "$local_ip"
+# check if hostname resolves to an IP
+function hostname_resolves_to_valid_ip {
+    if [[ ! -z `dig +short $1` ]];
+    then
+	echo "hostname $1 resolves to a valid ip"
+        return 0
+    else
+	echo "hostname $1 does not resolve to a valid ip"
+        return 1
+    fi
+}
+
+# replace localMemberHost with local ip
+function replace_local_member_host_with_ip {
+    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_file_path
+    if [[ $? == 0 ]];
+    then
+        echo "successfully updated localMemberHost with local ip address $local_ip"
+    else
+        echo "error occurred in updating localMemberHost with local ip address $local_ip"
+    fi
+}
+
+replace_local_member_host_with_ip
 
 export CARBON_HOME="${server_path}/${server_name}"
 

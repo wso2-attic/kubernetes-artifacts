@@ -5,7 +5,7 @@ metadata:
   labels:
     name: wso2es-default
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     name: wso2es-default
   template:
@@ -15,17 +15,14 @@ spec:
     spec:
       containers:
       - name: wso2es-default
-        image: wso2/es-2.0.0:1.0.0
+        image: wso2/es-2.0.0:0.0.1
         ports:
-        -
-         containerPort: 8280
-         protocol: "TCP"
-        -
-         containerPort: 8243
-         protocol: "TCP"
         -
          containerPort: 9763
          protocol: "TCP"
         -
          containerPort: 9443
+         protocol: "TCP"
+        -
+         containerPort: 4000
          protocol: "TCP"

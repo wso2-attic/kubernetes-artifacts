@@ -23,3 +23,6 @@ spec:
         -
           containerPort: 8280
           protocol: "TCP"
+        -
+          containerPort: 4000
+          protocol: "TCP"

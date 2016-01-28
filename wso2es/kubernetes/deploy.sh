@@ -17,36 +17,20 @@
 
 # ------------------------------------------------------------------------
 
-#host=10.245.1.3
-host=172.17.8.101
-manager_port=32001
-worker_port=32003
+host=10.245.1.3
+default_port=32001
 
-echo "Deploying wso2es manager service..."
-kubectl create -f wso2es-manager-service.yaml
+echo "Deploying wso2es default service..."
+kubectl create -f wso2es-default-service.yaml
 
-echo "Deploying wso2es worker service..."
-kubectl create -f wso2es-worker-service.yaml
+echo "Deploying wso2es default controller..."
+kubectl create -f wso2es-default-controller.yaml
 
-echo "Deploying wso2es manager controller..."
-kubectl create -f wso2es-manager-controller.yaml
-
-echo "Waiting wso2es manager to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
+echo "Waiting wso2es to launch on http://${host}:${default_port}"
+until $(curl --output /dev/null --silent --head --fail http://${host}:${default_port}); do
     printf '.'
     sleep 5
 done
 
-echo -e "\nwso2es manager launched!"
-
-echo "Deploying wso2es worker controller..."
-kubectl create -f wso2es-worker-controller.yaml
-
-echo "Waiting wso2es worker to launch on http://${host}:${worker_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${worker_port}); do
-    printf '.'
-    sleep 5
-done
-
-echo -e "\nwso2es worker launched!"
+echo -e "\nwso2es launched!"
 
