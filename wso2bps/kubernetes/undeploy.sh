@@ -16,16 +16,9 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-product_name=wso2bps
-product_profiles='manager|worker'
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+product_profiles=(default)
 
-IFS='|' read -r -a array <<< "${product_profiles}"
-
-if [[ ! -z $array ]]; then
-    for profile in "${array[@]}"
-    do
-        kubectl delete rc,services,pods -l name=$product_name-$profile
-    done
-else
-    kubectl delete rc,services,pods -l name=$product_name
-fi
+bash ${common_folder}/undeploy.sh "wso2bps" "$product_profiles"
