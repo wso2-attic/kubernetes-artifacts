@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2es-publisher
+  labels:
+    name: wso2es-publisher
+spec:
+  replicas: 2
+  selector:
+    name: wso2es-publisher
+  template:
+    metadata:
+      labels:
+        name: wso2es-publisher
+    spec:
+      containers:
+      - name: wso2es-publisher
+        image: wso2/es-publisher-2.0.0:0.0.1
+        ports:
+        -
+         containerPort: 9763
+         protocol: "TCP"
+        -
+         containerPort: 9443
+         protocol: "TCP"
+        -
+         containerPort: 4000
+         protocol: "TCP"

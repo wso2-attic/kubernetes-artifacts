@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2es-store
+  labels:
+    name: wso2es-store
+spec:
+  replicas: 2
+  selector:
+    name: wso2es-store
+  template:
+    metadata:
+      labels:
+        name: wso2es-store
+    spec:
+      containers:
+      - name: wso2es-store
+        image: wso2/es-store-2.0.0:0.0.1
+        ports:
+        -
+         containerPort: 9763
+         protocol: "TCP"
+        -
+         containerPort: 9443
+         protocol: "TCP"
+        -
+         containerPort: 4000
+         protocol: "TCP"
