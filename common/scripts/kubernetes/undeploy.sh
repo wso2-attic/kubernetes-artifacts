@@ -18,13 +18,10 @@
 # ------------------------------------------------------------------------
 
 product_name=$1
-product_profiles=$2
+product_profile=$2
 
-if [[ ! -z $product_profiles ]]; then
-    for profile in "${product_profiles[@]}"
-    do
-        kubectl delete rc,services,pods -l name=$product_name-$profile
-    done
+if [[ ! -z $product_profile ]]; then
+    kubectl delete rc,services,pods -l name=$product_name-$product_profile
 else
     kubectl delete rc,services,pods -l name=$product_name
 fi

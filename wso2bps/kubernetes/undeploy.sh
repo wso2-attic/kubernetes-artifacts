@@ -21,4 +21,10 @@ script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 product_profiles=(default)
 
-bash ${common_folder}/undeploy.sh "wso2bps" "$product_profiles"
+if [[ ! -z $product_profiles ]]; then
+    for profile in ${product_profiles[@]}; do
+        bash ${common_folder}/undeploy.sh "wso2bps" "$profile"
+    done
+else
+    bash ${common_folder}/undeploy.sh "wso2bps"
+fi
