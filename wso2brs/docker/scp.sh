@@ -42,7 +42,7 @@ script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
 
 echo "Importing docker images to master and minion-1"
-bash ${common_folder}/scp-cmd.sh ${product_name} ${product_version} ${image_version} ${product_version} ${minions}
+bash ${common_folder}/scp-cmd.sh ${product_name} ${product_version} ${image_version} ${product_profiles} ${minions}
 pid1=$!
 
 wait $pid1
