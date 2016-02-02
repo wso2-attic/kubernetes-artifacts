@@ -180,7 +180,21 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         // TODO: enable certificate verification after finding correct cert for K8s master
         disableCertificateValidation();
         URL url = new URL(kubernetesMaster + path + serviceName);
-        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        if (log.isDebugEnabled()) {
+            log.debug("Resource location: " + kubernetesMaster + path + serviceName);
+        }
+
+        HttpURLConnection conn = null;
+
+        if (kubernetesMaster.startsWith("https")) {
+            conn = (HttpsURLConnection) url.openConnection();
+        } else if (kubernetesMaster.startsWith("http")) {
+            conn = (HttpURLConnection) url.openConnection();
+        } else {
+            String errorMsg = "K8s master API endpoint is neither HTTP or HTTPS";
+            log.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+        }
 
 //      SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
 //      conn.setSSLSocketFactory(sslsocketfactory);
@@ -225,7 +239,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         return containerIPs;
     }
 
-    private Endpoints getEndpoints(HttpsURLConnection conn) throws IOException {
+    private Endpoints getEndpoints(HttpURLConnection conn) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(conn.getInputStream(), Endpoints.class);
     }
