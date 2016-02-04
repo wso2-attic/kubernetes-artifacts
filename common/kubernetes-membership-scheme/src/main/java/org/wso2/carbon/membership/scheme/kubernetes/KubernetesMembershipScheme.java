@@ -177,54 +177,42 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         final String path = String.format(ENDPOINTS_API_CONTEXT, namespace);
 
         final List<String> containerIPs = new ArrayList<String>();
-        // TODO: enable certificate verification after finding correct cert for K8s master
-        disableCertificateValidation();
+
+       // disableCertificateValidation();
         URL url = new URL(kubernetesMaster + path + serviceName);
         if (log.isDebugEnabled()) {
             log.debug("Resource location: " + kubernetesMaster + path + serviceName);
         }
 
-        HttpURLConnection conn = null;
+        KubernetesApiEndpoint k8sApiEndpoint = null;
+        if (url.getProtocol().equalsIgnoreCase("https")) {
+            k8sApiEndpoint = new KubernetesHttpsApiEndpoint(url);
 
-        if (kubernetesMaster.startsWith("https")) {
-            conn = (HttpsURLConnection) url.openConnection();
-        } else if (kubernetesMaster.startsWith("http")) {
-            conn = (HttpURLConnection) url.openConnection();
+        } else if (url.getProtocol().equalsIgnoreCase("http")) {
+            k8sApiEndpoint = new KubernetesHttpApiEndpoint(url);
+
         } else {
             String errorMsg = "K8s master API endpoint is neither HTTP or HTTPS";
             log.error(errorMsg);
             throw new RuntimeException(errorMsg);
         }
 
-//      SSLSocketFactory sslsocketfactory = (SSLSocketFactory) SSLSocketFactory.getDefault();
-//      conn.setSSLSocketFactory(sslsocketfactory);
-
-        // set basic auth header if username and password are present
-        if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
-            String userpass = username + ":" + password;
-            String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
-            conn.setRequestProperty("Authorization", basicAuth);
-        }
-
         Endpoints endpoints = null;
-        // TODO find a suitable number of tries
-        for (int tries = 1 ; tries <= 10 ; tries++) {
-            try {
-                endpoints = getEndpoints(conn);
-                break;
-
-            } catch (IOException e) {
-                // retry if the retry count is < 10 and the error is 'FileNotFoundException'
-                if (e.getMessage().contains("FileNotFoundException") && tries < 10) {
-                    log.error("Unable to read from connection: " + e.getMessage() + ", will retry");
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException ignoredException) {}
-                } else {
-                    // either error is not 'FileNotFoundException' or retry count => 10
-                    throw e;
-                }
+        try {
+            // use basic auth to create the connection if username and password are specified
+            if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+                k8sApiEndpoint.createConnection(username, password);
+            } else {
+                k8sApiEndpoint.createConnection();
             }
+
+            // read from the API endpoint
+            endpoints = getEndpoints(k8sApiEndpoint.read());
+        } catch (Exception e) {
+            // no need to throw
+            log.error(e.getMessage(), e);
+        } finally {
+            k8sApiEndpoint.disconnect();
         }
 
         if (endpoints != null) {
@@ -235,45 +223,16 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
                     }
                 }
             }
+        } else {
+            log.info("No endpoints found at " + url.toString());
         }
+
         return containerIPs;
     }
 
-    private Endpoints getEndpoints(HttpURLConnection conn) throws IOException {
+    private Endpoints getEndpoints (InputStream inputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(conn.getInputStream(), Endpoints.class);
-    }
-
-    public static void disableCertificateValidation() {
-
-        TrustManager[] dummyTrustMgr = new TrustManager[] {
-                new X509TrustManager() {
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        // do nothing
-                    }
-                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        // do nothing
-                    }
-                }};
-
-        // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier dummyHostVerifier = new HostnameVerifier() {
-            public boolean verify(String hostname, SSLSession session) {
-                // always true
-                return true;
-            }
-        };
-
-        // Install the all-trusting trust manager
-        try {
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, dummyTrustMgr, new SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(dummyHostVerifier);
-        } catch (Exception e) {}
+        return mapper.readValue(inputStream, Endpoints.class);
     }
 
     @Override
