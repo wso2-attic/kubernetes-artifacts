@@ -49,7 +49,6 @@ public abstract class KubernetesApiEndpoint {
     public abstract void disconnect ();
 
     protected void createBasicAuthenticationHeader(String username, String password) {
-        log.info("########################## basic auth");
         String userpass = username + ":" + password;
         String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
         connection.setRequestProperty("Authorization", basicAuth);

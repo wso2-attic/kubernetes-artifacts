@@ -173,7 +173,6 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
 
         final List<String> containerIPs = new ArrayList<String>();
 
-       // disableCertificateValidation();
         URL url = new URL(kubernetesMaster + path + serviceName);
         if (log.isDebugEnabled()) {
             log.debug("Resource location: " + kubernetesMaster + path + serviceName);
