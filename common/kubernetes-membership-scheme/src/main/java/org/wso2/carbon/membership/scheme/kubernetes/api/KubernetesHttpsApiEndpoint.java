@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.wso2.carbon.membership.scheme.kubernetes;
+package org.wso2.carbon.membership.scheme.kubernetes.api;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
