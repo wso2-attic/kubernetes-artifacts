@@ -10,13 +10,13 @@ spec:
     # the port that this service should serve on
     -
       name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
+      port: 9763
+      targetPort: 9763
       nodePort: 32003
     -
       name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
+      port: 9443
+      targetPort: 9443
       nodePort: 32004
   # label keys and values that must match in order to receive traffic for this service
   selector:
