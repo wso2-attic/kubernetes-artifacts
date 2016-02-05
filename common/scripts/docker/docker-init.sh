@@ -27,20 +27,25 @@ server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
 mv /mnt/${server_name} ${server_path}/
 
-axis2_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
+axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
+carbon_xml_file_path=${server_path}/${server_name}/repository/conf/carbon.xml
 
-## add host mapping
-## $1 = hostname
-## $2 = ip address
-#function add_host_mapping {
-#    if [[ ! -z $1 && $1 != $2 ]];
-#    then
-#        echo "$local_ip   $local_member_host" >> /etc/hosts
-#        echo "added host mapping for $local_member_host -> $local_ip"
-#      else
-#        echo "localMemberHost is not set | already set to local ip"
-#    fi
-#}
+# add host mapping
+# $1 = hostname
+# $2 = ip address
+function add_host_mapping {
+    if [[ ! -z $1 && $1 != $2 ]];
+    then
+        echo "$2    $1" >> /etc/hosts
+        echo "added host mapping for $1 -> $2"
+    fi
+}
+
+# grep and return 'HostName' from carbon.xml
+function get_hostname_from_carbon_config {
+    echo `grep -oP "(?<=<HostName>).*?(?=</HostName>)" $carbon_xml_file_path`
+}
+
 #
 ## check if this is localhost ip
 #function is_localhost {
@@ -90,7 +95,7 @@ axis2_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
 
 # replace localMemberHost with local ip
 function replace_local_member_host_with_ip {
-    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_file_path
+    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_xml_file_path
     if [[ $? == 0 ]];
     then
         echo "successfully updated localMemberHost with local ip address $local_ip"
@@ -100,6 +105,8 @@ function replace_local_member_host_with_ip {
 }
 
 replace_local_member_host_with_ip
+
+add_host_mapping "$(get_hostname_from_carbon_config)" "$local_ip"
 
 export CARBON_HOME="${server_path}/${server_name}"
 

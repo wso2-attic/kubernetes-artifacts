@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2am
+  name: wso2am-default
   labels:
-    name: wso2am
+    name: wso2am-default
 spec:
   replicas: 1
   selector:
-    name: wso2am
+    name: wso2am-default
   template:
     metadata:
       labels:
-        name: wso2am
+        name: wso2am-default
     spec:
       containers:
       -
-        name: wso2am
+        name: wso2am-default
         image: wso2/am-1.9.1:1.0.0
         ports:
         -

@@ -17,18 +17,17 @@
 
 # ------------------------------------------------------------------------
 
-host=172.17.8.102
-manager_port=32001
-worker_port=32003
+host=10.245.1.3
+default_port=32003
 
 echo "Deploying wso2am service..."
-kubectl create -f wso2am-service.yaml
+kubectl create -f wso2am-default-service.yaml
 
 echo "Deploying wso2am controller..."
-kubectl create -f wso2am-controller.yaml
+kubectl create -f wso2am-default-controller.yaml
 
-echo "Waiting wso2am to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
+echo "Waiting wso2am to launch on http://${host}:${default_port}"
+until $(curl --output /dev/null --silent --head --fail http://${host}:${default_port}); do
     printf '.'
     sleep 5
 done
