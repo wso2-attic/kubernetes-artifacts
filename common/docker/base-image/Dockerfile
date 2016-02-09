@@ -21,8 +21,7 @@ MAINTAINER dev@wso2.org
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get -y update
-RUN apt-get -y install puppet vim
-
-RUN puppet module install puppetlabs/stdlib
-RUN puppet module install 7terminals-java
+RUN apt-get -y update \
+    && apt-get -y install puppet \
+    && puppet module install puppetlabs/stdlib \
+    && puppet module install 7terminals-java

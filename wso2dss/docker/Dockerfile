@@ -31,19 +31,18 @@ COPY scripts/init.sh /usr/local/bin/init.sh
 COPY puppet/ /etc/puppet/
 
 # Export facter variables
-ENV FACTER_product_name=${WSO2_SERVER}
-ENV FACTER_product_version=${WSO2_SERVER_VERSION}
-ENV FACTER_product_profile=${WSO2_SERVER_PROFILE}
-ENV FACTER_environment=${WSO2_ENVIRONMENT}
-ENV FACTER_vm_type=docker
+ENV FACTER_product_name=${WSO2_SERVER} \
+    FACTER_product_version=${WSO2_SERVER_VERSION} \
+    FACTER_product_profile=${WSO2_SERVER_PROFILE} \
+    FACTER_environment=${WSO2_ENVIRONMENT} \
+    FACTER_vm_type=docker
 
-# Execute puppet apply
+# Execute puppet apply and clean after
 WORKDIR /etc/puppet
-RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml
-
-# Remove puppet from the system
-RUN apt-get purge -y --auto-remove puppet
-RUN rm -rf /etc/puppet/*
+RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
+    && apt-get purge -y --auto-remove puppet \
+    && rm -rf /etc/puppet/* \
+    && rm -rf /var/lib/apt/lists/*
 
 # Expose transport ports
 EXPOSE 8280 8243 9763 9443

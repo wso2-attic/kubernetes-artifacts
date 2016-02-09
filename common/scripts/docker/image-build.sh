@@ -49,6 +49,8 @@ cp -r $puppet_path/hiera* $dockerfile_path/puppet/
 cp -r $puppet_path/manifests $dockerfile_path/puppet/
 
 echo "Backing up ${dockerfile_path}/Dockerfile"
+dfile_user=`ls -l $dockerfile_path/Dockerfile | awk '{print $3}'`
+dfile_group=`ls -l $dockerfile_path/Dockerfile | awk '{print $4}'`
 cp $dockerfile_path/Dockerfile $dockerfile_path/Dockerfile.bck
 
 IFS='|' read -r -a array <<< "${profiles}"
@@ -76,4 +78,5 @@ rm -rf $dockerfile_path/scripts
 rm -rf $dockerfile_path/puppet
 rm -rf $dockerfile_path/Dockerfile
 mv $dockerfile_path/Dockerfile.bck $dockerfile_path/Dockerfile
+chown $dfile_user:$dfile_group $dockerfile_path/Dockerfile
 echo "Build process completed"
