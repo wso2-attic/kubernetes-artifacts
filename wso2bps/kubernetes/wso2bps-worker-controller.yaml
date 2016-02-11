@@ -18,8 +18,8 @@ spec:
         image: wso2/bps-worker-3.5.0:1.0.0
         ports:
         -
-          containerPort: 8280
+          containerPort: 9763
           protocol: "TCP"
         -
-          containerPort: 8243
+          containerPort: 9443
           protocol: "TCP"

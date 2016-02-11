@@ -26,5 +26,5 @@ if [[ ! -z $product_profiles ]]; then
         bash ${common_folder}/undeploy.sh "wso2brs" "$profile"
     done
 else
-    bash ${common_folder}/undeploy.sh "wso2esbrs"
+    bash ${common_folder}/undeploy.sh "wso2brs"
 fi
