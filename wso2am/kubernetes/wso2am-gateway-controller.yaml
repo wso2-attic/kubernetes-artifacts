@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2am-gateway
+  labels:
+    name: wso2am-gateway
+spec:
+  replicas: 1
+  selector:
+    name: wso2am-gateway
+  template:
+    metadata:
+      labels:
+        name: wso2am-gateway
+    spec:
+      containers:
+      -
+        name: wso2am-gateway
+        image: wso2/am-1.9.1:1.0.0
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"
