@@ -54,13 +54,13 @@ The Dockerfiles define the resources and instructions to build the Docker images
 ### Building the Docker Images
 
 * Get Puppet Modules
-    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases). After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set PUPPET_HOME environment variable pointing to extracted folder. Modify the Hiera files as needed.
+    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases). After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set `PUPPET_HOME` environment variable pointing to extracted folder. Modify the Hiera files as needed.
 
 * Add product packs and dependencies
-    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<REPOSITORY_HOME>/puppet/modules/wso2base/files`
-    - Download the necessary products and copy them to `<REPOSITORY_HOME>/puppet/modules/<MODULE>/files`. For example, for WSO2 AS 5.3.0 download the [product pack](http://wso2.com/products/application-server/) and copy it to `<REPOSITORY_HOME>/puppet/modules/wso2as/files`.
-    - Build the [Carbon Kubernetes Membership Scheme](#carbon-kubernetes-membership-scheme) and copy the resulting jar to `<REPOSITORY_HOME>/puppet/modules/<MODULE>/files/configs/repository/components/lib` folder. Repeat this for each product as needed.
-    - Copy any deployable artifacts to the modules' `files` folder. For example, for WSO2 AS, copy any deployable applications to `<REPOSITORY_HOME>/puppet/modules/wso2as/files/configs/repository/deployment/server`.
+    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<PUPPET_HOME>/modules/wso2base/files`
+    - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 AS 5.3.0 download the [product pack](http://wso2.com/products/application-server/) and copy it to `<PUPPET_HOME>/modules/wso2as/files`.
+    - Build the [Carbon Kubernetes Membership Scheme](#carbon-kubernetes-membership-scheme) and copy the resulting jar to `<PUPPET_HOME>/modules/<MODULE>/files/configs/repository/components/lib` folder. Furthermore, copy the dependencies for the Carbon Kubernetest Membership Scheme to the same place. Repeat this for each product as needed.
+    - Copy any deployable artifacts to the modules' `files` folder. For example, for WSO2 AS, copy any deployable applications to `<PUPPET_HOME>/modules/wso2as/files/configs/repository/deployment/server`.
 
 * Build the docker images
     - First build the base image by executing `build.sh` script. (ex: `<REPOSITORY_HOME>/common/docker/base-image`)
