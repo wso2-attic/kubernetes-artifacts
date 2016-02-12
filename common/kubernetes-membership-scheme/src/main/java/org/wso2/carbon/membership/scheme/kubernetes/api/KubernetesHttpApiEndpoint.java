@@ -36,17 +36,23 @@ public class KubernetesHttpApiEndpoint extends KubernetesApiEndpoint {
 
     @Override
     public void createConnection() throws IOException {
+        log.debug("Connecting to Kubernetes API server...");
         connection = (HttpURLConnection) url.openConnection();
+        log.debug("Connected successfully");
     }
 
     @Override
     public void createConnection(String username, String password) throws IOException {
+        log.debug("Connecting to Kubernetes API server with basic auth...");
         connection = (HttpURLConnection) url.openConnection();
         createBasicAuthenticationHeader(username, password);
+        log.debug("Connected successfully");
     }
 
     @Override
     public void disconnect() {
+        log.debug("Disconnecting from Kubernetes API server...");
         connection.disconnect();
+        log.debug("Disconnected successfully");
     }
 }

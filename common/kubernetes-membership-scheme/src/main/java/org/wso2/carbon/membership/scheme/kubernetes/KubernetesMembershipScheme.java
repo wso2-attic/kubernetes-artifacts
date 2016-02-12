@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -37,6 +37,7 @@ import org.wso2.carbon.membership.scheme.kubernetes.api.KubernetesHttpsApiEndpoi
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Address;
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Endpoints;
 import org.wso2.carbon.membership.scheme.kubernetes.domain.Subset;
+import org.wso2.carbon.membership.scheme.kubernetes.exceptions.KubernetesMembershipSchemeException;
 import org.wso2.carbon.utils.xml.StringUtils;
 
 import java.io.IOException;
@@ -146,7 +147,8 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
                 }
             }
             log.info("Kubernetes membership scheme initialized successfully");
-        } catch (IOException e) {
+        } catch (Exception e) {
+            log.error(e);
             throw new ClusteringFault("Kubernetes membership initialization failed", e);
         }
     }
@@ -167,46 +169,49 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         return (String) kubernetesServicesParam.getValue();
     }
 
-    private List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName, String username, String password)
-            throws IOException {
-        final String path = String.format(ENDPOINTS_API_CONTEXT, namespace);
+    private List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
+                                          String username, String password) throws KubernetesMembershipSchemeException {
 
+        final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
         final List<String> containerIPs = new ArrayList<String>();
 
-        URL url = new URL(kubernetesMaster + path + serviceName);
-        if (log.isDebugEnabled()) {
-            log.debug("Resource location: " + kubernetesMaster + path + serviceName);
+        // Create k8s api endpoint URL
+        URL apiEndpointUrl = null;
+        try {
+            apiEndpointUrl = new URL(kubernetesMaster + apiContext + serviceName);
+            if (log.isDebugEnabled()) {
+                log.debug("Resource location: " + kubernetesMaster + apiContext + serviceName);
+            }
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not construct Kubernetes API endpoint URL", e);
         }
 
-        KubernetesApiEndpoint k8sApiEndpoint = null;
-        if (url.getProtocol().equalsIgnoreCase("https")) {
-            k8sApiEndpoint = new KubernetesHttpsApiEndpoint(url);
-
-        } else if (url.getProtocol().equalsIgnoreCase("http")) {
-            k8sApiEndpoint = new KubernetesHttpApiEndpoint(url);
-
+        // Create http/https k8s api endpoint
+        KubernetesApiEndpoint apiEndpoint = null;
+        if (apiEndpointUrl.getProtocol().equalsIgnoreCase("https")) {
+            apiEndpoint = new KubernetesHttpsApiEndpoint(apiEndpointUrl);
+        } else if (apiEndpointUrl.getProtocol().equalsIgnoreCase("http")) {
+            apiEndpoint = new KubernetesHttpApiEndpoint(apiEndpointUrl);
         } else {
-            String errorMsg = "K8s master API endpoint is neither HTTP or HTTPS";
-            log.error(errorMsg);
-            throw new RuntimeException(errorMsg);
+            throw new KubernetesMembershipSchemeException("K8s master API endpoint is neither HTTP or HTTPS");
         }
 
+        // Create the connection and read k8s service endpoints
         Endpoints endpoints = null;
         try {
-            // use basic auth to create the connection if username and password are specified
+            // Use basic auth to create the connection if username and password are specified
             if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
-                k8sApiEndpoint.createConnection(username, password);
+                apiEndpoint.createConnection(username, password);
             } else {
-                k8sApiEndpoint.createConnection();
+                apiEndpoint.createConnection();
             }
 
-            // read from the API endpoint
-            endpoints = getEndpoints(k8sApiEndpoint.read());
-        } catch (Exception e) {
-            // no need to throw
-            log.error(e.getMessage(), e);
+            // Read k8s service endpoints
+            endpoints = getEndpoints(apiEndpoint.read());
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not connect to Kubernetes API", e);
         } finally {
-            k8sApiEndpoint.disconnect();
+            apiEndpoint.disconnect();
         }
 
         if (endpoints != null) {
@@ -218,9 +223,8 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
                 }
             }
         } else {
-            log.info("No endpoints found at " + url.toString());
+            log.info("No endpoints found at " + apiEndpointUrl.toString());
         }
-
         return containerIPs;
     }
 
@@ -239,7 +243,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     }
 
     /**
-     * Stratos membership listener.
+     * Kubernetes membership scheme listener
      */
     private class KubernetesMembershipSchemeListener implements MembershipListener {
 
@@ -247,7 +251,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         public void memberAdded(MembershipEvent membershipEvent) {
             Member member = membershipEvent.getMember();
 
-            // send all cluster messages
+            // Send all cluster messages
             carbonCluster.memberAdded(member);
             log.info("Member joined [" + member.getUuid() + "]: " + member.getInetSocketAddress().toString());
             // Wait for sometime for the member to completely join before replaying messages

@@ -16,25 +16,18 @@
  * under the License.
  */
 
-package org.wso2.carbon.membership.scheme.kubernetes.domain;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.List;
+package org.wso2.carbon.membership.scheme.kubernetes.exceptions;
 
 /**
- * Kubernetes endpoints.
+ * Kubernetes membership scheme exception
  */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class Endpoints {
+public class KubernetesMembershipSchemeException extends Exception {
 
-    private List<Subset> subsets;
-
-    public List<Subset> getSubsets() {
-        return subsets;
+    public KubernetesMembershipSchemeException(String message) {
+        super(message);
     }
 
-    public void setSubsets(List<Subset> subsets) {
-        this.subsets = subsets;
+    public KubernetesMembershipSchemeException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
