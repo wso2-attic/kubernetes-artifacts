@@ -21,10 +21,10 @@ host=172.17.8.102
 manager_port=32001
 
 echo "Deploying wso2das service..."
-kubectl create -f wso2das-service.yaml
+kubectl create -f wso2das-default-service.yaml
 
 echo "Deploying wso2das controller..."
-kubectl create -f wso2das-controller.yaml
+kubectl create -f wso2das-default-controller.yaml
 
 echo "Waiting wso2das to launch on http://${host}:${manager_port}"
 until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
