@@ -16,14 +16,8 @@ spec:
       containers:
       -
         name: wso2am-publisher
-        image: wso2/am-publisher-1.9.1:1.0.0
+        image: wso2/am-api-publisher-1.9.1:1.0.0
         ports:
-        -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
         -
           containerPort: 9763
           protocol: "TCP"

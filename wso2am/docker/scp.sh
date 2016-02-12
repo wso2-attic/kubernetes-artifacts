@@ -20,7 +20,7 @@ set -e
 
 product_name=am
 product_version=1.9.1
-minions='vagrant@10.245.1.3'
+minions='core@172.17.8.102'
 image_version=$1
 product_profiles=$2
 
