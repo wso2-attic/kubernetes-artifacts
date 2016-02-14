@@ -19,12 +19,6 @@ spec:
         image: wso2/dss-3.5.0:1.0.0
         ports:
         -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
-        -
           containerPort: 9763
           protocol: "TCP"
         -

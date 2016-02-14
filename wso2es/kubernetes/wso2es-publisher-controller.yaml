@@ -23,6 +23,3 @@ spec:
         -
          containerPort: 9443
          protocol: "TCP"
-        -
-         containerPort: 4000
-         protocol: "TCP"

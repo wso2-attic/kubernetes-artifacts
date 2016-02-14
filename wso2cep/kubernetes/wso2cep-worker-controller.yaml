@@ -18,12 +18,6 @@ spec:
         image: wso2/cep-worker-4.0.0:1.0.0
         ports:
         -
-          containerPort: 8280
-          protocol: "TCP"
-        -
-          containerPort: 8243
-          protocol: "TCP"
-        -
           containerPort: 7611
           protocol: "TCP"
         -

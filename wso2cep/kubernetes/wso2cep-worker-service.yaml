@@ -9,16 +9,6 @@ spec:
   ports:
     # the port that this service should serve on
     -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32003
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32004
-    -
       name: 'thrift'
       port: 7611
       targetPort: 7611
