@@ -1,21 +1,21 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2am-publisher
+  name: wso2am-api-publisher
   labels:
-    name: wso2am-publisher
+    name: wso2am-api-publisher
 spec:
   replicas: 1
   selector:
-    name: wso2am-publisher
+    name: wso2am-api-publisher
   template:
     metadata:
       labels:
-        name: wso2am-publisher
+        name: wso2am-api-publisher
     spec:
       containers:
       -
-        name: wso2am-publisher
+        name: wso2am-api-publisher
         image: wso2/am-api-publisher-1.9.1:1.0.0
         ports:
         -

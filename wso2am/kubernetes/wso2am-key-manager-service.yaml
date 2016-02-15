@@ -2,8 +2,8 @@
   kind: Service
   metadata:
     labels:
-      name: wso2am-key-manager
-    name: wso2am-key-manager
+      name: wso2am-api-key-manager
+    name: wso2am-api-key-manager
   spec:
     type: NodePort
     sessionAffinity: ClientIP
@@ -13,17 +13,17 @@
         name: 'servlet-http'
         port: 9763
         targetPort: 9763
-        nodePort: 32003
+        nodePort: 32009
       -
         name: 'servlet-https'
         port: 9443
         targetPort: 9443
-        nodePort: 32004
+        nodePort: 32010
       -
         name: 'thrift-key-mgt'
         port: 10397
         targetPort: 10397
-        nodePort: 32005
+        nodePort: 32011
     # label keys and values that must match in order to receive traffic for this service
     selector:
-      name: wso2am-key-manager
+      name: wso2am-api-key-manager

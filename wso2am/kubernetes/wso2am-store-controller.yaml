@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2am-store
+  name: wso2am-api-store
   labels:
-    name: wso2am-store
+    name: wso2am-api-store
 spec:
   replicas: 1
   selector:
-    name: wso2am-store
+    name: wso2am-api-store
   template:
     metadata:
       labels:
-        name: wso2am-store
+        name: wso2am-api-store
     spec:
       containers:
       -
