@@ -9,15 +9,25 @@ spec:
   ports:
     # the port that this service should serve on
     -
+      name: 'servlet-http'
+      port: 9763
+      targetPort: 9763
+      nodePort: 32003
+    -
+      name: 'servlet-https'
+      port: 9443
+      targetPort: 9443
+      nodePort: 32004
+    -
       name: 'thrift'
       port: 7611
       targetPort: 7611
-      nodePort: 32006
+      nodePort: 32005
     -
       name: 'thrift-ssl'
       port: 7711
       targetPort: 7711
-      nodePort: 32007
+      nodePort: 32006
 
   # label keys and values that must match in order to receive traffic for this service
   selector:
