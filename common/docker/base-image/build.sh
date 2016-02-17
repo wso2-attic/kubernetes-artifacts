@@ -19,4 +19,11 @@
 
 set -e
 
-docker build -t wso2/k8s-base:1.0.0 .
+image_version=$1
+
+if [ -z "$image_version" ]
+  then
+    image_version="1.0.0"
+fi
+
+docker build -t wso2/k8s-base:$image_version .
