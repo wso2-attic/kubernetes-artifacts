@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: wso2greg-store
+  labels:
+    name: wso2greg-store
+spec:
+  replicas: 2
+  selector:
+    name: wso2greg-store
+  template:
+    metadata:
+      labels:
+        name: wso2greg-store
+    spec:
+      containers:
+      - name: wso2greg-store
+        image: wso2/greg-store-5.1.0:1.0.0
+        ports:
+        -
+         containerPort: 9763
+         protocol: "TCP"
+        -
+         containerPort: 9443
+         protocol: "TCP"
