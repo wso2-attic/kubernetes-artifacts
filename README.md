@@ -41,7 +41,7 @@ allowing to add third party membership schemes.
       <!-- Kubernetes service(s) the carbon server belongs to, use comma separated values for specifying
            multiple values. If multiple services defined, carbon server will connect to all the members
            in all the services via Hazelcast -->
-      <parameter name="KUBERNETES_SERVICES">wso2esb</parameter>
+      <parameter name="KUBERNETES_SERVICES">wso2as-manager,wso2as-worker</parameter>
       <!-- Kubernetes namespace used -->
       <parameter name="KUBERNETES_NAMESPACE">default</parameter>
    </clustering>
