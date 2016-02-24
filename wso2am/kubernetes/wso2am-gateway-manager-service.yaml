@@ -10,16 +10,6 @@ spec:
   ports:
     # ports that this service should serve on
     -
-      name: 'pass-through-http'
-      port: 8280
-      targetPort: 8280
-      nodePort: 32005
-    -
-      name: 'pass-through-https'
-      port: 8243
-      targetPort: 8243
-      nodePort: 32006
-    -
       name: 'servlet-http'
       port: 9763
       targetPort: 9763
