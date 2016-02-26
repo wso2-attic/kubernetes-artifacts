@@ -20,22 +20,21 @@ set -e
 
 product_name=bps
 product_version=3.5.0
-minions='core@nodeip-1|core@nodeip-2'
-image_version=$1
-product_profiles=$2
+minions=$1
+image_version=$2
+product_profiles=$3
 
 if [ -z "$1" ]
   then
-    echo "Usage: ./scp.sh [docker-image-version] [product_profile_list]"
+    echo "Usage: ./scp.sh [host-list] [docker-image-version] [product_profile_list]"
+    echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.0.0 'worker|manager'"
     exit
 fi
 
-if [ -z "$2" ]
+if [ -z "$3" ]
   then
     product_profiles='default'
 fi
-
-image_version=$1
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
