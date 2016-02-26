@@ -20,24 +20,13 @@
 set -e
 
 product_name=is
-product_version=5.1.0
-image_version=$1
-product_profiles=$2
-
-if [ -z "$1" ]
-  then
-    echo "Usage: ./build.sh [docker-image-version] [product_profile_list]"
-    echo "Ex: ./build.sh 1.0.0 'default'"
-    exit 1
-fi
-
-if [ -z "$2" ]
-  then
-    product_profiles='default'
-fi
+product_version=$1
+image_version=$2
+product_profiles=$3
+product_env=$4
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
 
-bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles}
+bash ${common_folder}/image-build.sh ${script_path} ${image_version} ${product_name} ${product_version} ${product_profiles} ${product_env}

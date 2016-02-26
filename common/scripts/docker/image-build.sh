@@ -18,11 +18,24 @@
 # ------------------------------------------------------------------------
 set -e
 
-if [ -z "$2" ]
-  then
-    echo "Usage: ./build.sh [docker-image-version]"
-    exit
-fi
+function echoError () {
+    echo $'\e[1;31m'"${1}"$'\e[0m'
+}
+
+function echoSuccess () {
+    echo $'\e[1;32m'"${1}"$'\e[0m'
+}
+
+function echoBold () {
+    echo $'\e[1m'"${1}"$'\e[0m'
+}
+
+# Show usage and exit
+function showUsageAndExit() {
+    echoBold "Usage: ./build.sh [product-version] [docker-image-version] [product_profile_list]"
+    echo "Ex: ./build.sh 1.9.1 1.0.0 'default|worker|manager'"
+    exit 1
+}
 
 dockerfile_path=$1
 image_version=$2
@@ -34,32 +47,49 @@ product_env=$6
 prgdir2=`dirname "$0"`
 self_path=`cd "$prgdir2"; pwd`
 
-if [ -z "$PUPPET_HOME" ]; then
-   echo "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
-   exit
-else
-   puppet_path=$PUPPET_HOME
-   echo "PUPPET_HOME is set to ${puppet_path}."
+# Validate mandatory args
+if [ -z "$product_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$image_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$profiles" ]
+  then
+    profiles='default'
 fi
 
 if [ -z "$product_env" ]; then
     product_env="dev"
 fi
 
+# Check if a Puppet folder is set
+if [ -z "$PUPPET_HOME" ]; then
+   echoError "Puppet home folder could not be found! Set PUPPET_HOME environment variable pointing to local puppet folder."
+   exit 1
+else
+   puppet_path=$PUPPET_HOME
+   echoBold "PUPPET_HOME is set to ${puppet_path}."
+fi
+
 # Copy common files to Dockerfile context
-echo "Creating Dockerfile context..."
+echoBold "Creating Dockerfile context..."
 mkdir -p $dockerfile_path/scripts
 mkdir -p $dockerfile_path/puppet/modules
 cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
 
 echo
-echo
-echo "Copying Puppet modules to Dockerfile context..."
+echoBold "Copying Puppet modules to Dockerfile context..."
 cp -r $puppet_path/modules/wso2base $dockerfile_path/puppet/modules/
 cp -r $puppet_path/modules/wso2${product_name} $dockerfile_path/puppet/modules/
 cp -r $puppet_path/hiera* $dockerfile_path/puppet/
 cp -r $puppet_path/manifests $dockerfile_path/puppet/
 
+# Build image for each profile provided
 IFS='|' read -r -a array <<< "${profiles}"
 for profile in "${array[@]}"
 do
@@ -70,27 +100,23 @@ do
     fi
 
     echo
-    echo
-    echo "Building docker image ${image_id}..."
+    echoBold "Building docker image ${image_id}..."
 
     {
         docker build --no-cache=true --build-arg WSO2_SERVER=wso2${product_name} \
         --build-arg WSO2_SERVER_VERSION=${product_version} \
         --build-arg WSO2_SERVER_PROFILE=${profile} \
         --build-arg WSO2_ENVIRONMENT=${product_env} \
-        -t ${image_id} $dockerfile_path && echo "Docker image ${image_id} created."
+        -t ${image_id} $dockerfile_path && echoBold "Docker image ${image_id} created."
     } || {
-        echo "ERROR: Docker image ${image_id} creation failed"
+        echoError "ERROR: Docker image ${image_id} creation failed"
     }
 
 done
 
 echo
-echo
-echo "Cleaning..."
+echoBold "Cleaning..."
 rm -rf $dockerfile_path/scripts
 rm -rf $dockerfile_path/puppet
-# rm -rf $dockerfile_path/Dockerfile
-# mv $dockerfile_path/Dockerfile.bck $dockerfile_path/Dockerfile
-# chown $dfile_user:$dfile_group $dockerfile_path/Dockerfile
-echo "Build process completed"
+
+echoSuccess "Build process completed"
