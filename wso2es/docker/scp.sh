@@ -19,29 +19,16 @@
 set -e
 
 product_name=es
-product_version=2.0.0
-minions=$1
-image_version=$2
-product_profiles=$3
-
-if [ -z "$1" ]
-  then
-    echo "Usage: ./scp.sh [host-list] [docker-image-version] [product_profile_list]"
-    echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.0.0 'worker|manager'"
-    exit
-fi
-
-if [ -z "$3" ]
-  then
-    product_profiles='default'
-fi
+nodes=$1
+product_version=$2
+image_version=$3
+product_profiles=$4
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
 
-echo "Importing docker images to master and minion-1"
-bash ${common_folder}/scp-cmd.sh ${product_name} ${product_version} ${image_version} ${product_profiles} ${minions}
+bash ${common_folder}/scp-cmd.sh ${product_name}  ${nodes} ${product_version} ${image_version} ${product_profiles}
 pid1=$!
 
 wait $pid1

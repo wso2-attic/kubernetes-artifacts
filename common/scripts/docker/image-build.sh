@@ -41,7 +41,7 @@ dockerfile_path=$1
 image_version=$2
 product_name=$3
 product_version=$4
-profiles=$5
+product_profiles=$5
 product_env=$6
 
 prgdir2=`dirname "$0"`
@@ -58,9 +58,9 @@ if [ -z "$image_version" ]
     showUsageAndExit
 fi
 
-if [ -z "$profiles" ]
+if [ -z "$product_profiles" ]
   then
-    profiles='default'
+    product_profiles='default'
 fi
 
 if [ -z "$product_env" ]; then
@@ -90,7 +90,7 @@ cp -r $puppet_path/hiera* $dockerfile_path/puppet/
 cp -r $puppet_path/manifests $dockerfile_path/puppet/
 
 # Build image for each profile provided
-IFS='|' read -r -a array <<< "${profiles}"
+IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
