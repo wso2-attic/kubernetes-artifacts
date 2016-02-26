@@ -1,0 +1,340 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+package org.wso2.carbon.membership.scheme.kubernetes;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.config.Config;
+import com.hazelcast.config.TcpIpConfig;
+import com.hazelcast.core.HazelcastInstance;
+import org.apache.axis2.clustering.ClusteringFault;
+import org.apache.axis2.clustering.ClusteringMessage;
+import org.apache.axis2.description.Parameter;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.stratos.messaging.domain.topology.Cluster;
+import org.apache.stratos.messaging.domain.topology.KubernetesService;
+import org.apache.stratos.messaging.message.receiver.topology.TopologyEventReceiver;
+import org.apache.stratos.messaging.message.receiver.topology.TopologyManager;
+import org.wso2.carbon.membership.scheme.kubernetes.api.KubernetesApiEndpoint;
+import org.wso2.carbon.membership.scheme.kubernetes.domain.*;
+import org.wso2.carbon.membership.scheme.kubernetes.exceptions.KubernetesMembershipSchemeException;
+import org.wso2.carbon.utils.xml.StringUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipScheme {
+
+    private static final Log log = LogFactory.getLog(MesosBasedKubernetesMembershipScheme.class);
+    private static final String HZ_CLUSTERING_PORT_MAPPING_NAME = "hz-clustering";
+
+    private boolean shuttingDown;
+    private static final String PARAMETER_NAME_CLUSTER_IDS = "CLUSTER_IDS";
+    private static final String PODS_API_CONTEXT = "/api/v1/namespaces/%s/pods/";
+
+    public MesosBasedKubernetesMembershipScheme(Map<String, Parameter> parameters, String primaryDomain,
+                                                Config config, HazelcastInstance primaryHazelcastInstance,
+                                                List<ClusteringMessage> messageBuffer) {
+        super(parameters, primaryDomain, config, primaryHazelcastInstance, messageBuffer);
+    }
+
+    @Override
+    public void init() throws ClusteringFault {
+        try {
+            log.info("Initializing Mesos based Kubernetes membership scheme...");
+
+            nwConfig.getJoin().getMulticastConfig().setEnabled(false);
+            nwConfig.getJoin().getAwsConfig().setEnabled(false);
+            TcpIpConfig tcpIpConfig = nwConfig.getJoin().getTcpIpConfig();
+            tcpIpConfig.setEnabled(true);
+
+            // Try to read parameters from env variables
+            String kubernetesMaster = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER);
+            String kubernetesNamespace = System.getenv(PARAMETER_NAME_KUBERNETES_NAMESPACE);
+            String kubernetesMasterUsername = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
+            String kubernetesMasterPassword = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
+            String clusterIds = System.getenv(PARAMETER_NAME_CLUSTER_IDS);
+
+            // If not available read from clustering configuration
+            if(StringUtils.isEmpty(kubernetesMaster)) {
+                kubernetesMaster = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER);
+                if(StringUtils.isEmpty(kubernetesMaster)) {
+                    throw new ClusteringFault("Kubernetes master parameter not found");
+                }
+            }
+            if(StringUtils.isEmpty(kubernetesNamespace)) {
+                kubernetesNamespace = getParameterValue(PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
+            }
+
+            if(StringUtils.isEmpty(kubernetesMasterUsername)) {
+                kubernetesMasterUsername = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
+            }
+
+            if(StringUtils.isEmpty(kubernetesMasterPassword)) {
+                kubernetesMasterPassword = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
+            }
+
+            if (StringUtils.isEmpty(clusterIds)) {
+                clusterIds = getParameterValue(PARAMETER_NAME_CLUSTER_IDS);
+            }
+            if(clusterIds == null) {
+                throw new RuntimeException(PARAMETER_NAME_CLUSTER_IDS + " parameter not found");
+            }
+            String[] clusterIdArray = clusterIds.split(",");
+
+            if (!waitForTopologyInitialization()) {
+                return;
+            }
+
+            List<KubernetesService> kubernetesServices = new ArrayList<KubernetesService>();
+
+            try {
+                TopologyManager.acquireReadLock();
+                for (String clusterId : clusterIdArray) {
+                    org.apache.stratos.messaging.domain.topology.Cluster cluster =
+                            TopologyManager.getTopology().getCluster(clusterId.trim());
+                    if (cluster == null) {
+                        throw new RuntimeException("Cluster not found in topology: [cluster-id]" + clusterId);
+                    }
+
+                    if (cluster.isKubernetesCluster()) {
+                        log.info("Reading Kubernetes services of cluster: [cluster-id] " + clusterId);
+                        kubernetesServices.addAll(getKubernetesServicesOfCluster(cluster));
+                    } else {
+                        log.info("Cluster " + clusterId + " is not a Kubernetes cluster");
+                    }
+                }
+            } finally {
+                TopologyManager.releaseReadLock();
+            }
+
+            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s",
+                    kubernetesMaster, kubernetesNamespace));
+            for (KubernetesService k8sService : kubernetesServices) {
+                log.info("Kubernetes service: " +  k8sService.getId());
+            }
+
+            for (KubernetesService k8sService : kubernetesServices) {
+                // check if the Service is related to clustering, by checking if the service name
+                // is equal to the port mapping name. Only that particular Service will be selected
+                if (HZ_CLUSTERING_PORT_MAPPING_NAME.equalsIgnoreCase(k8sService.getPortName())) {
+                    log.info("Found the relevant Service [ " + k8sService.getId() + " ] for the " +
+                            "port mapping name: " + HZ_CLUSTERING_PORT_MAPPING_NAME);
+                    List<String> containerIPs = findContainerIPs(kubernetesMaster,
+                            kubernetesNamespace, k8sService.getId(), kubernetesMasterUsername,
+                            kubernetesMasterPassword);
+                    for (String containerIP : containerIPs) {
+                        tcpIpConfig.addMember(containerIP);
+                        log.info("Member added to cluster configuration: [container-ip] " + containerIP);
+                    }
+                }
+            }
+            log.info("Mesos based Kubernetes membership scheme initialized successfully");
+        } catch (Exception e) {
+            log.error(e);
+            throw new ClusteringFault("Mesos based Kubernetes membership initialization failed", e);
+        }
+    }
+
+    private List<KubernetesService> getKubernetesServicesOfCluster (Cluster cluster) {
+        return cluster.getKubernetesServices();
+    }
+
+    private boolean waitForTopologyInitialization() {
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+        TopologyEventReceiver topologyEventReceiver = new TopologyEventReceiver();
+        topologyEventReceiver.setExecutorService(executorService);
+        topologyEventReceiver.execute();
+        if (log.isInfoEnabled()) {
+            log.info("Topology receiver thread started");
+        }
+
+        final Thread currentThread = Thread.currentThread();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                shuttingDown = true;
+                try {
+                    currentThread.join();
+                } catch (InterruptedException ignore) {
+                }
+            }
+        });
+
+        log.info("Waiting for topology to be initialized...");
+        while (!TopologyManager.getTopology().isInitialized()) {
+            try {
+                if(shuttingDown) {
+                    return false;
+                }
+                Thread.sleep(1000);
+            } catch (InterruptedException ignore) {
+                return false;
+            }
+        }
+        log.info("Topology initialized");
+        return true;
+    }
+
+    protected List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
+                                            String username, String password) throws KubernetesMembershipSchemeException {
+
+        List<String> hostIpPortTuples = new ArrayList<String>();
+
+        // get the pod names
+        Set<String> podNames = getPodNames(kubernetesMaster, namespace, serviceName, username, password);
+
+        if (podNames.isEmpty()) {
+            log.warn("No pod names were found for Service: " + serviceName);
+        }
+
+        // for each pod name, get the mesos host IP
+        for (String podName : podNames) {
+            String hostIpPortTuple = getHostIpPortTupleForPod(kubernetesMaster, namespace, podName, username, password);
+            if (hostIpPortTuple != null) {
+                hostIpPortTuples.add(hostIpPortTuple);
+                log.info("Host Ip and Port " + hostIpPortTuple + " added to host Ips list");
+            }
+        }
+
+        return hostIpPortTuples;
+    }
+
+    private String getHostIpPortTupleForPod(String kubernetesMaster, String namespace, String podName,
+                                            String username, String password) throws KubernetesMembershipSchemeException {
+        // use the Pods API to get the ip of the host machine
+        final String apiContext = String.format(PODS_API_CONTEXT, namespace);
+
+        // Create k8s api endpoint URL
+        URL podUrl = createUrl(kubernetesMaster, apiContext + podName);
+
+        // Create http/https k8s api endpoint
+        KubernetesApiEndpoint apiEndpoint = createAPIEndpoint(podUrl);
+
+        // Create the connection and read k8s service endpoints
+        Pod pod;
+        try {
+            pod = getPod(connectAndRead(apiEndpoint, username, password));
+
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not get the Endpoints", e);
+        } finally {
+            apiEndpoint.disconnect();
+        }
+
+        log.info("Status of the Pod: " + podName + " -> phase: " + pod.getStatus().getPhase() +
+                ", host IP: " + pod.getStatus().getHostIP());
+
+        // set host machine IP as the public address of nwConfig
+        nwConfig.setPublicAddress(pod.getStatus().getHostIP());
+
+        String clusteringPort;
+        try {
+            // get the port by manually parsing annotations section; this is done to avoid the
+            // complexity of a custom deserializer
+            clusteringPort = getExposedClusteringPort(connectAndRead(apiEndpoint, username, password));
+            if (clusteringPort == null) {
+                throw new KubernetesMembershipSchemeException("Unable to find clustering port for pod: " + podName);
+            }
+
+        } finally {
+            apiEndpoint.disconnect();
+        }
+
+        return pod.getStatus().getHostIP() + ":" + clusteringPort.trim();
+    }
+
+    // parses the json manually, not good :(
+    private String getExposedClusteringPort(InputStream inputStream) {
+        // TODO: local member port is hard coded to 4000, make dynamic
+        //String regex = "(port_TCP_4000\":)(\\s*)(\")(\\d*)(\",)";
+        String regex = "(portName_TCP_http-4000\":)(\\s*)(\")(\\d*)(\",)";
+        Pattern r = Pattern.compile(regex);
+        Matcher m = r.matcher(new Scanner(inputStream).useDelimiter("\\Z").next());
+        if (m.find( )) {
+            String matchingValue = m.group(4);
+            log.info("Found matching value for regex [ " + regex + " ]: " + matchingValue);
+            return matchingValue;
+        } else {
+            log.info("No matching value for regex [ " + regex + " ]: was found!");
+            return null;
+        }
+    }
+
+    protected Pod getPod (InputStream inputStream) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(inputStream, Pod.class);
+    }
+
+    private Set<String> getPodNames (String kubernetesMaster, String namespace, String serviceName,
+                                     String username, String password) throws KubernetesMembershipSchemeException {
+
+        // use the Endpoints API to get the pod name
+        final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
+        final Set<String> podNames = new HashSet<String>();
+
+        // Create k8s api endpoint URL
+        URL apiEndpointUrl = createUrl(kubernetesMaster, apiContext + serviceName);
+
+        // Create http/https k8s api endpoint
+        KubernetesApiEndpoint apiEndpoint = createAPIEndpoint(apiEndpointUrl);
+
+        // Create the connection and read k8s service endpoints
+        Endpoints endpoints = null;
+        try {
+            endpoints = getEndpoints(connectAndRead(apiEndpoint, username, password));
+
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not get the Endpoints", e);
+
+        } finally {
+            apiEndpoint.disconnect();
+        }
+
+        if (endpoints != null) {
+            if (endpoints.getSubsets() != null && !endpoints.getSubsets().isEmpty()) {
+                for (Subset subset : endpoints.getSubsets()) {
+                    for (Address address : subset.getAddresses()) {
+                        if (address.getTargetRef() != null) {
+                            if ("Pod".equalsIgnoreCase(address.getTargetRef().getKind())) {
+                                podNames.add(address.getTargetRef().getName());
+                                log.info("Added pod: " + address.getTargetRef().getName() + " for service: "+ serviceName);
+                            } else {
+                                log.info("TargetRef is not of Pod type for address " + address
+                                        .getIp() + ", type found: " + address.getTargetRef().getKind());
+                            }
+                        } else {
+                            log.info("TargetRef is null for address " + address.getIp());
+                        }
+                    }
+                }
+            }
+        } else {
+            log.info("No endpoints found at " + apiEndpointUrl.toString());
+        }
+
+        return podNames;
+    }
+}

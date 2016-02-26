@@ -28,11 +28,21 @@ public class Address {
 
     private String ip;
 
+    private TargetRef targetRef;
+
     public String getIp() {
         return ip;
     }
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public TargetRef getTargetRef() {
+        return targetRef;
+    }
+
+    public void setTargetRef(TargetRef targetRef) {
+        this.targetRef = targetRef;
     }
 }

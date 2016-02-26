@@ -54,15 +54,15 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
 
     private static final Log log = LogFactory.getLog(KubernetesMembershipScheme.class);
 
-    private static final String PARAMETER_NAME_KUBERNETES_MASTER = "KUBERNETES_MASTER";
-    private static final String PARAMETER_NAME_KUBERNETES_MASTER_USERNAME = "KUBERNETES_MASTER_USERNAME";
-    private static final String PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD = "KUBERNETES_MASTER_PASSWORD";
-    private static final String PARAMETER_NAME_KUBERNETES_NAMESPACE = "KUBERNETES_NAMESPACE";
-    private static final String PARAMETER_NAME_KUBERNETES_SERVICES = "KUBERNETES_SERVICES";
-    private static final String ENDPOINTS_API_CONTEXT = "/api/v1/namespaces/%s/endpoints/";
+    protected static final String PARAMETER_NAME_KUBERNETES_MASTER = "KUBERNETES_MASTER";
+    protected static final String PARAMETER_NAME_KUBERNETES_MASTER_USERNAME = "KUBERNETES_MASTER_USERNAME";
+    protected static final String PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD = "KUBERNETES_MASTER_PASSWORD";
+    protected static final String PARAMETER_NAME_KUBERNETES_NAMESPACE = "KUBERNETES_NAMESPACE";
+    protected static final String PARAMETER_NAME_KUBERNETES_SERVICES = "KUBERNETES_SERVICES";
+    protected static final String ENDPOINTS_API_CONTEXT = "/api/v1/namespaces/%s/endpoints/";
 
     private final Map<String, Parameter> parameters;
-    private final NetworkConfig nwConfig;
+    protected final NetworkConfig nwConfig;
     private final List<ClusteringMessage> messageBuffer;
     private HazelcastInstance primaryHazelcastInstance;
     private HazelcastCarbonClusterImpl carbonCluster;
@@ -153,11 +153,11 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         }
     }
 
-    private String getParameterValue(String parameterName) throws ClusteringFault {
+    protected String getParameterValue(String parameterName) throws ClusteringFault {
         return getParameterValue(parameterName, null);
     }
 
-    private String getParameterValue(String parameterName, String defaultValue) throws ClusteringFault {
+    protected String getParameterValue(String parameterName, String defaultValue) throws ClusteringFault {
         Parameter kubernetesServicesParam = getParameter(parameterName);
         if (kubernetesServicesParam == null) {
             if (defaultValue == null) {
@@ -169,47 +169,26 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         return (String) kubernetesServicesParam.getValue();
     }
 
-    private List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
+    protected List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
                                           String username, String password) throws KubernetesMembershipSchemeException {
 
         final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
         final List<String> containerIPs = new ArrayList<String>();
 
         // Create k8s api endpoint URL
-        URL apiEndpointUrl = null;
-        try {
-            apiEndpointUrl = new URL(kubernetesMaster + apiContext + serviceName);
-            if (log.isDebugEnabled()) {
-                log.debug("Resource location: " + kubernetesMaster + apiContext + serviceName);
-            }
-        } catch (IOException e) {
-            throw new KubernetesMembershipSchemeException("Could not construct Kubernetes API endpoint URL", e);
-        }
+        URL apiEndpointUrl = createUrl(kubernetesMaster, apiContext + serviceName);
 
         // Create http/https k8s api endpoint
-        KubernetesApiEndpoint apiEndpoint = null;
-        if (apiEndpointUrl.getProtocol().equalsIgnoreCase("https")) {
-            apiEndpoint = new KubernetesHttpsApiEndpoint(apiEndpointUrl);
-        } else if (apiEndpointUrl.getProtocol().equalsIgnoreCase("http")) {
-            apiEndpoint = new KubernetesHttpApiEndpoint(apiEndpointUrl);
-        } else {
-            throw new KubernetesMembershipSchemeException("K8s master API endpoint is neither HTTP or HTTPS");
-        }
+        KubernetesApiEndpoint apiEndpoint = createAPIEndpoint(apiEndpointUrl);
 
         // Create the connection and read k8s service endpoints
         Endpoints endpoints = null;
         try {
-            // Use basic auth to create the connection if username and password are specified
-            if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
-                apiEndpoint.createConnection(username, password);
-            } else {
-                apiEndpoint.createConnection();
-            }
+            endpoints = getEndpoints(connectAndRead(apiEndpoint, username, password));
 
-            // Read k8s service endpoints
-            endpoints = getEndpoints(apiEndpoint.read());
         } catch (IOException e) {
-            throw new KubernetesMembershipSchemeException("Could not connect to Kubernetes API", e);
+            throw new KubernetesMembershipSchemeException("Could not get the Endpoints", e);
+
         } finally {
             apiEndpoint.disconnect();
         }
@@ -228,7 +207,64 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         return containerIPs;
     }
 
-    private Endpoints getEndpoints (InputStream inputStream) throws IOException {
+    protected URL createUrl (String master, String context)
+            throws KubernetesMembershipSchemeException {
+
+        // concatenate and generate the String url
+        if (master.endsWith("/")) {
+            master = master.substring(0, master.length() - 1);
+        }
+
+        URL apiEndpointUrl;
+        try {
+            apiEndpointUrl = new URL(master + context);
+            if (log.isDebugEnabled()) {
+                log.debug("Resource location: " + master + context);
+            }
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not construct Kubernetes API endpoint URL", e);
+        }
+        return apiEndpointUrl;
+    }
+
+    protected KubernetesApiEndpoint createAPIEndpoint (URL url) throws KubernetesMembershipSchemeException {
+
+        KubernetesApiEndpoint apiEndpoint;
+
+        if (url.getProtocol().equalsIgnoreCase("https")) {
+            apiEndpoint = new KubernetesHttpsApiEndpoint(url);
+        } else if (url.getProtocol().equalsIgnoreCase("http")) {
+            apiEndpoint = new KubernetesHttpApiEndpoint(url);
+        } else {
+            throw new KubernetesMembershipSchemeException("K8s master API endpoint is neither HTTP or HTTPS");
+        }
+
+        return apiEndpoint;
+    }
+
+    protected InputStream connectAndRead (KubernetesApiEndpoint endpoint, String
+            username, String password) throws KubernetesMembershipSchemeException {
+
+        try {
+            // Use basic auth to create the connection if username and password are specified
+            if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+                endpoint.createConnection(username, password);
+            } else {
+                endpoint.createConnection();
+            }
+
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not connect to Kubernetes API", e);
+        }
+
+        try {
+            return endpoint.read();
+        } catch (IOException e) {
+            throw new KubernetesMembershipSchemeException("Could not connect to Kubernetes API", e);
+        }
+    }
+
+    protected Endpoints getEndpoints (InputStream inputStream) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.readValue(inputStream, Endpoints.class);
     }
@@ -238,7 +274,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         primaryHazelcastInstance.getCluster().addMembershipListener(new KubernetesMembershipSchemeListener());
     }
 
-    public Parameter getParameter(String name) {
+    private Parameter getParameter(String name) {
         return parameters.get(name);
     }
 
