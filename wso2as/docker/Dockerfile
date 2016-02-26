@@ -19,13 +19,17 @@
 FROM wso2/k8s-base:1.0.0
 MAINTAINER dev@wso2.org
 
-ENV DEBIAN_FRONTEND noninteractive
+# Build time arguments
+ARG WSO2_SERVER
+ARG WSO2_SERVER_VERSION
+ARG WSO2_SERVER_PROFILE
+ARG WSO2_ENVIRONMENT
 
 # Carbon server information
-ENV WSO2_SERVER wso2as
-ENV WSO2_SERVER_VERSION 5.3.0
-ENV WSO2_SERVER_PROFILE default
-ENV WSO2_ENVIRONMENT dev
+ENV WSO2_SERVER=${WSO2_SERVER:-wso2as} \
+    WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION:-5.3.0} \
+    WSO2_SERVER_PROFILE=${WSO2_SERVER_PROFILE:-default} \
+    WSO2_ENVIRONMENT=${WSO2_ENVIRONMENT:-dev}
 
 COPY scripts/init.sh /usr/local/bin/init.sh
 COPY puppet/ /etc/puppet/
@@ -43,7 +47,7 @@ RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.ya
     && apt-get purge -y --auto-remove puppet \
     && rm -rf /etc/puppet/* \
     && rm -rf /var/lib/apt/lists/*
-    
+
 # Expose transport ports
 EXPOSE 8280 8243 9763 9443
 

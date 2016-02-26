@@ -19,20 +19,9 @@
 set -e
 
 product_name=greg
-product_version=5.1.0
-image_version=$1
-product_profiles=$2
-
-if [ -z "$1" ]
-  then
-    echo "Usage: ./save.sh [docker-image-version] [product_profile_list]"
-    exit
-fi
-
-if [ -z "$2" ]
-  then
-    product_profiles='default'
-fi
+product_version=$1
+image_version=$2
+product_profiles=$3
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`

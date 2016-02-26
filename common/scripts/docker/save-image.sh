@@ -18,18 +18,34 @@
 # ------------------------------------------------------------------------
 set -e
 
-if [ -z "$1" ]
-  then
-    echo "Usage: ./save.sh [docker-image-version]"
-    exit
-fi
+function showUsageAndExit () {
+    echo "Usage: ./save.sh [product-version] [docker-image-version] [product_profile_list]"
+    echo "eg: ./save.sh 1.9.1 1.0.0 'default|worker|manager'"
+    exit 1
+}
 
 product_name=$1
 product_version=$2
 image_version=$3
-profiles=$4
+product_profiles=$4
 
-IFS='|' read -r -a array <<< "${profiles}"
+# Validate mandatory args
+if [ -z "$product_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$image_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$product_profiles" ]
+  then
+    product_profiles='default'
+fi
+
+IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then

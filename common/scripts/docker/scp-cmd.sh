@@ -18,19 +18,40 @@
 # ------------------------------------------------------------------------
 set -e
 
-if [ -z "$1" ]
-  then
-    echo "Usage: ./scp.sh [docker-image-version]"
-    exit
-fi
+function showUsageAndExit () {
+    echo "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
+    echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.9.1 1.0.0 'worker|manager'"
+    exit 1
+}
 
 product_name=$1
-product_version=$2
-image_version=$3
-profiles=$4
-nodes=$5
+nodes=$2
+product_version=$3
+image_version=$4
+product_profiles=$5
 
-IFS='|' read -r -a array <<< "${profiles}"
+# Validate mandatory args
+if [ -z "$product_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$image_version" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$nodes" ]
+  then
+    showUsageAndExit
+fi
+
+if [ -z "$product_profiles" ]
+  then
+    product_profiles='default'
+fi
+
+IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
@@ -44,11 +65,11 @@ do
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"
     do
-        echo "scp ~/docker/images/${tar_file} ${node}:"
+        echo "Copying ~/docker/images/${tar_file} to ${node}..."
         scp ~/docker/images/${tar_file} ${node}:
-        echo "ssh ${node} \"docker load < ${tar_file}\""
+        echo "Loading ${tar_file} to Docker in ${node}..."
         ssh ${node} "docker load < ${tar_file}"
-        echo "ssh ${node} \"rm ${tar_file}\""
+        echo "Deleting ${tar_file} in ${node}..."
         ssh ${node} "rm ${tar_file}"
     done
 done
