@@ -131,22 +131,17 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
                 TopologyManager.releaseReadLock();
             }
 
-            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s",
-                    kubernetesMaster, kubernetesNamespace));
-            for (KubernetesService k8sService : kubernetesServices) {
-                log.info("Kubernetes service: " +  k8sService.getId());
-            }
-
             for (KubernetesService k8sService : kubernetesServices) {
                 // check if the Service is related to clustering, by checking if the service name
                 // is equal to the port mapping name. Only that particular Service will be selected
                 if (HZ_CLUSTERING_PORT_MAPPING_NAME.equalsIgnoreCase(k8sService.getPortName())) {
                     log.info("Found the relevant Service [ " + k8sService.getId() + " ] for the " +
                             "port mapping name: " + HZ_CLUSTERING_PORT_MAPPING_NAME);
-                    List<String> containerIPs = findContainerIPs(kubernetesMaster,
+                    log.info("Kubernetes service: " +  k8sService.getId() + ", clustering port: " + k8sService.getContainerPort());
+                    List<String> containerIPandPortTuples = findHostIPandPortTuples(kubernetesMaster,
                             kubernetesNamespace, k8sService.getId(), kubernetesMasterUsername,
-                            kubernetesMasterPassword);
-                    for (String containerIP : containerIPs) {
+                            kubernetesMasterPassword, k8sService.getContainerPort());
+                    for (String containerIP : containerIPandPortTuples) {
                         tcpIpConfig.addMember(containerIP);
                         log.info("Member added to cluster configuration: [container-ip] " + containerIP);
                     }
@@ -159,10 +154,21 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         }
     }
 
+    /**
+     * Returns the Kubernetes Services of the given cluster
+     *
+     * @param cluster Cluster object
+     * @return Kubernetes Service List if exists, else null
+     */
     private List<KubernetesService> getKubernetesServicesOfCluster (Cluster cluster) {
         return cluster.getKubernetesServices();
     }
 
+    /**
+     * Wait until the Topology is initialized
+     *
+     * @return true if the topology is initialized
+     */
     private boolean waitForTopologyInitialization() {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
         TopologyEventReceiver topologyEventReceiver = new TopologyEventReceiver();
@@ -198,8 +204,22 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         return true;
     }
 
-    protected List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
-                                            String username, String password) throws KubernetesMembershipSchemeException {
+    /**
+     * Finds the relevant host ips and port, which is mapping to the pods that should be clustered
+     *
+     * @param kubernetesMaster K8s master url/hostname
+     * @param namespace K8s namespace
+     * @param serviceName K8s service name to get the pods from
+     * @param username K8s API username (if secured)
+     * @param password K8s API password (if secured)
+     * @param definedClusteringPort port defined for clustering in the port mappings for the
+     *                              cartridge
+     * @return List of ip:port tuples
+     * @throws KubernetesMembershipSchemeException
+     */
+    private List<String> findHostIPandPortTuples(String kubernetesMaster, String namespace, String
+            serviceName, String username, String password, int definedClusteringPort)
+            throws KubernetesMembershipSchemeException {
 
         List<String> hostIpPortTuples = new ArrayList<String>();
 
@@ -212,7 +232,8 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
 
         // for each pod name, get the mesos host IP
         for (String podName : podNames) {
-            String hostIpPortTuple = getHostIpPortTupleForPod(kubernetesMaster, namespace, podName, username, password);
+            String hostIpPortTuple = getHostIpPortTupleForPod(kubernetesMaster, namespace, podName,
+                    username, password, definedClusteringPort);
             if (hostIpPortTuple != null) {
                 hostIpPortTuples.add(hostIpPortTuple);
                 log.info("Host Ip and Port " + hostIpPortTuple + " added to host Ips list");
@@ -222,8 +243,23 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         return hostIpPortTuples;
     }
 
+    /**
+     * Finds a single ip and port tuple for a given pod
+     *
+     * @param kubernetesMaster K8s master url/hostname
+     * @param namespace K8s namespace
+     * @param podName K8s pod name
+     * @param username K8s API username (if secured)
+     * @param password K8s API password (if secured)
+     * @param definedClusteringPort port defined for clustering in the port mappings for the
+     *                              cartridge
+     *
+     * @return name of ip:port tuple for this pod
+     * @throws KubernetesMembershipSchemeException
+     */
     private String getHostIpPortTupleForPod(String kubernetesMaster, String namespace, String podName,
-                                            String username, String password) throws KubernetesMembershipSchemeException {
+                                            String username, String password, int definedClusteringPort)
+            throws KubernetesMembershipSchemeException {
         // use the Pods API to get the ip of the host machine
         final String apiContext = String.format(PODS_API_CONTEXT, namespace);
 
@@ -250,12 +286,13 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         // set host machine IP as the public address of nwConfig
         nwConfig.setPublicAddress(pod.getStatus().getHostIP());
 
-        String clusteringPort;
+        String exposedClusteringPortByHost;
         try {
             // get the port by manually parsing annotations section; this is done to avoid the
             // complexity of a custom deserializer
-            clusteringPort = getExposedClusteringPort(connectAndRead(apiEndpoint, username, password));
-            if (clusteringPort == null) {
+            exposedClusteringPortByHost = getExposedClusteringPort(connectAndRead(apiEndpoint,
+                    username, password), Integer.toString(definedClusteringPort));
+            if (exposedClusteringPortByHost == null) {
                 throw new KubernetesMembershipSchemeException("Unable to find clustering port for pod: " + podName);
             }
 
@@ -263,14 +300,23 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             apiEndpoint.disconnect();
         }
 
-        return pod.getStatus().getHostIP() + ":" + clusteringPort.trim();
+        return pod.getStatus().getHostIP() + ":" + exposedClusteringPortByHost.trim();
     }
 
-    // parses the json manually, not good :(
-    private String getExposedClusteringPort(InputStream inputStream) {
+    /**
+     * Uses a regex to find the mapped port in the host for the port mapping for clustering port
+     * defined in cartridge definition
+     *
+     * @param inputStream input stream to match the regex against
+     * @param definedClusteringPort the defined clustering port in port mapping to be used in the
+     *                              regex
+     * @return port exposed by host if found, else null
+     */
+    private String getExposedClusteringPort(InputStream inputStream, String definedClusteringPort) {
+        // parses the json manually, not good :(
         // TODO: local member port is hard coded to 4000, make dynamic
-        //String regex = "(port_TCP_4000\":)(\\s*)(\")(\\d*)(\",)";
-        String regex = "(portName_TCP_http-4000\":)(\\s*)(\")(\\d*)(\",)";
+        String regex = "(port_TCP_"+ definedClusteringPort +"\":)(\\s*)(\")(\\d*)(\",)";
+        //String regex = "(portName_TCP_http-" + definedClusteringPort + "\":)(\\s*)(\")(\\d*)(\",)";
         Pattern r = Pattern.compile(regex);
         Matcher m = r.matcher(new Scanner(inputStream).useDelimiter("\\Z").next());
         if (m.find( )) {
@@ -288,6 +334,18 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         return mapper.readValue(inputStream, Pod.class);
     }
 
+    /**
+     * Finds the pod names for a given K8s Service name
+     *
+     * @param kubernetesMaster K8s master url/hostname
+     * @param namespace K8s namespace
+     * @param serviceName K8s service name to get the pods from
+     * @param username K8s API username (if secured)
+     * @param password K8s API password (if secured)
+     *
+     * @return Set of Pod names corresponding to the Service name specified
+     * @throws KubernetesMembershipSchemeException
+     */
     private Set<String> getPodNames (String kubernetesMaster, String namespace, String serviceName,
                                      String username, String password) throws KubernetesMembershipSchemeException {
 
