@@ -18,12 +18,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.wso2.kubernetes</groupId>
-    <artifactId>wso2-kubernetes-artifacts</artifactId>
+    <groupId>org.wso2.kubernetes-artifacts</groupId>
+    <artifactId>${wso2.product.name}-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
     <version>${kubernetes.artifacts.version}</version>
-    <name>WSO2 Kubernetes Artifacts</name>
-    <description>WSO2 Kubernetes Artifacts</description>
+    <name>WSO2 ${wso2.product.fullname} Kubernetes Artifacts</name>
+    <description>WSO2 ${wso2.product.fullname} Kubernetes Artifacts</description>
 
     <licenses>
         <license>
@@ -32,45 +32,27 @@
         </license>
     </licenses>
 
-    <modules>
-        <module>wso2am/docker</module>
-        <module>wso2am/kubernetes</module>
-
-        <module>wso2as/docker</module>
-        <module>wso2as/kubernetes</module>
-
-        <module>wso2bps/docker</module>
-        <module>wso2bps/kubernetes</module>
-
-        <module>wso2brs/docker</module>
-        <module>wso2brs/kubernetes</module>
-
-        <module>wso2cep/docker</module>
-        <module>wso2cep/kubernetes</module>
-
-        <module>wso2das/docker</module>
-        <module>wso2das/kubernetes</module>
-
-        <module>wso2dss/docker</module>
-        <module>wso2dss/kubernetes</module>
-
-        <module>wso2es/docker</module>
-        <module>wso2es/kubernetes</module>
-
-        <module>wso2esb/docker</module>
-        <module>wso2esb/kubernetes</module>
-
-        <module>wso2greg/docker</module>
-        <module>wso2greg/kubernetes</module>
-
-        <module>wso2is/docker</module>
-        <module>wso2is/kubernetes</module>
-
-        <module>wso2mb/docker</module>
-        <module>wso2mb/kubernetes</module>
-    </modules>
-
     <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <inherited>true</inherited>
+                <version>2.5.3</version>
+                <configuration>
+                    <descriptor>package.xml</descriptor>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 
     <profiles>
@@ -169,6 +151,9 @@
 
 
     <properties>
+        <kubernetes.artifacts.version>1.0.0</kubernetes.artifacts.version>
+        <wso2.product.name>wso2am</wso2.product.name>
+        <wso2.product.fullname>WSO2 API Manager</wso2.product.fullname>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>
