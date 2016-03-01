@@ -18,19 +18,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.wso2.kubernetes</groupId>
+        <artifactId>wso2-kubernetes-artifacts</artifactId>
+        <version>${kubernetes.artifacts.version}</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
     <groupId>org.wso2.kubernetes-artifacts</groupId>
     <artifactId>${wso2.product.name}-dockerfile</artifactId>
     <packaging>pom</packaging>
     <version>${kubernetes.artifacts.version}</version>
     <name>${wso2.product.fullname} Docker Artifacts</name>
     <description>${wso2.product.fullname} Docker Artifacts</description>
-
-    <licenses>
-        <license>
-            <name>Apache License Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
 
     <build>
         <plugins>
@@ -55,105 +55,8 @@
         </plugins>
     </build>
 
-    <profiles>
-        <profile>
-            <!-- pedantic profile to run RAT plugin -->
-            <id>pedantic</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.rat</groupId>
-                        <artifactId>apache-rat-plugin</artifactId>
-                        <configuration>
-                            <licenses>
-                                <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
-                                    <licenseFamilyCategory>WSO2</licenseFamilyCategory>
-                                    <licenseFamilyName>WSO2 License 1.0</licenseFamilyName>
-                                    <notes></notes>
-                                    <patterns>
-                                        <pattern>Copyright WSO2 Inc. (http://www.wso2.org) All Rights Reserved.</pattern>
-                                        <pattern>WSO2 Inc. (http://www.wso2.org) All Rights Reserved.</pattern>
-                                        <pattern>WSO2, Inc. http://www.wso2.org</pattern>
-                                        <pattern>WSO2 Inc. (http://wso2.com) All Rights Reserved.</pattern>
-                                        <pattern>WSO2, Inc. (http://wso2.com)</pattern>
-                                    </patterns>
-                                </license>
-                                <!-- <license implementation="org.apache.rat.analysis.license.ApacheSoftwareLicense20" /> -->
-                            </licenses>
-                            <licenseFamilies>
-                                <licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
-                                    <familyName>WSO2 License 1.0</familyName>
-                                </licenseFamily>
-                                <!-- <licenseFamily implementation="org.apache.rat.license.Apache20LicenseFamily" /> -->
-                            </licenseFamilies>
-                            <excludes>
-                                <exclude>**/target/**/*</exclude>
-                                <exclude>**/.settings/**/*</exclude>
-                                <exclude>**/.project</exclude>
-                                <exclude>**/.classpath</exclude>
-                                <exclude>**/.git/**/*</exclude>
-                                <exclude>**/README.md</exclude>
-                                <exclude>**/*.iml</exclude>
-                                <exclude>**/*.iws</exclude>
-                                <exclude>**/*.ipr</exclude>
-                                <exclude>**/.gitignore</exclude>
-                                <exclude>**/.gitkeep</exclude>
-                                <exclude>**/*.key</exclude>
-                                <exclude>**/*.json</exclude>
-                                <exclude>**/*.json.erb</exclude>
-                                <!-- because of an IS json config file -->
-                                <exclude>**/*.config.erb</exclude>
-                                <exclude>**/.idea/**/*</exclude>
-                                <exclude>**/.idea</exclude>
-                                <exclude>**/tlds/**/*</exclude>
-                                <exclude>**/*.log</exclude>
-                                <exclude>**/.gitmodules</exclude>
-                            </excludes>
-                            <excludeSubProjects>false</excludeSubProjects>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>check</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <repositories>
-        <repository>
-            <id>central</id>
-            <name>Maven Central Repository</name>
-            <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 Internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-    </repositories>
-
-
     <properties>
-        <kubernetes.artifacts.version>1.0.0</kubernetes.artifacts.version>
         <wso2.product.name>wso2mb</wso2.product.name>
         <wso2.product.fullname>WSO2 Message Broker</wso2.product.fullname>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>
