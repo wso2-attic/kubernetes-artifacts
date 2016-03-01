@@ -22,8 +22,8 @@
     <artifactId>${wso2.product.name}-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
     <version>${kubernetes.artifacts.version}</version>
-    <name>WSO2 ${wso2.product.fullname} Kubernetes Artifacts</name>
-    <description>WSO2 ${wso2.product.fullname} Kubernetes Artifacts</description>
+    <name>${wso2.product.fullname} Kubernetes Artifacts</name>
+    <description>${wso2.product.fullname} Kubernetes Artifacts</description>
 
     <licenses>
         <license>
