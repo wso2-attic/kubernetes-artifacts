@@ -50,4 +50,12 @@
             </includes>
         </fileSet>
     </fileSets>
+    <files>
+        <file>
+            <source>${project.basedir}/../../LICENSE</source>
+            <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+            <fileMode>644</fileMode>
+        </file>
+    </files>
 </assembly>
