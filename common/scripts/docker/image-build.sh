@@ -37,6 +37,12 @@ function showUsageAndExit() {
     exit 1
 }
 
+function cleanup () {
+    echoBold "Cleaning..."
+    rm -rf $dockerfile_path/scripts
+    rm -rf $dockerfile_path/puppet
+}
+
 dockerfile_path=$1
 image_version=$2
 product_name=$3
@@ -60,7 +66,7 @@ fi
 
 if [ -z "$product_profiles" ]
   then
-    product_profiles='default'
+    product_profiles="default"
 fi
 
 if [ -z "$product_env" ]; then
@@ -82,7 +88,6 @@ mkdir -p $dockerfile_path/scripts
 mkdir -p $dockerfile_path/puppet/modules
 cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
 
-echo
 echoBold "Copying Puppet modules to Dockerfile context..."
 cp -r $puppet_path/modules/wso2base $dockerfile_path/puppet/modules/
 cp -r $puppet_path/modules/wso2${product_name} $dockerfile_path/puppet/modules/
@@ -99,24 +104,22 @@ do
         image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
     fi
 
-    echo
     echoBold "Building docker image ${image_id}..."
 
     {
-        docker build --no-cache=true --build-arg WSO2_SERVER=wso2${product_name} \
+        ! docker build --no-cache=true \
+        --build-arg WSO2_SERVER=wso2${product_name} \
         --build-arg WSO2_SERVER_VERSION=${product_version} \
         --build-arg WSO2_SERVER_PROFILE=${profile} \
         --build-arg WSO2_ENVIRONMENT=${product_env} \
-        -t ${image_id} $dockerfile_path && echoBold "Docker image ${image_id} created."
+        -t ${image_id} $dockerfile_path | grep -i error && echoBold "Docker image ${image_id} created."
     } || {
         echoError "ERROR: Docker image ${image_id} creation failed"
+        cleanup
+        exit 1
     }
 
 done
 
-echo
-echoBold "Cleaning..."
-rm -rf $dockerfile_path/scripts
-rm -rf $dockerfile_path/puppet
-
+cleanup
 echoSuccess "Build process completed"
