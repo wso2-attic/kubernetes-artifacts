@@ -43,6 +43,16 @@ function cleanup () {
     rm -rf $dockerfile_path/puppet
 }
 
+# $1 product name = esb
+# $2 product version = 4.9.0
+function validateProductVersion (){
+    ver_dir="$PUPPET_HOME/hieradata/dev/wso2/wso2${1}/${2}"
+    if [ ! -d "$ver_dir" ]; then
+        echoError "Provided product version wso2{$1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}"
+        showUsageAndExit
+    fi
+}
+
 dockerfile_path=$1
 image_version=$2
 product_name=$3
@@ -81,6 +91,8 @@ else
    puppet_path=$PUPPET_HOME
    echoBold "PUPPET_HOME is set to ${puppet_path}."
 fi
+
+validateProductVersion $product_name $product_version
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
