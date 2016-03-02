@@ -38,7 +38,7 @@ echo "user executing the script $user"
 # navigate to base image dir
 pushd $base_image_dir
 # build
-  sudo bash build.sh ${kubernetes_artifact_version} 
+#  sudo bash build.sh ${kubernetes_artifact_version} 
 # go back to previous directory location
 popd
 
@@ -46,11 +46,11 @@ function build_docker_image_and_scp {
     # switch to IS 5 docker directory and build
     pushd ${root_dir}/$1/docker
     echo pwd=`pwd`
-    sudo --preserve-env bash build.sh $2 ${kubernetes_artifact_version} ${default_profile}
+    sudo --preserve-env bash build.sh $2 ${kubernetes_artifact_version} $3
     # save the image as a tar file
-    sudo bash save.sh $2 ${kubernetes_artifact_version} ${default_profile}
+    sudo bash save.sh $2 ${kubernetes_artifact_version} $3
     sudo chown $user:$user -R ~/docker/ 
-    bash scp.sh ${node_scp_address} $2 ${kubernetes_artifact_version} ${default_profile}
+    bash scp.sh ${node_scp_address} $2 ${kubernetes_artifact_version} $3
     popd
 }
 
@@ -70,5 +70,5 @@ function undeploy_kubernetes_artifacts {
 
 
 # build and deploy
-build_docker_image_and_scp 'wso2is' '5.0.0'
+build_docker_image_and_scp 'wso2is' '5.0.0' "${default_profile}"
 deploy_kubernetes_artifacts 'wso2is'
