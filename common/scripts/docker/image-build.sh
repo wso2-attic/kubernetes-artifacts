@@ -45,10 +45,25 @@ function cleanup () {
 
 # $1 product name = esb
 # $2 product version = 4.9.0
-function validateProductVersion (){
+function validateProductVersion () {
     ver_dir="$PUPPET_HOME/hieradata/dev/wso2/wso2${1}/${2}"
     if [ ! -d "$ver_dir" ]; then
-        echoError "Provided product version wso2{$1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}"
+        echoError "Provided product version wso2${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}"
+        showUsageAndExit
+    fi
+}
+
+function validateProfile () {
+    profile_yaml="$PUPPET_HOME/hieradata/dev/wso2/wso2${1}/${2}/${3}.yaml"
+    if [ ! -e "$profile_yaml" ]; then
+        echoError "Provided product profile wso2${1}:${2}-${3} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}"
+        cleanup
+        showUsageAndExit
+    fi
+
+    if [ ! -s "$profile_yaml" ]; then
+        echoError "Provided product profile wso2${1}:${2}-${3} exist in PUPPET_HOME: ${PUPPET_HOME}, but doesn't seem to have content."
+        cleanup
         showUsageAndExit
     fi
 }
@@ -110,6 +125,7 @@ cp -r $puppet_path/manifests $dockerfile_path/puppet/
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
+    validateProfile $product_name $product_version $profile
     if [[ $profile = "default" ]]; then
         image_id="wso2/${product_name}-${product_version}:${image_version}"
     else
