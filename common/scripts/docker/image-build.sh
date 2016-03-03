@@ -78,9 +78,8 @@ function validateProfile() {
 
     if [ "${invalidFound}" == true ]
     then
-        echoError "One or more provided product profiles wso2${1}:${2}-${3} do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
+        echoError "One or more provided product profiles wso2${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
         listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/"
-        cleanup
         showUsageAndExit
     fi
 }
@@ -163,7 +162,7 @@ do
         --build-arg WSO2_SERVER_VERSION="${product_version}" \
         --build-arg WSO2_SERVER_PROFILE="${profile}" \
         --build-arg WSO2_ENVIRONMENT="${product_env}" \
-        -t "${image_id}" "${dockerfile_path}" | grep -i error && echoBold "Docker image ${image_id} created."
+        -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
     } || {
         echoError "ERROR: Docker image ${image_id} creation failed"
         cleanup

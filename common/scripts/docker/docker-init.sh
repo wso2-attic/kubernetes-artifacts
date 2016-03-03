@@ -18,21 +18,20 @@
 # ------------------------------------------------------------------------
 set -e
 
-local_ip=`ip route get 1 | awk '{print $NF;exit}'`
+local_ip=$(ip route get 1 | awk '{print $NF;exit}')
 server_path=/mnt/${local_ip}
 echo "Creating directory $server_path..."
-mkdir -p $server_path
+mkdir -p "${server_path}"
 
 server_name=${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 echo "Moving carbon server from /mnt/${server_name} to ${server_path}..."
-mv /mnt/${server_name} ${server_path}/
+mv "/mnt/${server_name}" "${server_path}/"
 
 axis2_xml_file_path=${server_path}/${server_name}/repository/conf/axis2/axis2.xml
-carbon_xml_file_path=${server_path}/${server_name}/repository/conf/carbon.xml
 
 # replace localMemberHost with local ip
 function replace_local_member_host_with_ip {
-    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" $axis2_xml_file_path
+    sed -i "s/\(<parameter\ name=\"localMemberHost\">\).*\(<\/parameter*\)/\1$local_ip\2/" "${axis2_xml_file_path}"
     if [[ $? == 0 ]];
     then
         echo "successfully updated localMemberHost with local ip address $local_ip"
@@ -46,6 +45,8 @@ replace_local_member_host_with_ip
 export CARBON_HOME="${server_path}/${server_name}"
 echo "Starting ${WSO2_SERVER}..."
 ${CARBON_HOME}/bin/wso2server.sh
+
+# carbon_xml_file_path=${server_path}/${server_name}/repository/conf/carbon.xml
 
 # add host mapping
 # $1 = hostname

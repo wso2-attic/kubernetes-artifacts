@@ -50,12 +50,12 @@ do
     name="wso2${product_name}-${profile}"
 
     if [[ $profile = "default" ]]; then
-        container_id=`docker run -d -P --name ${name} wso2/${product_name}-${product_version}:${image_version}`
+        container_id=$(docker run -d -P --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
-        container_id=`docker run -d -P --name ${name} wso2/${product_name}-${profile}-${product_version}:${image_version}`
+        container_id=$(docker run -d -P --name "${name}" "wso2/${product_name}-${profile}-${product_version}:${image_version}")
     fi
 
-    member_ip=`docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${container_id}`
+    member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
     echo "WSO2 ${product_name^^} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
 
