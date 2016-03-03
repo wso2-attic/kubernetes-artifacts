@@ -1,6 +1,27 @@
 ## Dockerfiles for WSO2 Products ##
 The Dockerfiles define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to update the configuration.
 
+### Quick Start Guide
+To build the wso2 api manager docker image and run in your local machine
+  
+* Get Puppet Modules
+    - The Puppet modules for WSO2 products can be found in the [WSO2 Puppet Modules repository](https://github.com/wso2/puppet-modules). You can obtain the latest release from the [releases page](https://github.com/wso2/puppet-modules/releases). 
+    - After getting the `wso2-puppet-modules-<version>.zip` file, extract it and set `PUPPET_HOME` environment variable pointing to extracted folder.
+
+* Add product packs and dependencies
+    - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<PUPPET_HOME>/modules/wso2base/files`
+    - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<PUPPET_HOME>/modules/wso2am/files`.
+
+* Build the docker images
+    - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
+    - Navigate to the `docker` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
+    - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
+        + `./build.sh 1.9.1 1.0.0 'default'`
+
+* Docker run
+    - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
+        + `./run.sh 1.9.1 1.0.0 'default'`
+
 ### Building the Docker Images
 
 * Get Puppet Modules
