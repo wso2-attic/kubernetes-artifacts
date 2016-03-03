@@ -59,9 +59,9 @@ do
         tar_file="wso2${product_name}-${profile}-${product_version}-${image_version}.tar"
     fi
 
-    echo "Saving docker image ${image_id} to /home/${USER}/docker/images/${tar_file}"
-    mkdir -p "/home/${USER}/docker/images/"
-    docker save "${image_id}" > "/home/${USER}/docker/images/${tar_file}"
+    echo "Saving docker image ${image_id} to ${HOME}/docker/images/${tar_file}"
+    mkdir -p "${HOME}/docker/images/"
+    docker save "${image_id}" > "${HOME}/docker/images/${tar_file}"
 
-    echoSuccess "Docker image ${image_id} saved to /home/${USER}/docker/images/${tar_file}."
+    echoSuccess "Docker image ${image_id} saved to ${HOME}/docker/images/${tar_file}."
 done

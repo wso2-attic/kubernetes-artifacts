@@ -66,8 +66,8 @@ do
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"
     do
-        echo "Copying /home/${USER}/docker/images/${tar_file} to ${node}..."
-        scp "/home/${USER}/docker/images/${tar_file}" "${node}:"
+        echo "Copying ${HOME}/docker/images/${tar_file} to ${node}..."
+        scp "${HOME}/docker/images/${tar_file}" "${node}:"
         echo "Loading ${tar_file} to Docker in ${node}..."
         ssh "${node}" "docker load < ${tar_file}"
         echo "Deleting ${tar_file} in ${node}..."
