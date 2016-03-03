@@ -13,12 +13,12 @@ To build the wso2 api manager docker image and run in your local machine
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<PUPPET_HOME>/modules/wso2am/files`.
 
 * Remove/Comment proxy ports defined in the default.yaml. For example, for WSO2 API Manager 1.9.1, comment out the proxy ports as below in the default profile found at `wso2-puppet-modules-<version>/heiradata/dev/wso2/wso2am/1.9.1/default.yaml` 
-    - ```
-        wso2::ports:
-            proxyPort :
-                http : 32003
-                https : 32004
-```
+    ```
+    # wso2::ports:
+    #    proxyPort :
+    #       http : 32003
+    #       https : 32004
+    ```
 
 * Build the docker images
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
@@ -61,6 +61,7 @@ To build the wso2 api manager docker image and run in your local machine
             #       http : 32003
             #       https : 32004
             ```
+
     - Copy any deployable artifacts to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any deployable applications to `<PUPPET_HOME>/modules/wso2am/files/configs/repository/deployment/server`.
     - Copy any patches to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any patches to `<PUPPET_HOME>/modules/wso2am/files/patches/repository/components/patches`.
 
