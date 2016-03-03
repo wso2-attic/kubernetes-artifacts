@@ -114,5 +114,6 @@ elif [ "$pattern" = "distributed" ]; then
   distributed
 else
   echo "Usage: ./deploy.sh [default|distributed]"
-  exit
+  echo "ex: ./deploy.sh default"
+  exit 1
 fi
