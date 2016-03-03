@@ -31,8 +31,8 @@ To build the wso2 api manager docker image and run in your local machine
         + `./run.sh 1.9.1 1.0.0 'default'`
 
 * Access management console
-    - Add an etc/hosts entry in your local machine for <container_up> am.wso2.com. For example:
-        + 172.17.0.2     am.wso2.com
+    - Add an etc/hosts entry in your local machine for `<container_up> am.wso2.com`. For example:
+        + `172.17.0.2     am.wso2.com`
     -  To access the management console.
         + https://am.wso2.com:9443/carbon
 
@@ -55,12 +55,12 @@ To build the wso2 api manager docker image and run in your local machine
         + kubernetes-membership-scheme-1.0.0.jar
     - Proxy ports configuration
         + Proxy ports is used only for the Kubernetes scenario. For docker run in the local machine, remove or comment out the proxy ports defined in the default.yaml. For example, for WSO2 API Manager 1.9.1, comment out the following proxy ports in the default profile found at `wso2-puppet-modules-<version>/heiradata/dev/wso2/wso2am/1.9.1/default.yaml` 
-            ```
-            # wso2::ports:
-            #    proxyPort :
-            #       http : 32003
-            #       https : 32004
-            ```
+```
+    # wso2::ports:
+    #    proxyPort :
+    #       http : 32003
+    #       https : 32004
+```
 
     - Copy any deployable artifacts to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any deployable applications to `<PUPPET_HOME>/modules/wso2am/files/configs/repository/deployment/server`.
     - Copy any patches to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any patches to `<PUPPET_HOME>/modules/wso2am/files/patches/repository/components/patches`.
