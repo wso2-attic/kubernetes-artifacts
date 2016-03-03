@@ -61,11 +61,24 @@ function validateProductVersion() {
     fi
 }
 
+# $1 product name = esb
+# $2 product version = 4.9.0
+# $3 product profile list = 'default|worker|manager'
 function validateProfile() {
-    profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/${3}.yaml"
-    if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
+    invalidFound=false
+    IFS='|' read -r -a array <<< "${3}"
+    for profile in "${array[@]}"
+    do
+        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/${profile}.yaml"
+        if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
+        then
+            invalidFound=true
+        fi
+    done
+
+    if [ "${invalidFound}" == true ]
     then
-        echoError "Provided product profile wso2${1}:${2}-${3} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
+        echoError "One or more provided product profiles wso2${1}:${2}-${3} do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
         listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/"
         cleanup
         showUsageAndExit
@@ -111,7 +124,11 @@ else
    echoBold "PUPPET_HOME is set to ${puppet_path}."
 fi
 
+# check if provided product version exists in PUPPET_HOME
 validateProductVersion "${product_name}" "${product_version}"
+
+# check if provided profile exists in PUPPET_HOME
+validateProfile "${product_name}" "${product_version}" "${product_profiles}"
 
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
@@ -130,8 +147,7 @@ cp -r "${puppet_path}/manifests" "${dockerfile_path}/puppet/"
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    validateProfile "${product_name}" "${product_version}" "${profile}"
-
+    # set image name according to the profile list
     if [[ "${profile}" = "default" ]]; then
         image_id="wso2/${product_name}-${product_version}:${image_version}"
     else
@@ -141,6 +157,7 @@ do
     echoBold "Building docker image ${image_id}..."
 
     {
+        # show only errors from the docker build output
         ! docker build --no-cache=true \
         --build-arg WSO2_SERVER="wso2${product_name}" \
         --build-arg WSO2_SERVER_VERSION="${product_version}" \
