@@ -18,17 +18,8 @@
 # ------------------------------------------------------------------------
 set -e
 
-function echoError() {
-    echo $'\e[1;31m'"${1}"$'\e[0m'
-}
-
-function echoSuccess() {
-    echo $'\e[1;32m'"${1}"$'\e[0m'
-}
-
-function echoBold() {
-    echo $'\e[1m'"${1}"$'\e[0m'
-}
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
 
 # Show usage and exit
 function showUsageAndExit() {

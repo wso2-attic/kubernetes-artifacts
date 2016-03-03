@@ -18,8 +18,11 @@
 # ------------------------------------------------------------------------
 set -e
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
+
 function showUsageAndExit () {
-    echo "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
+    echoBold "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
     echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.9.1 1.0.0 'worker|manager'"
     exit 1
 }

@@ -16,9 +16,11 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
 
 function showUsageAndExit () {
-    echo "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list]"
+    echoBold "Usage: ./run.sh [product-version] [docker-image-version] [product_profile_list]"
     echo "eg: ./run.sh 1.9.1 1.0.0 'default|worker|manager'"
     exit 1
 }
@@ -49,6 +51,18 @@ for profile in "${array[@]}"
 do
     name="wso2${product_name}-${profile}"
 
+    existing_container=$(docker ps -a | awk '{print $NF}' | grep "${name}")
+    if [[ $existing_container = "$name" ]]; then
+        echoError "A Docker container with the name ${name} already exists."
+        echo -n "Terminate existing ${name} container (y/n):"
+        read -r terminate
+        if [[ $terminate = "y" ]]; then
+            docker rm -f "${name}" > /dev/null 2>&1 || { echoError "Couldn't terminate container ${name}."; exit 1; }
+        else
+            exit 1
+        fi
+    fi
+
     if [[ $profile = "default" ]]; then
         container_id=$(docker run -d -P --name "${name}" "wso2/${product_name}-${product_version}:${image_version}")
     else
@@ -56,7 +70,12 @@ do
     fi
 
     member_ip=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' "${container_id}")
-    echo "WSO2 ${product_name^^} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
+    if [ -z "${member_ip}" ]; then
+        echoError "Couldn't start container ${container-id} with name ${name}"
+        exit 1
+    fi
+
+    echoSuccess "WSO2 ${product_name^^} ${profile} member started: [name] ${name} [ip] ${member_ip} [container-id] ${container_id}"
     sleep 1
 
 done

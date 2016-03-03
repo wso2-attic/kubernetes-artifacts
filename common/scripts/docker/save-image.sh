@@ -18,8 +18,11 @@
 # ------------------------------------------------------------------------
 set -e
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
+
 function showUsageAndExit () {
-    echo "Usage: ./save.sh [product-version] [docker-image-version] [product_profile_list]"
+    echoBold "Usage: ./save.sh [product-version] [docker-image-version] [product_profile_list]"
     echo "eg: ./save.sh 1.9.1 1.0.0 'default|worker|manager'"
     exit 1
 }
@@ -60,5 +63,5 @@ do
     mkdir -p "/home/${USER}/docker/images/"
     docker save "${image_id}" > "/home/${USER}/docker/images/${tar_file}"
 
-    echo "Docker image ${image_id} saved to /home/${USER}/docker/images/${tar_file}."
+    echoSuccess "Docker image ${image_id} saved to /home/${USER}/docker/images/${tar_file}."
 done
