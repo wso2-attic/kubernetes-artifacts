@@ -18,18 +18,72 @@
 # ------------------------------------------------------------------------
 
 host=172.17.8.102
-manager_port=32001
 
-echo "Deploying wso2greg service..."
-kubectl create -f wso2greg-service.yaml
+function default () {
+    manager_port=32001
 
-echo "Deploying wso2greg controller..."
-kubectl create -f wso2greg-controller.yaml
+    echo "Deploying wso2greg service..."
+    kubectl create -f wso2greg-service.yaml
 
-echo "Waiting wso2greg to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
-    printf '.'
-    sleep 5
-done
+    echo "Deploying wso2greg controller..."
+    kubectl create -f wso2greg-controller.yaml
 
-echo -e "\nwso2greg launched!"
+    echo "Waiting wso2greg to launch on http://${host}:${manager_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
+        printf '.'
+        sleep 5
+    done
+
+    echo -e "\nwso2greg launched!"
+}
+
+function distributed () {
+    publisher_port=32001
+    store_port=32003
+
+    # deploy store
+    echo "Deploying wso2greg store service..."
+    kubectl create -f wso2greg-store-service.yaml
+
+    echo "Deploying wso2greg store controller..."
+    kubectl create -f wso2greg-store-controller.yaml
+
+    echo "Waiting wso2greg to launch on http://${host}:${store_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${store_port}); do
+        printf '.'
+        sleep 5
+    done
+
+    echo -e "\nwso2greg store launched!"
+
+    # deploy publisher
+    echo "Deploying wso2greg publisher service..."
+    kubectl create -f wso2greg-publisher-service.yaml
+
+    echo "Deploying wso2greg publisher controller..."
+    kubectl create -f wso2greg-publisher-controller.yaml
+
+    echo "Waiting wso2greg to launch on http://${host}:${publisher_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${publisher_port}); do
+        printf '.'
+        sleep 5
+    done
+
+    echo -e "\nwso2greg publisher launched!"
+}
+
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
+
+if [ "$pattern" = "default" ]; then
+  default
+elif [ "$pattern" = "distributed" ]; then
+  distributed
+else
+  echo "Usage: ./deploy.sh [default|distributed]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi

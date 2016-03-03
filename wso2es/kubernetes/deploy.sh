@@ -18,19 +18,72 @@
 # ------------------------------------------------------------------------
 
 host=10.245.1.3
-default_port=32001
 
-echo "Deploying wso2es default service..."
-kubectl create -f wso2es-default-service.yaml
+function default (){
+    default_port=32001
 
-echo "Deploying wso2es default controller..."
-kubectl create -f wso2es-default-controller.yaml
+    echo "Deploying wso2es default service..."
+    kubectl create -f wso2es-default-service.yaml
 
-echo "Waiting wso2es to launch on http://${host}:${default_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${default_port}); do
-    printf '.'
-    sleep 5
-done
+    echo "Deploying wso2es default controller..."
+    kubectl create -f wso2es-default-controller.yaml
 
-echo -e "\nwso2es launched!"
+    echo "Waiting wso2es to launch on http://${host}:${default_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${default_port}); do
+        printf '.'
+        sleep 5
+    done
 
+    echo -e "\nwso2es launched!"
+}
+
+function distributed (){
+    publisher_port=32001
+    store_port=32003
+
+    # deploy store
+    echo "Deploying wso2es store service..."
+    kubectl create -f wso2es-store-service.yaml
+
+    echo "Deploying wso2es store controller..."
+    kubectl create -f wso2es-store-controller.yaml
+
+    echo "Waiting wso2es to launch on http://${host}:${store_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${store_port}); do
+        printf '.'
+        sleep 5
+    done
+
+    echo -e "\nwso2es store launched!"
+
+    # deploy publisher
+    echo "Deploying wso2es publisher service..."
+    kubectl create -f wso2es-publisher-service.yaml
+
+    echo "Deploying wso2es publisher controller..."
+    kubectl create -f wso2es-publisher-controller.yaml
+
+    echo "Waiting wso2es to launch on http://${host}:${publisher_port}"
+    until $(curl --output /dev/null --silent --head --fail http://${host}:${publisher_port}); do
+        printf '.'
+        sleep 5
+    done
+
+    echo -e "\nwso2es publisher launched!"
+}
+
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
+
+if [ "$pattern" = "default" ]; then
+  default
+elif [ "$pattern" = "distributed" ]; then
+  distributed
+else
+  echo "Usage: ./deploy.sh [default|distributed]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi

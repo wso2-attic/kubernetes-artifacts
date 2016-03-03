@@ -183,5 +183,6 @@ elif [ "$pattern" = "pub_store" ]; then
   pub_store
 else
   echo "Usage: ./deploy.sh [default|distributed]"
-  exit
+  echo "ex: ./deploy.sh default"
+  exit 1
 fi
