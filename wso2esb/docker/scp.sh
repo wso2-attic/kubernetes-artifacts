@@ -24,9 +24,9 @@ product_version=$2
 image_version=$3
 product_profiles=$4
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../common/scripts/docker/"; pwd`
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_folder=$(cd "${script_path}/../../common/scripts/docker/"; pwd)
 
 bash ${common_folder}/scp-cmd.sh ${product_name}  ${nodes} ${product_version} ${image_version} ${product_profiles}
 pid1=$!

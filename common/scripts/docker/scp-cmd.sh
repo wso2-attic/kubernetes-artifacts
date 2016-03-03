@@ -18,8 +18,11 @@
 # ------------------------------------------------------------------------
 set -e
 
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
+
 function showUsageAndExit () {
-    echo "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
+    echoBold "Usage: ./scp.sh [host-list] [product-version] [docker-image-version] [product_profile_list]"
     echo "Usage: ./scp.sh 'core@172.17.8.102|core@172.17.8.103' 1.9.1 1.0.0 'worker|manager'"
     exit 1
 }
@@ -55,21 +58,19 @@ IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
     if [[ $profile = "default" ]]; then
-        image_id="wso2/${product_name}-${product_version}:${image_version}"
         tar_file="wso2${product_name}-${product_version}-${image_version}.tar"
     else
-        image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
         tar_file="wso2${product_name}-${profile}-${product_version}-${image_version}.tar"
     fi
 
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"
     do
-        echo "Copying ~/docker/images/${tar_file} to ${node}..."
-        scp ~/docker/images/${tar_file} ${node}:
+        echo "Copying /home/${USER}/docker/images/${tar_file} to ${node}..."
+        scp "/home/${USER}/docker/images/${tar_file}" "${node}:"
         echo "Loading ${tar_file} to Docker in ${node}..."
-        ssh ${node} "docker load < ${tar_file}"
+        ssh "${node}" "docker load < ${tar_file}"
         echo "Deleting ${tar_file} in ${node}..."
-        ssh ${node} "rm ${tar_file}"
+        ssh "${node}" "rm ${tar_file}"
     done
 done

@@ -18,23 +18,61 @@
 # ------------------------------------------------------------------------
 set -e
 
-function echoError () {
-    echo $'\e[1;31m'"${1}"$'\e[0m'
-}
-
-function echoSuccess () {
-    echo $'\e[1;32m'"${1}"$'\e[0m'
-}
-
-function echoBold () {
-    echo $'\e[1m'"${1}"$'\e[0m'
-}
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/../base.sh
 
 # Show usage and exit
 function showUsageAndExit() {
     echoBold "Usage: ./build.sh [product-version] [docker-image-version] [product_profile_list]"
     echo "Ex: ./build.sh 1.9.1 1.0.0 'default|worker|manager'"
     exit 1
+}
+
+function cleanup() {
+    echoBold "Cleaning..."
+    rm -rf "$dockerfile_path/scripts"
+    rm -rf "$dockerfile_path/puppet"
+}
+
+function listFiles () {
+    find "${1}" -maxdepth 1 -mindepth 1 -printf "%f\n"
+    echo
+    # for n in "${1}"; do echo "${n%%.*}"; done
+    # for n in "${1}"; do echo "${n}"; done
+}
+
+# $1 product name = esb
+# $2 product version = 4.9.0
+function validateProductVersion() {
+    ver_dir="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}"
+    if [ ! -d "$ver_dir" ]; then
+        echoError "Provided product version wso2${1}:${2} doesn't exist in PUPPET_HOME: ${PUPPET_HOME}. Available versions are,"
+        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/"
+        showUsageAndExit
+    fi
+}
+
+# $1 product name = esb
+# $2 product version = 4.9.0
+# $3 product profile list = 'default|worker|manager'
+function validateProfile() {
+    invalidFound=false
+    IFS='|' read -r -a array <<< "${3}"
+    for profile in "${array[@]}"
+    do
+        profile_yaml="${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/${profile}.yaml"
+        if [ ! -e "${profile_yaml}" ] || [ ! -s "${profile_yaml}" ]
+        then
+            invalidFound=true
+        fi
+    done
+
+    if [ "${invalidFound}" == true ]
+    then
+        echoError "One or more provided product profiles wso2${1}:${2}-[${3}] do not exist in PUPPET_HOME: ${PUPPET_HOME}. Available profiles are,"
+        listFiles "${PUPPET_HOME}/hieradata/dev/wso2/wso2${1}/${2}/"
+        showUsageAndExit
+    fi
 }
 
 dockerfile_path=$1
@@ -44,8 +82,8 @@ product_version=$4
 product_profiles=$5
 product_env=$6
 
-prgdir2=`dirname "$0"`
-self_path=`cd "$prgdir2"; pwd`
+prgdir2=$(dirname "$0")
+self_path=$(cd "$prgdir2"; pwd)
 
 # Validate mandatory args
 if [ -z "$product_version" ]
@@ -60,7 +98,7 @@ fi
 
 if [ -z "$product_profiles" ]
   then
-    product_profiles='default'
+    product_profiles="default"
 fi
 
 if [ -z "$product_env" ]; then
@@ -76,47 +114,52 @@ else
    echoBold "PUPPET_HOME is set to ${puppet_path}."
 fi
 
+# check if provided product version exists in PUPPET_HOME
+validateProductVersion "${product_name}" "${product_version}"
+
+# check if provided profile exists in PUPPET_HOME
+validateProfile "${product_name}" "${product_version}" "${product_profiles}"
+
 # Copy common files to Dockerfile context
 echoBold "Creating Dockerfile context..."
-mkdir -p $dockerfile_path/scripts
-mkdir -p $dockerfile_path/puppet/modules
-cp $self_path/docker-init.sh $dockerfile_path/scripts/init.sh
+mkdir -p "${dockerfile_path}/scripts"
+mkdir -p "${dockerfile_path}/puppet/modules"
+cp "${self_path}/docker-init.sh" "${dockerfile_path}/scripts/init.sh"
 
-echo
 echoBold "Copying Puppet modules to Dockerfile context..."
-cp -r $puppet_path/modules/wso2base $dockerfile_path/puppet/modules/
-cp -r $puppet_path/modules/wso2${product_name} $dockerfile_path/puppet/modules/
-cp -r $puppet_path/hiera* $dockerfile_path/puppet/
-cp -r $puppet_path/manifests $dockerfile_path/puppet/
+cp -r "${puppet_path}/modules/wso2base" "${dockerfile_path}/puppet/modules/"
+cp -r "${puppet_path}/modules/wso2${product_name}" "${dockerfile_path}/puppet/modules/"
+cp -r "${puppet_path}/hiera.yaml" "${dockerfile_path}/puppet/"
+cp -r "${puppet_path}/hieradata" "${dockerfile_path}/puppet/"
+cp -r "${puppet_path}/manifests" "${dockerfile_path}/puppet/"
 
 # Build image for each profile provided
 IFS='|' read -r -a array <<< "${product_profiles}"
 for profile in "${array[@]}"
 do
-    if [[ $profile = "default" ]]; then
+    # set image name according to the profile list
+    if [[ "${profile}" = "default" ]]; then
         image_id="wso2/${product_name}-${product_version}:${image_version}"
     else
         image_id="wso2/${product_name}-${profile}-${product_version}:${image_version}"
     fi
 
-    echo
     echoBold "Building docker image ${image_id}..."
 
     {
-        docker build --no-cache=true --build-arg WSO2_SERVER=wso2${product_name} \
-        --build-arg WSO2_SERVER_VERSION=${product_version} \
-        --build-arg WSO2_SERVER_PROFILE=${profile} \
-        --build-arg WSO2_ENVIRONMENT=${product_env} \
-        -t ${image_id} $dockerfile_path && echoBold "Docker image ${image_id} created."
+        # show only errors from the docker build output
+        ! docker build --no-cache=true \
+        --build-arg WSO2_SERVER="wso2${product_name}" \
+        --build-arg WSO2_SERVER_VERSION="${product_version}" \
+        --build-arg WSO2_SERVER_PROFILE="${profile}" \
+        --build-arg WSO2_ENVIRONMENT="${product_env}" \
+        -t "${image_id}" "${dockerfile_path}" | grep -i error && echo "Docker image ${image_id} created."
     } || {
         echoError "ERROR: Docker image ${image_id} creation failed"
+        cleanup
+        exit 1
     }
-
 done
 
-echo
-echoBold "Cleaning..."
-rm -rf $dockerfile_path/scripts
-rm -rf $dockerfile_path/puppet
-
+cleanup
 echoSuccess "Build process completed"

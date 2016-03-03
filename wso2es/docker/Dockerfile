@@ -46,7 +46,11 @@ WORKDIR /etc/puppet
 RUN puppet apply -e "include ${WSO2_SERVER}" --hiera_config=/etc/puppet/hiera.yaml \
     && apt-get purge -y --auto-remove puppet \
     && rm -rf /etc/puppet/* \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && chown wso2user:wso2 /usr/local/bin/init.sh \
+    && chown -R wso2user:wso2 /mnt
+
+USER wso2user
 
 # Expose transport ports
 EXPOSE 9763 9443
