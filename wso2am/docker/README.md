@@ -31,10 +31,10 @@ To build the wso2 api manager docker image and run in your local machine
         + `./run.sh 1.9.1 1.0.0 'default'`
 
 * Access management console
-    - Add an etc/hosts entry in your local machine for `<container_up> am.wso2.com`. For example:
-        + `172.17.0.2     am.wso2.com`
+    - Add an etc/hosts entry in your local machine for `<container_ip> am.wso2.com`. For example:
+        + `172.17.0.2       am.wso2.com`
     -  To access the management console.
-        + https://am.wso2.com:9443/carbon
+        + `https://am.wso2.com:9443/carbon`
 
 ### Building the Docker Images
 
@@ -48,6 +48,8 @@ To build the wso2 api manager docker image and run in your local machine
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<PUPPET_HOME>/modules/wso2am/files`.
 
 * Advanced configuration
+    - Copy any deployable artifacts to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any deployable applications to `<PUPPET_HOME>/modules/wso2am/files/configs/repository/deployment/server`.
+    - Copy any patches to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any patches to `<PUPPET_HOME>/modules/wso2am/files/patches/repository/components/patches`.
     - For clustering scenario in Kubernetes. Build the [Carbon Kubernetes Membership Scheme](#carbon-kubernetes-membership-scheme) and copy the following jar to `<PUPPET_HOME>/modules/wso2am/files/configs/repository/components/lib` folder. Furthermore, copy the dependencies for the Carbon Kubernetes Membership Scheme to the same place.
         + jackson-annotations-2.5.4.jar
         + jackson-core-2.5.4.jar
@@ -61,9 +63,6 @@ To build the wso2 api manager docker image and run in your local machine
     #       http : 32003
     #       https : 32004
 ```
-
-    - Copy any deployable artifacts to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any deployable applications to `<PUPPET_HOME>/modules/wso2am/files/configs/repository/deployment/server`.
-    - Copy any patches to the wso2am module's `files` folder. For example, for WSO2 Api Manager 1.9.1, copy any patches to `<PUPPET_HOME>/modules/wso2am/files/patches/repository/components/patches`.
 
 * Build the docker images
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
