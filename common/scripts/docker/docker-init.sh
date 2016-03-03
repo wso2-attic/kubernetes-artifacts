@@ -106,7 +106,7 @@ function replace_local_member_host_with_ip {
 
 replace_local_member_host_with_ip
 
-add_host_mapping "$(get_hostname_from_carbon_config)" "$local_ip"
+#add_host_mapping "$(get_hostname_from_carbon_config)" "$local_ip"
 
 export CARBON_HOME="${server_path}/${server_name}"
 
