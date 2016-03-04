@@ -74,12 +74,12 @@ function build_docker_image_and_scp {
     popd
 }
 
-function deploy_kubernetes_artifacts {
-    # switch to IS 5 kubernetes directory deploy kubernetes artifacts
-    pushd ${root_dir}/$1/kubernetes
-    bash deploy.sh    
-    popd
-}
+#function deploy_kubernetes_artifacts {
+#    # switch to IS 5 kubernetes directory deploy kubernetes artifacts
+#    pushd ${root_dir}/$1/kubernetes
+#    bash deploy.sh
+#    popd
+#}
 
 function undeploy_kubernetes_artifacts {
     # switch to IS 5 kubernetes directory deploy kubernetes artifacts
@@ -88,10 +88,58 @@ function undeploy_kubernetes_artifacts {
     popd
 }
 
+function deploy_kubernetes_artifacts {
+    # switch to IS 5 kubernetes directory deploy kubernetes artifacts
+    pushd ${root_dir}/$1/kubernetes
+    echo "Deploying $1 $2 service..."
+    kubectl create -f "$1"-"$2"-service.yaml
+    echo "Deploying $1 $2 controller..."
+    kubectl create -f "$1"-"$2"-controller.yaml
+    popd
+}
+
+
+function check_pod_status {
+    error_count=0
+    success_count=0
+    while true; do
+        result=`kubectl get pods | grep $1`
+        if [[ -z $result ]]; then
+           echo "no pod found for product $1"
+           error_count=$((error_count + 1))
+           success_count=0
+        fi
+        IFS=' ' read -r -a array <<< "$result"
+        pod_name=${array[0]}
+        ready=${array[1]}
+        state=${array[2]}
+        restarts=${array[3]}
+        if [[ $ready != '1/1' ]] || [[ $state != 'Running' ]] || [[ $restarts != '0'  ]]; then
+            echo "error condition detected in pod $pod_name":
+            echo "pod name=$pod_name, ready=$ready, status=$state, restarts=$restarts"
+            error_count=$((error_count + 1))
+            success_count=0
+        else
+            success_count=$((success_count + 1))
+            error_count=0
+        fi
+
+        if [[ $error_count -gt 5 ]]; then
+            echo "error condition threshold reached: $error_count, exiting"
+	        undeploy_kubernetes_artifacts "$1"
+            exit
+        elif [[ $success_count -gt 10 ]]; then
+            echo "success condition threshold reached: $success_count"
+            break
+        fi
+        sleep 6s
+    done
+}
+
 # build the base images
 build_base_image
 # build and deploy the products
-products=(wso2am,1.9.1 wso2is,5.1.0)
+products=(wso2am,1.9.1)
 
 for product in ${products[@]}; do
     IFS=","
@@ -100,8 +148,8 @@ for product in ${products[@]}; do
     echo 'building docker image for='$1 ' version='$2
     build_docker_image_and_scp "$1" "$2" "${default_profile}"
     echo 'deploying kubernetes artifacts for='$1 ' version='$2
-    deploy_kubernetes_artifacts "$1"
-    sleep 10s
+    deploy_kubernetes_artifacts "$1" "${default_profile}"
+    check_pod_status "$1"
     echo 'undeploying kubernetes artifacts for='$1 ' version='$2
     undeploy_kubernetes_artifacts "$1"
     echo "########################## completed testing $1 v.$2 ##########################"
