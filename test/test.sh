@@ -173,7 +173,7 @@ for product in ${products[@]}; do
     set $product
     echo "############################### testing $1 v.$2 ###############################"
     echo 'building docker image for='$1 ' version='$2
-#    build_docker_image_and_scp "$1" "$2" "${default_profile}"
+    build_docker_image_and_scp "$1" "$2" "${default_profile}"
     echo 'deploying kubernetes artifacts for='$1 ' version='$2
     deploy_kubernetes_artifacts "$1" "${default_profile}"
     check_status "$1"
