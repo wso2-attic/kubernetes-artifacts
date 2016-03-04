@@ -99,10 +99,11 @@ function deploy_kubernetes_artifacts {
 }
 
 
-function check_pod_status {
+function check_status {
     error_count=0
     success_count=0
     while true; do
+        # check the pod status
         result=`kubectl get pods | grep $1`
         if [[ -z $result ]]; then
            echo "no pod found for product $1"
@@ -128,12 +129,37 @@ function check_pod_status {
             echo "error condition threshold reached: $error_count, exiting"
 	        undeploy_kubernetes_artifacts "$1"
             exit
-        elif [[ $success_count -gt 10 ]]; then
+        elif [[ $success_count -gt 5 ]]; then
             echo "success condition threshold reached: $success_count"
-            break
+            server_started=$(check_carbon_server_has_started "$pod_name")
+            if [[ $server_started -eq 0 ]]; then
+                echo "Carbon Server in pod $pod_name has started successfully"
+                break
+            else
+                echo "Carbon Server in pod $pod_name has failed to start"
+                undeploy_kubernetes_artifacts "$1"
+                exit
+            fi
         fi
         sleep 6s
     done
+}
+
+function check_carbon_server_has_started {
+    carbon_logs=`kubectl logs $1`
+    tries=0
+    while [[ tries < 10 ]]; do
+        if [[ $carbon_logs == *"Mgt Console URL"* ]]; then
+            echo 0;
+        else
+            tries=$((tries + 1))
+            if [[ tries -gt 10 ]]; then
+                break
+            fi
+        fi
+        sleep 6s
+    done
+    echo 1
 }
 
 # build the base images
@@ -149,7 +175,7 @@ for product in ${products[@]}; do
     build_docker_image_and_scp "$1" "$2" "${default_profile}"
     echo 'deploying kubernetes artifacts for='$1 ' version='$2
     deploy_kubernetes_artifacts "$1" "${default_profile}"
-    check_pod_status "$1"
+    check_status "$1"
     echo 'undeploying kubernetes artifacts for='$1 ' version='$2
     undeploy_kubernetes_artifacts "$1"
     echo "########################## completed testing $1 v.$2 ##########################"
