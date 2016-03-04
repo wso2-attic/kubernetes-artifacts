@@ -105,7 +105,7 @@ function check_status {
     while true; do
         # check the pod status
         result=`kubectl get pods | grep $1`
-        if [[ -z $result ]]; then
+        if [[ -z "$result" ]]; then
            echo "no pod found for product $1"
            error_count=$((error_count + 1))
            success_count=0
@@ -131,35 +131,37 @@ function check_status {
             exit
         elif [[ $success_count -gt 5 ]]; then
             echo "success condition threshold reached: $success_count"
-            server_started=$(check_carbon_server_has_started "$pod_name")
-            if [[ $server_started -eq 0 ]]; then
-                echo "Carbon Server in pod $pod_name has started successfully"
-                break
-            else
-                echo "Carbon Server in pod $pod_name has failed to start"
-                undeploy_kubernetes_artifacts "$1"
-                exit
-            fi
+            break
+#            server_started=$(check_carbon_server_has_started "$pod_name")
+#            if [[ $server_started -eq 0 ]]; then
+#                echo "Carbon Server in pod $pod_name has started successfully"
+#                break
+#            else
+#                echo "Carbon Server in pod $pod_name has failed to start"
+#                undeploy_kubernetes_artifacts "$1"
+#                exit
+#            fi
         fi
         sleep 6s
     done
 }
 
 function check_carbon_server_has_started {
-    carbon_logs=`kubectl logs $1`
     tries=0
-    while [[ tries < 10 ]]; do
-        if [[ $carbon_logs == *"Mgt Console URL"* ]]; then
-            echo 0;
+    while true; do
+        carbon_logs=`kubectl logs $1`
+        if [[ $carbon_logs =~ "Mgt Console URL" ]]; then
+            echo 0
+            break
         else
             tries=$((tries + 1))
-            if [[ tries -gt 10 ]]; then
+            if [[ $tries -gt 10 ]]; then
+                echo 1
                 break
             fi
         fi
         sleep 6s
     done
-    echo 1
 }
 
 # build the base images
@@ -172,7 +174,7 @@ for product in ${products[@]}; do
     set $product
     echo "############################### testing $1 v.$2 ###############################"
     echo 'building docker image for='$1 ' version='$2
-    build_docker_image_and_scp "$1" "$2" "${default_profile}"
+#    build_docker_image_and_scp "$1" "$2" "${default_profile}"
     echo 'deploying kubernetes artifacts for='$1 ' version='$2
     deploy_kubernetes_artifacts "$1" "${default_profile}"
     check_status "$1"
