@@ -16,6 +16,25 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
+
+########################### Simple Test Script ############################
+# 
+#   This script will build the default version of specified docker images, 
+#   scp them to the Kubernetes nodes and deploy the Kubernetes artifacts.
+#
+#   Tested with the Kubernetes setup at:
+#   https://github.com/pires/kubernetes-vagrant-coreos-cluster
+#
+#   Usage: 
+#   1. set PUPPET_HOME in environment.bash
+#   2. add the products and version that need to be tested to the array 
+#      'products' as comma separated tuples.
+#       ex.: products=(wso2am,1.9.1 wso2is,5.0.0)
+#   3. run the script
+#
+#
+###########################################################################
+
 set -e
 
 kubernetes_artifact_version=1.0.0
@@ -32,15 +51,16 @@ common_dir=${current_path}/../common
 base_image_dir=`cd "${common_dir}/docker/base-image"; pwd`
 
 user=`whoami`
-echo "user executing the script $user" 
+echo "user executing the script $user"
 
-
-# navigate to base image dir
-pushd $base_image_dir
-# build
-#  sudo bash build.sh ${kubernetes_artifact_version} 
-# go back to previous directory location
-popd
+function build_base_image {
+    # navigate to base image dir
+    pushd $base_image_dir
+    # build
+    # sudo bash build.sh ${kubernetes_artifact_version}
+    # go back to previous directory location
+    popd
+}
 
 function build_docker_image_and_scp {
     # switch to IS 5 docker directory and build
@@ -68,7 +88,23 @@ function undeploy_kubernetes_artifacts {
     popd
 }
 
+# build the base images
+build_base_image
+# build and deploy the products
+products=(wso2am,1.9.1 wso2is,5.1.0)
 
-# build and deploy
-build_docker_image_and_scp 'wso2is' '5.0.0' "${default_profile}"
-deploy_kubernetes_artifacts 'wso2is'
+for product in ${products[@]}; do
+    IFS=","
+    set $product
+    echo "############################### testing $1 v.$2 ###############################"
+    echo 'building docker image for='$1 ' version='$2
+    build_docker_image_and_scp "$1" "$2" "${default_profile}"
+    echo 'deploying kubernetes artifacts for='$1 ' version='$2
+    deploy_kubernetes_artifacts "$1"
+    sleep 10s
+    echo 'undeploying kubernetes artifacts for='$1 ' version='$2
+    undeploy_kubernetes_artifacts "$1"
+    echo "########################## completed testing $1 v.$2 ##########################"
+    unset IFS
+done
+
