@@ -131,16 +131,15 @@ function check_status {
             exit
         elif [[ $success_count -gt 5 ]]; then
             echo "success condition threshold reached: $success_count"
-            break
-#            server_started=$(check_carbon_server_has_started "$pod_name")
-#            if [[ $server_started -eq 0 ]]; then
-#                echo "Carbon Server in pod $pod_name has started successfully"
-#                break
-#            else
-#                echo "Carbon Server in pod $pod_name has failed to start"
-#                undeploy_kubernetes_artifacts "$1"
-#                exit
-#            fi
+            server_started=$(check_carbon_server_has_started "$pod_name")
+            if [[ $server_started -eq 0 ]]; then
+                echo "Carbon Server in pod $pod_name has started successfully"
+                break
+            else
+                echo "Carbon Server in pod $pod_name has failed to start"
+                undeploy_kubernetes_artifacts "$1"
+                exit
+            fi
         fi
         sleep 6s
     done
