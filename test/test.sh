@@ -56,50 +56,55 @@ echo "user executing the script $user"
 products=(wso2am,1.9.1 wso2is,5.0.0)
 declare -A results
 
+function echoError {
+    echo $'\e[1;31m'"${1}"$'\e[0m'
+}
+
+function echoSuccess {
+    echo $'\e[1;32m'"${1}"$'\e[0m'
+}
+
+function echoBold {
+    echo $'\e[1m'"${1}"$'\e[0m'
+}
+
 # build base image
 function build_base_image {
     # navigate to base image dir
-    pushd $base_image_dir
+    pushd ${base_image_dir} > /dev/null
     # build
     # sudo bash build.sh ${kubernetes_artifact_version}
     # go back to previous directory location
-    popd
+    popd > /dev/null
 }
 
 function build_docker_image_and_scp {
     # switch to IS 5 docker directory and build
-    pushd ${root_dir}/$1/docker
+    pushd ${root_dir}/$1/docker > /dev/null
     echo pwd=`pwd`
-    sudo --preserve-env bash build.sh $2 ${kubernetes_artifact_version} $3
+    sudo --preserve-env bash build.sh $2 ${kubernetes_artifact_version} $3 || print_results
     # save the image as a tar file
-    sudo bash save.sh $2 ${kubernetes_artifact_version} $3
-    sudo chown $user:$user -R ~/docker/ 
-    bash scp.sh ${KUBERNETES_NODE_USER}@${KUBERNETES_NODE} $2 ${kubernetes_artifact_version} $3
-    popd
+    sudo bash save.sh $2 ${kubernetes_artifact_version} $3 || print_results
+    sudo chown ${user}:${user} -R ~/docker/
+    bash scp.sh ${KUBERNETES_NODE_USER}@${KUBERNETES_NODE} $2 ${kubernetes_artifact_version} $3 || print_results
+    popd > /dev/null
 }
-
-#function deploy_kubernetes_artifacts {
-#    # switch to IS 5 kubernetes directory deploy kubernetes artifacts
-#    pushd ${root_dir}/$1/kubernetes
-#    bash deploy.sh
-#    popd
-#}
 
 function undeploy_kubernetes_artifacts {
     # switch to IS 5 kubernetes directory deploy kubernetes artifacts
-    pushd ${root_dir}/$1/kubernetes
+    pushd ${root_dir}/$1/kubernetes > /dev/null
     bash undeploy.sh
-    popd
+    popd > /dev/null
 }
 
 function deploy_kubernetes_artifacts {
     # switch to IS 5 kubernetes directory deploy kubernetes artifacts
-    pushd ${root_dir}/$1/kubernetes
+    pushd ${root_dir}/$1/kubernetes > /dev/null
     echo "Deploying $1 $2 service..."
-    kubectl create -f "$1"-"$2"-service.yaml
+    kubectl create -f "$1"-"$2"-service.yaml || print_results
     echo "Deploying $1 $2 controller..."
-    kubectl create -f "$1"-"$2"-controller.yaml
-    popd
+    kubectl create -f "$1"-"$2"-controller.yaml || print_results
+    popd > /dev/null
 }
 
 
@@ -119,7 +124,7 @@ function check_status {
         ready=${array[1]}
         state=${array[2]}
         restarts=${array[3]}
-        if [[ $ready != '1/1' ]] || [[ $state != 'Running' ]] || [[ $restarts != '0'  ]]; then
+        if [[ ${ready} != '1/1' ]] || [[ $state != 'Running' ]] || [[ $restarts != '0'  ]]; then
             echo "error condition detected in pod=$pod_name, ready=$ready, status=$state, restarts=$restarts"
             error_count=$((error_count + 1))
             success_count=0
@@ -128,22 +133,22 @@ function check_status {
             error_count=0
         fi
 
-        if [[ $error_count -gt 5 ]]; then
+        if [[ ${error_count} -gt 5 ]]; then
             echo "error condition threshold reached: $error_count, aborting"
 	        #undeploy_kubernetes_artifacts "$1"
             results[$1-$2]="ERROR, last pod name=$pod_name, state= $state, restarts=$restarts"
             break
-        elif [[ $success_count -gt 5 ]]; then
+        elif [[ ${success_count} -gt 5 ]]; then
             echo "success condition threshold reached: $success_count"
             server_started=$(check_carbon_server_has_started "$pod_name")
-            if [[ $server_started -eq 0 ]]; then
+            if [[ ${server_started} -eq 0 ]]; then
                 msg="Carbon Server $1-$2 in pod $pod_name has started successfully"
-                echo $msg
+                echo ${msg}
                 results[$1-$2]="SUCCESS, $msg"
                 break
             else
                 msg="Carbon Server $1-$2 in pod $pod_name has failed to start"
-                echo $msg
+                echo ${msg}
                 #undeploy_kubernetes_artifacts "$1"
                 results[$1-$2]="ERROR, $msg"
                 break
@@ -158,12 +163,12 @@ function check_carbon_server_has_started {
     tries=0
     while true; do
         carbon_logs=`kubectl logs $1`
-        if [[ $carbon_logs =~ "Mgt Console URL" ]]; then
+        if [[ ${carbon_logs} =~ "Mgt Console URL" ]]; then
             echo 0
             break
         else
             tries=$((tries + 1))
-            if [[ $tries -gt 10 ]]; then
+            if [[ ${tries} -gt 10 ]]; then
                 echo 1
                 break
             fi
@@ -172,17 +177,17 @@ function check_carbon_server_has_started {
     done
 }
 
-function validate {
+function validate_environment {
     if [ -z "$PUPPET_HOME" ]; then
-        echo "please set PUPPET_HOME"
+        echo "please set environment variable PUPPET_HOME"
         exit
     fi
     if [ -z "$KUBERNETES_NODE" ]; then
-        echo "please set KUBERNETES_NODE"
+        echo "please set environment variable KUBERNETES_NODE"
         exit
     fi
     if [ -z "$KUBERNETES_NODE_USER" ]; then
-        echo "please set KUBERNETES_NODE_USER"
+        echo "please set environment variable KUBERNETES_NODE_USER"
         exit
     fi
 }
@@ -190,10 +195,10 @@ function validate {
 function test {
     for product in ${products[@]}; do
         IFS=","
-        set $product
+        set ${product}
         echo "testing $1 v.$2"
         echo 'building docker image for='$1 ' version='$2
-        build_docker_image_and_scp "$1" "$2" "${default_profile}"
+        #build_docker_image_and_scp "$1" "$2" "${default_profile}"
         echo 'deploying kubernetes artifacts for='$1 ' version='$2
         deploy_kubernetes_artifacts "$1" "${default_profile}"
         check_status "$1" "$2"
@@ -205,18 +210,23 @@ function test {
 }
 
 function print_results {
-    echo "############################################ Results ############################################"
+    echoBold "################################################# Results #################################################"
     for product in ${products[@]}; do
         IFS=","
-        set $product
-        echo "Test result for $1-$2: ${results[$1-$2]}"
+        set ${product}
+        test_result=${results[$1-$2]}
+        if [[ ${test_result} == ERROR* ]]; then
+            echoError "$1-$2: ${test_result}"
+        else
+            echoSuccess "$1-$2: ${test_result}"
+        fi
         unset IFS
     done
-    echo "######################################### End of Results ########################################"
+    echoBold "############################################## End of Results #############################################"
 }
 
 # validate
-validate
+validate_environment
 # build the base images
 build_base_image
 # build and deploy the products
