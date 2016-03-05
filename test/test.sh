@@ -173,46 +173,46 @@ function check_carbon_server_has_started {
 }
 
 function validate {
-if [ -z "$PUPPET_HOME" ]; then
-    echo "please set PUPPET_HOME"
-    exit
-fi
-if [ -z "$KUBERNETES_NODE" ]; then
-    echo "please set KUBERNETES_NODE"
-    exit
-fi
-if [ -z "$KUBERNETES_NODE_USER" ]; then
-    echo "please set KUBERNETES_NODE_USER"
-    exit
-fi
+    if [ -z "$PUPPET_HOME" ]; then
+        echo "please set PUPPET_HOME"
+        exit
+    fi
+    if [ -z "$KUBERNETES_NODE" ]; then
+        echo "please set KUBERNETES_NODE"
+        exit
+    fi
+    if [ -z "$KUBERNETES_NODE_USER" ]; then
+        echo "please set KUBERNETES_NODE_USER"
+        exit
+    fi
 }
 
 function test {
-for product in ${products[@]}; do
-    IFS=","
-    set $product
-    echo "testing $1 v.$2"
-    echo 'building docker image for='$1 ' version='$2
-    build_docker_image_and_scp "$1" "$2" "${default_profile}"
-    echo 'deploying kubernetes artifacts for='$1 ' version='$2
-    deploy_kubernetes_artifacts "$1" "${default_profile}"
-    check_status "$1" "$2"
-    echo 'undeploying kubernetes artifacts for='$1 ' version='$2
-    undeploy_kubernetes_artifacts "$1"
-    echo "completed testing $1 v.$2"
-    unset IFS
-done
+    for product in ${products[@]}; do
+        IFS=","
+        set $product
+        echo "testing $1 v.$2"
+        echo 'building docker image for='$1 ' version='$2
+        build_docker_image_and_scp "$1" "$2" "${default_profile}"
+        echo 'deploying kubernetes artifacts for='$1 ' version='$2
+        deploy_kubernetes_artifacts "$1" "${default_profile}"
+        check_status "$1" "$2"
+        echo 'undeploying kubernetes artifacts for='$1 ' version='$2
+        undeploy_kubernetes_artifacts "$1"
+        echo "completed testing $1 v.$2"
+        unset IFS
+    done
 }
 
 function print_results {
-echo "############################################ Results ############################################"
-for product in ${products[@]}; do
-    IFS=","
-    set $product
-    echo "Test result for $1-$2: ${results[$1-$2]}"
-    unset IFS
-done
-echo "######################################### End of Results ########################################"
+    echo "############################################ Results ############################################"
+    for product in ${products[@]}; do
+        IFS=","
+        set $product
+        echo "Test result for $1-$2: ${results[$1-$2]}"
+        unset IFS
+    done
+    echo "######################################### End of Results ########################################"
 }
 
 # validate
