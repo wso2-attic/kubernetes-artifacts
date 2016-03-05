@@ -136,7 +136,7 @@ function check_status {
         if [[ ${error_count} -gt 5 ]]; then
             echo "error condition threshold reached: $error_count, aborting"
 	        #undeploy_kubernetes_artifacts "$1"
-            results[$1-$2]="ERROR, last pod name=$pod_name, state= $state, restarts=$restarts"
+            results[$1-$2]="ERROR, last pod name=$pod_name, state=$state, restarts=$restarts"
             break
         elif [[ ${success_count} -gt 5 ]]; then
             echo "success condition threshold reached: $success_count"
@@ -198,7 +198,7 @@ function test {
         set ${product}
         echo "testing $1 v.$2"
         echo 'building docker image for='$1 ' version='$2
-        #build_docker_image_and_scp "$1" "$2" "${default_profile}"
+        build_docker_image_and_scp "$1" "$2" "${default_profile}"
         echo 'deploying kubernetes artifacts for='$1 ' version='$2
         deploy_kubernetes_artifacts "$1" "${default_profile}"
         check_status "$1" "$2"
