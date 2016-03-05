@@ -191,7 +191,7 @@ function test {
 for product in ${products[@]}; do
     IFS=","
     set $product
-    echo "Testing $1 v.$2"
+    echo "testing $1 v.$2"
     echo 'building docker image for='$1 ' version='$2
     build_docker_image_and_scp "$1" "$2" "${default_profile}"
     echo 'deploying kubernetes artifacts for='$1 ' version='$2
@@ -199,7 +199,7 @@ for product in ${products[@]}; do
     check_status "$1" "$2"
     echo 'undeploying kubernetes artifacts for='$1 ' version='$2
     undeploy_kubernetes_artifacts "$1"
-    echo "Completed Testing $1 v.$2"
+    echo "completed testing $1 v.$2"
     unset IFS
 done
 }
