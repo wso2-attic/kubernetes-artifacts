@@ -19,3 +19,7 @@
 set -e
 
 export PUPPET_HOME=/home/isuru/wso2/src/3rd_feb/puppet-modules
+#export FLEETCTL_ENDPOINT=http://172.17.8.101:4001
+#export KUBERNETES_MASTER=http://172.17.8.101:8080
+export KUBERNETES_NODE=172.17.8.102
+export KUBERNETES_NODE_USER=core
