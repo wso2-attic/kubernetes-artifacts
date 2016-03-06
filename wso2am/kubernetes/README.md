@@ -2,7 +2,7 @@
 The Dockerfile define the resources and instructions to build the Docker images with the WSO2 products and runtime configurations. This process uses Puppet and Hiera to update the configuration.
 
 ## Try it out
-To run WSO2 API Manager default profile docker image on Kubernetes
+Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
 
 * Prerequisites
     - Ensure default profile of API Manager docker is built and loaded in the Kubernetes node.
