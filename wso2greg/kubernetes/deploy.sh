@@ -23,10 +23,10 @@ function default () {
     manager_port=32001
 
     echo "Deploying wso2greg service..."
-    kubectl create -f wso2greg-service.yaml
+    kubectl create -f wso2greg-default-service.yaml
 
     echo "Deploying wso2greg controller..."
-    kubectl create -f wso2greg-controller.yaml
+    kubectl create -f wso2greg-default-controller.yaml
 
     echo "Waiting wso2greg to launch on http://${host}:${manager_port}"
     until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
