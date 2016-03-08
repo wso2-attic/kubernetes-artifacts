@@ -6,7 +6,7 @@ Quick steps to run WSO2 Application Server default profile docker image on Kuber
 
 * Prerequisites
     - Ensure default profile of Application Server docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Application Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Application Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2as/docker).
+    Instructions on how to build Application Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Application Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2as/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as/docker`). 
@@ -26,12 +26,15 @@ Quick steps to run WSO2 Application Server default profile docker image on Kuber
     - Navigate to the `kubernetes` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2as. (eg: `<REPOSITORY_HOME>/wso2as/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
+        + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services
+        + wso2as manager
+        + wso2as worker 
     
 ## Undeploy script
 

@@ -6,7 +6,7 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
 
 * Prerequisites
     - Ensure default profile of Data Services Server docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Data Services Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Data Services Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2dss/docker).
+    Instructions on how to build Data Services Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Data Services Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2dss/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`). 
@@ -26,18 +26,21 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
+        + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services
+        + wso2dss manager
+        + wso2dss worker 
     
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
     - Execute `undeploy.sh` .
-          + `./undeploy.sh`           
+        + `./undeploy.sh`           
 * The `undeploy.sh` script has the following profiles defined to be undeployed. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
     - `product_profiles=(default manager worker)`
