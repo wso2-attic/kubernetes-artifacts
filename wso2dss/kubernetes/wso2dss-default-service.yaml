@@ -2,8 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: wso2dss
-  name: wso2dss
+    name: wso2dss-default
+  name: wso2dss-default
 spec:
   type: NodePort
   sessionAffinity: ClientIP
@@ -21,4 +21,4 @@ spec:
       nodePort: 32002
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    name: wso2dss
+    name: wso2dss-default

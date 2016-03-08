@@ -19,7 +19,7 @@
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
-product_profiles=(worker manager)
+product_profiles=(default worker manager)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
