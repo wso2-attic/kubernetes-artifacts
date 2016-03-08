@@ -168,7 +168,8 @@ function check_carbon_server_has_started {
             break
         else
             tries=$((tries + 1))
-            if [[ ${tries} -gt 10 ]]; then
+            # allow the Carbon server to start for 5 minutes (6s * 50 = 5 mins)
+            if [[ ${tries} -gt 50 ]]; then
                 echo 1
                 break
             fi
