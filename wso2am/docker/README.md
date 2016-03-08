@@ -12,7 +12,7 @@ Quick steps to build the WSO2 API Manager docker image and run in your local mac
     - Download and copy JDK 1.7 ([jdk-7u80-linux-x64.tar.gz](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html)) pack to `<PUPPET_HOME>/modules/wso2base/files`
     - Download the necessary product packs and copy them to `<PUPPET_HOME>/modules/<MODULE>/files`. For example, for WSO2 API Manager 1.9.1 download the [product pack](http://wso2.com/products/api-manager/) and copy the zip file to `<PUPPET_HOME>/modules/wso2am/files`.
 
-* Build the docker images
+* [Build docker image](#build-docker-image)
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
@@ -52,22 +52,22 @@ Quick steps to build the WSO2 API Manager docker image and run in your local mac
     - First build the base image by executing `build.sh` script. (eg: `<REPOSITORY_HOME>/common/docker/base-image`)
     - Navigate to the `docker` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Execute `build.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./build.sh 1.9.1 1.0.0 'default|worker|manager'`
-    - This will result in Docker images being built for each product profile provided. For example, for WSO2 Api Manager, there will be three images named `wso2/am-1.9.1:1.0.0`, `wso2/am-manager-1.9.1:1.0.0`, and `wso2/am-worker-1.9.1:1.0.0` for the command provided above.
+        + `./build.sh 1.9.1 1.0.0 'default|api-publisher|api-store|api-key-manager|gateway-manager'`
+    - This will result in Docker images being built for each product profile provided. For example, for WSO2 Api Manager, there will be three images named `wso2/am-1.9.1:1.0.0`, `wso2/am-api-publisher-1.9.1:1.0.0`, `wso2/am-api-store-1.9.1:1.0.0`, `wso2/am-api-key-manager-1.9.1:1.0.0` and `wso2/am-gateway-manager-1.9.1:1.0.0` for the command provided above.
 
 ## Running the Docker Images
 
 * Docker run
     - Execute `run.sh` script and provide the product version, image version and the product profiles to be run.
-        + `./run.sh 1.9.1 1.0.0 'default|worker|manager'`
+        + `./run.sh 1.9.1 1.0.0 'default|api-publisher|api-store|api-key-manager|gateway-manager'`
     - This will result in running the docker images for each product profile provided.
     
 ## Saving the Docker Images
 
 * Saving the docker images
     - Execute `save.sh` script and provide the product version, image version and the product profiles to be built.
-        + `./save.sh 1.9.1 1.0.0 'default|worker|manager'`
-    - This will result in saving the tar files for the docker images built for each product profile provided. For example, for WSO2 Api Manager, there will be three tar files saved `wso2am-1.9.1-1.0.0.tar `, `wso2am-worker-1.9.1-1.0.0.tar `, and `wso2am-manager-1.9.1-1.0.0.tar ` for the command provided above. 
+        + `./save.sh 1.9.1 1.0.0 'default|api-publisher|api-store|api-key-manager|gateway-manager'`
+    - This will result in saving the tar files for the docker images built for each product profile provided. For example, for WSO2 Api Manager, there will be three tar files saved `wso2am-1.9.1-1.0.0.tar `, `wso2am-api-publisher-1.9.1-1.0.0.tar `, `wso2am-api-store-1.9.1-1.0.0.tar `, `wso2am-api-key-manager-1.9.1-1.0.0.tar `,and `wso2am-gateway-manager-1.9.1-1.0.0.tar ` for the command provided above. 
     - The tar files of the docker images will be saved and found at `~/docker/images` by default.
 
 ## Secure copying the Docker Images
@@ -76,5 +76,5 @@ Quick steps to build the WSO2 API Manager docker image and run in your local mac
     - Ensure the node is up
     - Ensure the tar files of the docker images are available at `~/docker/images`
     - Execute `scp.sh` script and provide the node, product version, image version and the product profiles to the secure copied into the node.
-        + `./scp.sh core@172.17.8.102 1.9.1 1.0.0 'default|worker|manager'`
+        + `./scp.sh core@172.17.8.102 1.9.1 1.0.0 'default|api-publisher|api-store|api-key-manager|gateway-manager'`
     - This will result in sending the tar files into the node and loading the docker image(s) in the node.
