@@ -6,7 +6,7 @@ Quick steps to run WSO2 Message Broker default profile docker image on Kubernete
 
 * Prerequisites
     - Ensure default profile of Message Broker docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Message Broker docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Message Broker](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2mb/docker).
+    Instructions on how to build Message Broker docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Message Broker](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2mb/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2mb. (eg: `<REPOSITORY_HOME>/wso2mb/docker`). 
@@ -26,13 +26,13 @@ Quick steps to run WSO2 Message Broker default profile docker image on Kubernete
     - Navigate to the `kubernetes` folder inside the module wso2mb. (eg: `<REPOSITORY_HOME>/wso2mb/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
     
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2mb. (eg: `<REPOSITORY_HOME>/wso2mb/docker`).
     - Execute `undeploy.sh` .
-          + `./undeploy.sh`           
+        + `./undeploy.sh`           
 * The `undeploy.sh` script has the following profiles defined to be undeployed. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
     - `product_profiles=(default)`

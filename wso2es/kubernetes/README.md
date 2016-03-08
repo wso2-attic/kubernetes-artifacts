@@ -6,7 +6,7 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
 
 * Prerequisites
     - Ensure default profile of Enterprise Store docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Enterprise Store docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Enterprise Store](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2es/docker).
+    Instructions on how to build Enterprise Store docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Enterprise Store](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2es/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`). 
@@ -26,18 +26,21 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
+        + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services
+        + wso2es publisher
+        + wso2es store
     
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`).
     - Execute `undeploy.sh` .
-          + `./undeploy.sh`           
+        + `./undeploy.sh`           
 * The `undeploy.sh` script has the following profiles defined to be undeployed. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
     - `product_profiles=(default publisher store)`

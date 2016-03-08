@@ -6,7 +6,7 @@ Quick steps to run WSO2 Complex Event Processor default profile docker image on 
 
 * Prerequisites
     - Ensure default profile of Complex Event Processor docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Complex Event Processor docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Complex Event Processor](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2cep/docker).
+    Instructions on how to build Complex Event Processor docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Complex Event Processor](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2cep/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`). 
@@ -26,12 +26,15 @@ Quick steps to run WSO2 Complex Event Processor default profile docker image on 
     - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
           + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services
+        + wso2cep presenter
+        + wso2cep worker 
     
 ## Undeploy script
 

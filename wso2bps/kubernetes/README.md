@@ -6,7 +6,7 @@ Quick steps to run WSO2 Business Process Server default profile docker image on 
 
 * Prerequisites
     - Ensure default profile of Business Process Server docker is built and loaded in the Kubernetes node.
-    Instructions on how to build Business Process Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Business Process Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2bps/docker).
+    Instructions on how to build Business Process Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Business Process Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2bps/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2bps. (eg: `<REPOSITORY_HOME>/wso2bps/docker`). 
@@ -26,13 +26,16 @@ Quick steps to run WSO2 Business Process Server default profile docker image on 
     - Navigate to the `kubernetes` folder inside the module wso2bps. (eg: `<REPOSITORY_HOME>/wso2bps/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2bps. (eg: `<REPOSITORY_HOME>/wso2bps/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
-    
+        + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services
+        + wso2bps manager
+        + wso2bps worker 
+        
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment

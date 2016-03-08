@@ -6,7 +6,7 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
 
 * Prerequisites
     - Ensure default profile of API Manager docker is built and loaded in the Kubernetes node.
-    Instructions on how to build API Manager docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 API MANAGER](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2am/docker).
+    Instructions on how to build API Manager docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 API MANAGER](https://github.com/wso2/kubernetes-artifacts/blob/master/wso2am/docker/README.md#building-the-docker-images).
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`). 
@@ -26,12 +26,17 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'default'`
+        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
+        + `./deploy.sh 'distributed'`
+    - Distributed deployment will create the following services 
+        + wso2am key manager
+        + wso2am store
+        + wso2am publisher
+        + wso2am gateway manager
     
 ## Undeploy script
 
