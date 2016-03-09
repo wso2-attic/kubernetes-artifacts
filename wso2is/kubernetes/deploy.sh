@@ -18,18 +18,30 @@
 # ------------------------------------------------------------------------
 
 host=172.17.8.102
-manager_port=32001
+default_port=32001
 
-echo "Deploying wso2is service..."
-kubectl create -f wso2is-default-service.yaml
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 
-echo "Deploying wso2is controller..."
-kubectl create -f wso2is-default-controller.yaml
+# Deploy using default profile
+function default {
+  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2is" "default"
+  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2is" "default"
+  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2is" "default" "${host}" "${default_port}"
+}
 
-echo -n "Waiting wso2is to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
-    printf '.'
-    sleep 5
-done
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
 
-echo -e "\nWSO2IS launched!"
+if [ "$pattern" = "default" ]; then
+  default
+else
+  echo "Usage: ./deploy.sh [default]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi
+

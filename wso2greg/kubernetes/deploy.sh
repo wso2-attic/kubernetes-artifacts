@@ -18,58 +18,37 @@
 # ------------------------------------------------------------------------
 
 host=172.17.8.102
+default_port=32001
+publisher_port=32001
+store_port=32003
 
-function default () {
-    manager_port=32001
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 
-    echo "Deploying wso2greg service..."
-    kubectl create -f wso2greg-default-service.yaml
-
-    echo "Deploying wso2greg controller..."
-    kubectl create -f wso2greg-default-controller.yaml
-
-    echo "Waiting wso2greg to launch on http://${host}:${manager_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
-        printf '.'
-        sleep 5
-    done
-
-    echo -e "\nwso2greg launched!"
+# Deploy using default profile
+function default {
+  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "default"
+  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "default"
+  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "default" "${host}" "${default_port}"
 }
 
-function distributed () {
-    publisher_port=32001
-    store_port=32003
+# Deploy using separate profiles
+function distributed {
 
-    # deploy store
-    echo "Deploying wso2greg store service..."
-    kubectl create -f wso2greg-store-service.yaml
+    # deploy services
 
-    echo "Deploying wso2greg store controller..."
-    kubectl create -f wso2greg-store-controller.yaml
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "store"
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "publisher"
 
-    echo "Waiting wso2greg to launch on http://${host}:${store_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${store_port}); do
-        printf '.'
-        sleep 5
-    done
+    # deploy the controllers
 
-    echo -e "\nwso2greg store launched!"
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "store"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "store" "${host}" "${store_port}"
 
-    # deploy publisher
-    echo "Deploying wso2greg publisher service..."
-    kubectl create -f wso2greg-publisher-service.yaml
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "publisher"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "publisher" "${host}" "${publisher_port}"
 
-    echo "Deploying wso2greg publisher controller..."
-    kubectl create -f wso2greg-publisher-controller.yaml
-
-    echo "Waiting wso2greg to launch on http://${host}:${publisher_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${publisher_port}); do
-        printf '.'
-        sleep 5
-    done
-
-    echo -e "\nwso2greg publisher launched!"
 }
 
 pattern=$1
