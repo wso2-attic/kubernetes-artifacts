@@ -66,6 +66,24 @@ do
     IFS='|' read -r -a array2 <<< "${nodes}"
     for node in "${array2[@]}"
     do
+        if [ -e ~/.ssh/known_hosts ]; then
+            ssh "${node}" 'pwd' > /dev/null 2>&1 || {
+                exit_code=$? # exit code of the last command
+                if [ "$exit_code" == "255" ]; then
+                    echoError "Specified node's host identification fails: ${node}"
+                    echoBold "Clear ~/.ssh/known_hosts ? (y/n): "
+                    read -r remove_knownhosts
+
+                    if [ "$remove_knownhosts" = "y" ]; then
+                        mv ~/.ssh/known_hosts ~/.ssh/hostfile.bck
+                        echoDim "Renamed ~/.ssh/known_hosts to ~/.ssh/hostfile.bck"
+                    fi
+                else
+                    echoError "Connection to specified node failed: ${node}. SCP commands may fail."
+                fi
+            }
+        fi
+
         echo "Copying ${HOME}/docker/images/${tar_file} to ${node}..."
         scp "${HOME}/docker/images/${tar_file}" "${node}:"
         echo "Loading ${tar_file} to Docker in ${node}..."
