@@ -26,36 +26,6 @@ prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
 common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 
-echo "Deploying wso2bps manager service..."
-kubectl create -f wso2bps-manager-service.yaml
-
-echo "Deploying wso2bps worker service..."
-kubectl create -f wso2bps-worker-service.yaml
-
-echo "Deploying wso2bps manager controller..."
-kubectl create -f wso2bps-manager-controller.yaml
-
-echo "Waiting wso2bps manager to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
-    printf '.'
-    sleep 5
-done
-
-echo -e "\nwso2bps manager launched!"
-
-echo "Deploying wso2bps worker controller..."
-kubectl create -f wso2bps-worker-controller.yaml
-
-echo "Waiting wso2bps worker to launch on http://${host}:${worker_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${worker_port}); do
-    printf '.'
-    sleep 5
-done
-
-echo -e "\nwso2bps worker launched!"
-
-
-
 # Deploy using default profile
 function default {
   bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2bps" "default"
