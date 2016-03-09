@@ -20,31 +20,48 @@
 host=172.17.8.102
 presenter_port=32001
 worker_port=32003
+default_port=32003
 
-echo "Deploying wso2cep presenter service..."
-kubectl create -f wso2cep-presenter-service.yaml
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 
-echo "Deploying wso2cep worker service..."
-kubectl create -f wso2cep-worker-service.yaml
+# Deploy using default profile
+function default {
+  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2cep" "default"
+  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2cep" "default"
+  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2cep" "default" "${host}" "${default_port}"
+}
 
-echo "Deploying wso2cep presenter controller..."
-kubectl create -f wso2cep-presenter-controller.yaml
+# Deploy using separate profiles
+function distributed {
 
-echo "Waiting wso2cep presenter to launch on http://${host}:${presenter_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${presenter_port}); do
-    printf '.'
-    sleep 5
-done
+    # deploy services
 
-echo -e "\nwso2cep presenter launched!"
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2cep" "presenter"
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2cep" "worker"
 
-echo "Deploying wso2cep worker controller..."
-kubectl create -f wso2cep-worker-controller.yaml
+    # deploy the controllers
 
-echo "Waiting wso2cep worker to launch on http://${host}:${worker_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${worker_port}); do
-    printf '.'
-    sleep 5
-done
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2brs" "presenter"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2brs" "presenter" "${host}" "${presenter_port}"
 
-echo -e "\nwso2cep worker launched!"
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2brs" "worker"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2brs" "worker" "${host}" "${worker_port}"
+}
+
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
+
+if [ "$pattern" = "default" ]; then
+  default
+elif [ "$pattern" = "distributed" ]; then
+  distributed
+else
+  echo "Usage: ./deploy.sh [default|distributed]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi
