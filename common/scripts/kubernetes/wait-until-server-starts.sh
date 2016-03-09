@@ -1,7 +1,7 @@
 #!/bin/bash
 # ------------------------------------------------------------------------
 #
-# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+# Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,11 +19,15 @@
 
 set -e
 
-product_name=$1
-product_profile=$2
+product=$1
+profile=$2
+host=$3
+port=$4
 
-if [[ ! -z $product_profile ]]; then
-    kubectl delete rc,services,pods -l name="${product_name}-${product_profile}"
-else
-    kubectl delete rc,services,pods -l name="${product_name}"
-fi
+echo "Waiting ${product} to launch on http://${host}:${port}"
+until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); do
+    printf '.'
+    sleep 5
+done
+
+echo -e "\nCarbon Server ${product} started successfully in ${profile} profile"
