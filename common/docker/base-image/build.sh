@@ -26,4 +26,4 @@ if [ -z "$image_version" ]
     image_version="1.0.0"
 fi
 
-docker build -t wso2/k8s-base:$image_version .
+docker build -t wso2/base:$image_version .

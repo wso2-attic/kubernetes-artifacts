@@ -16,7 +16,7 @@
 #
 # ------------------------------------------------------------------------
 
-FROM wso2/k8s-base:1.0.0
+FROM wso2/base:1.0.0
 MAINTAINER dev@wso2.org
 
 # Build time arguments
