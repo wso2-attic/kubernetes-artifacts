@@ -43,11 +43,11 @@ function distributed {
 
     # deploy the controllers
 
-    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2brs" "presenter"
-    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2brs" "presenter" "${host}" "${presenter_port}"
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2cep" "presenter"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2cep" "presenter" "${host}" "${presenter_port}"
 
-    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2brs" "worker"
-    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2brs" "worker" "${host}" "${worker_port}"
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2cep" "worker"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2cep" "worker" "${host}" "${worker_port}"
 }
 
 pattern=$1
