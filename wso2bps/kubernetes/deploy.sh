@@ -21,6 +21,10 @@ host=172.17.8.102
 manager_port=32001
 worker_port=32003
 
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+
 echo "Deploying wso2bps manager service..."
 kubectl create -f wso2bps-manager-service.yaml
 
@@ -49,3 +53,44 @@ done
 
 echo -e "\nwso2bps worker launched!"
 
+
+
+# Deploy using default profile
+function default {
+  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2bps" "default"
+  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2bps" "default"
+  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2bps" "default" "${host}" "${default_port}"
+}
+
+# Deploy using separate profiles
+function distributed {
+
+    # deploy services
+
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2bps" "manager"
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2bps" "worker"
+
+    # deploy the controllers
+
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2bps" "manager"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2bps" "manager" "${host}" "${manager_port}"
+
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2bps" "worker"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2am" "worker" "${host}" "${worker_port}"
+}
+
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
+
+if [ "$pattern" = "default" ]; then
+  default
+elif [ "$pattern" = "distributed" ]; then
+  distributed
+else
+  echo "Usage: ./deploy.sh [default|distributed]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi
