@@ -18,34 +18,52 @@
 # ------------------------------------------------------------------------
 
 host=172.17.8.102
+default_port=32001
 manager_port=32001
 worker_port=32003
 
-echo "Deploying wso2dss manager service..."
-kubectl create -f wso2dss-manager-service.yaml
 
-echo "Deploying wso2dss worker service..."
-kubectl create -f wso2dss-worker-service.yaml
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
 
-echo "Deploying wso2dss manager controller..."
-kubectl create -f wso2dss-manager-controller.yaml
+# Deploy using default profile
+function default {
+  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2dss" "default"
+  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2dss" "default"
+  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2dss" "default" "${host}" "${default_port}"
+}
 
-echo "Waiting wso2dss manager to launch on http://${host}:${manager_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${manager_port}); do
-    printf '.'
-    sleep 5
-done
+# Deploy using separate profiles
+function distributed {
 
-echo -e "\nwso2dss manager launched!"
+    # deploy services
 
-echo "Deploying wso2dss worker controller..."
-kubectl create -f wso2dss-worker-controller.yaml
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2dss" "worker"
+    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2dss" "manager"
 
-echo "Waiting wso2dss worker to launch on http://${host}:${worker_port}"
-until $(curl --output /dev/null --silent --head --fail http://${host}:${worker_port}); do
-    printf '.'
-    sleep 5
-done
+    # deploy the controllers
 
-echo -e "\nwso2dss worker launched!"
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2dss" "manager"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2dss" "manager" "${host}" "${manager_port}"
+
+    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2dss" "worker"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2dss" "worker" "${host}" "${worker_port}"
+}
+
+pattern=$1
+if [ -z "$pattern" ]
+  then
+    pattern='default'
+fi
+
+if [ "$pattern" = "default" ]; then
+  default
+elif [ "$pattern" = "distributed" ]; then
+  distributed
+else
+  echo "Usage: ./deploy.sh [default|distributed]"
+  echo "ex: ./deploy.sh default"
+  exit 1
+fi
 
