@@ -47,7 +47,7 @@ function distributed {
     bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2bps" "manager" "${host}" "${manager_port}"
 
     bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2bps" "worker"
-    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2am" "worker" "${host}" "${worker_port}"
+    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2bps" "worker" "${host}" "${worker_port}"
 }
 
 pattern=$1
