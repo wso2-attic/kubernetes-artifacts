@@ -20,6 +20,7 @@
 host=172.17.8.102
 manager_port=32001
 worker_port=32003
+default_port=32003
 
 prgdir=`dirname "$0"`
 script_path=`cd "$prgdir"; pwd`
