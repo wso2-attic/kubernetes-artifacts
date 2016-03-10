@@ -22,7 +22,9 @@ set -e
 product=$1
 profile=$2
 
-prod_dir=../../${product}/kubernetes
+prgdir=`dirname "$0"`
+script_path=`cd "$prgdir"; pwd`
+prod_dir=`cd "${script_path}/../../../${product}/kubernetes"; pwd`
 
 echo "Deploying ${product} ${profile} Replication Controller..."
 kubectl create -f "${prod_dir}/${product}"-"${profile}"-controller.yaml
