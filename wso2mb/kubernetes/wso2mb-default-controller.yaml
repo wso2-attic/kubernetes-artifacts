@@ -16,6 +16,10 @@ spec:
       containers:
       - name: wso2mb-default
         image: wso2/mb-3.0.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 9763

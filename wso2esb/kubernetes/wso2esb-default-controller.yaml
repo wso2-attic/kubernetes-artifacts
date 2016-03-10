@@ -17,6 +17,10 @@ spec:
       -
         name: wso2esb-default
         image: wso2/esb-4.9.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 8280

@@ -16,6 +16,10 @@ spec:
       containers:
       - name: wso2das-default
         image: wso2/das-3.0.1:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 9443

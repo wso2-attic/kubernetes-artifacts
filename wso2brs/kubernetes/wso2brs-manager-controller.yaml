@@ -16,6 +16,10 @@ spec:
       containers:
       - name: wso2brs-manager
         image: wso2/brs-manager-2.2.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 9763

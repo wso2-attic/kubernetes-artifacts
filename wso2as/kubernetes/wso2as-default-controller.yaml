@@ -17,6 +17,10 @@ spec:
       -
         name: wso2as-default
         image: wso2/as-5.3.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 8280
