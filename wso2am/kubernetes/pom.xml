@@ -39,7 +39,7 @@
                 <inherited>true</inherited>
                 <version>2.5.3</version>
                 <configuration>
-                    <descriptor>package.xml</descriptor>
+                    <descriptor>../../package.xml</descriptor>
                     <appendAssemblyId>false</appendAssemblyId>
                 </configuration>
                 <executions>

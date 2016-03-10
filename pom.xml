@@ -33,40 +33,40 @@
     </licenses>
 
     <modules>
-        <module>wso2am/docker</module>
+
         <module>wso2am/kubernetes</module>
 
-        <module>wso2as/docker</module>
+
         <module>wso2as/kubernetes</module>
 
-        <module>wso2bps/docker</module>
+
         <module>wso2bps/kubernetes</module>
 
-        <module>wso2brs/docker</module>
+
         <module>wso2brs/kubernetes</module>
 
-        <module>wso2cep/docker</module>
+
         <module>wso2cep/kubernetes</module>
 
-        <module>wso2das/docker</module>
+
         <module>wso2das/kubernetes</module>
 
-        <module>wso2dss/docker</module>
+
         <module>wso2dss/kubernetes</module>
 
-        <module>wso2es/docker</module>
+
         <module>wso2es/kubernetes</module>
 
-        <module>wso2esb/docker</module>
+
         <module>wso2esb/kubernetes</module>
 
-        <module>wso2greg/docker</module>
+
         <module>wso2greg/kubernetes</module>
 
-        <module>wso2is/docker</module>
+
         <module>wso2is/kubernetes</module>
 
-        <module>wso2mb/docker</module>
+
         <module>wso2mb/kubernetes</module>
     </modules>
 
