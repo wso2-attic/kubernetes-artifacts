@@ -22,9 +22,7 @@ set -e
 product=$1
 profile=$2
 
-pushd ../../${product}/kubernetes > /dev/null
+prod_dir=../../${product}/kubernetes
 
 echo "Deploying ${product} ${profile} Service..."
-kubectl create -f "${product}"-"${profile}"-service.yaml
-
-popd > /dev/null
+kubectl create -f "${prod_dir}/${product}"-"${profile}"-service.yaml

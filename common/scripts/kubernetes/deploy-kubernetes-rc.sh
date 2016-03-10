@@ -22,9 +22,7 @@ set -e
 product=$1
 profile=$2
 
-pushd ../../${product}/kubernetes > /dev/null
+prod_dir=../../${product}/kubernetes
 
 echo "Deploying ${product} ${profile} Replication Controller..."
-kubectl create -f "$product"-"${profile}"-controller.yaml
-
-popd > /dev/null
+kubectl create -f "${prod_dir}/${product}"-"${profile}"-controller.yaml

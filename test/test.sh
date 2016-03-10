@@ -39,7 +39,6 @@
 set -e
 
 kubernetes_artifact_version=1.0.0
-default_profile=default
 source environment.bash
 source ~/.bash_profile
 
@@ -53,7 +52,7 @@ user=`whoami`
 echo "user executing the script $user"
 
 # products to be tested
-products=(wso2am,1.9.1 wso2is,5.0.0)
+products=(wso2dss,3.5.0,manager)
 declare -A results
 
 function echoError {
@@ -81,12 +80,11 @@ function build_base_image {
 function build_docker_image_and_scp {
     # switch to IS 5 docker directory and build
     pushd ${root_dir}/$1/docker > /dev/null
-    echo pwd=`pwd`
-    sudo --preserve-env bash build.sh $2 ${kubernetes_artifact_version} $3 || print_results
+    sudo --preserve-env bash build.sh "$2" ${kubernetes_artifact_version} "$3" || cleanup
     # save the image as a tar file
-    sudo bash save.sh $2 ${kubernetes_artifact_version} $3 || print_results
+    sudo bash save.sh "$2" ${kubernetes_artifact_version} "$3" || cleanup
     sudo chown ${user}:${user} -R ~/docker/
-    bash scp.sh ${KUBERNETES_NODE_USER}@${KUBERNETES_NODE} $2 ${kubernetes_artifact_version} $3 || print_results
+    bash scp.sh ${KUBERNETES_NODE_USER}@${KUBERNETES_NODE} "$2" ${kubernetes_artifact_version} "$3" || cleanup
     popd > /dev/null
 }
 
@@ -97,14 +95,16 @@ function undeploy_kubernetes_artifacts {
     popd > /dev/null
 }
 
-function deploy_kubernetes_artifacts {
+function deploy_kubernetes_service {
     # switch to IS 5 kubernetes directory deploy kubernetes artifacts
-    pushd ${root_dir}/$1/kubernetes > /dev/null
     echo "Deploying $1 $2 service..."
-    kubectl create -f "$1"-"$2"-service.yaml || print_results
+    bash ${common_dir}/scripts/kubernetes/deploy-kubernetes-service.sh "$1" "$2" || cleanup
+}
+
+function deploy_kubernetes_rc {
+    # switch to IS 5 kubernetes directory deploy kubernetes artifacts
     echo "Deploying $1 $2 controller..."
-    kubectl create -f "$1"-"$2"-controller.yaml || print_results
-    popd > /dev/null
+    bash ${common_dir}/scripts/kubernetes/deploy-kubernetes-rc.sh "$1" "$2" || cleanup
 }
 
 
@@ -113,7 +113,7 @@ function check_status {
     success_count=0
     while true; do
         # check the pod status
-        result=`kubectl get pods | grep $1`
+        result=`kubectl get pods | grep $1-$3`
         if [[ -z "$result" ]]; then
            echo "no pod found for product $1"
            error_count=$((error_count + 1))
@@ -194,23 +194,37 @@ function validate_environment {
 }
 
 function test {
+    # build and scp
+#    for product in ${products[@]}; do
+#        IFS=","
+#        set ${product}
+#        echo "building docker image for=$1  version=$2 profile=$3"
+#        build_docker_image_and_scp "$1" "$2" "$3"
+#        unset IFS
+#    done
+#    # deploy all Services
+#    for product in ${products[@]}; do
+#        IFS=","
+#        set ${product}
+#        echo "deploying kubernetes Service for=$1 version=$2 profile=$3"
+#        deploy_kubernetes_service "$1" "$3"
+#        unset IFS
+#    done
+#    # deploy RCs and check status
     for product in ${products[@]}; do
         IFS=","
         set ${product}
-        echo "testing $1 v.$2"
-        echo 'building docker image for='$1 ' version='$2
-        build_docker_image_and_scp "$1" "$2" "${default_profile}"
-        echo 'deploying kubernetes artifacts for='$1 ' version='$2
-        deploy_kubernetes_artifacts "$1" "${default_profile}"
-        check_status "$1" "$2"
-        echo 'undeploying kubernetes artifacts for='$1 ' version='$2
+        echo "deploying kubernetes RC for=$1 version=$2 profile=$3"
+        deploy_kubernetes_rc "$1" "$3"
+        check_status "$1" "$2" "$3"
+        echo "undeploying kubernetes artifacts for=$1 version=$2 profile=$3"
         undeploy_kubernetes_artifacts "$1"
-        echo "completed testing $1 v.$2"
         unset IFS
     done
 }
 
 function print_results {
+    unset IFS
     echoBold "################################################# Results #################################################"
     for product in ${products[@]}; do
         IFS=","
@@ -224,6 +238,17 @@ function print_results {
         unset IFS
     done
     echoBold "############################################## End of Results #############################################"
+}
+
+function cleanup {
+    unset IFS
+    for product in ${products[@]}; do
+        IFS=","
+        set ${product}
+        echo "Cleaning up for=$1 version=$2 profile=$3"
+        undeploy_kubernetes_artifacts "$1"
+        unset IFS
+    done
 }
 
 # validate
