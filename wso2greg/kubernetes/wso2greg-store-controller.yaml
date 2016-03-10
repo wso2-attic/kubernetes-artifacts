@@ -16,6 +16,10 @@ spec:
       containers:
       - name: wso2greg-store
         image: wso2/greg-store-5.1.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
          containerPort: 9763

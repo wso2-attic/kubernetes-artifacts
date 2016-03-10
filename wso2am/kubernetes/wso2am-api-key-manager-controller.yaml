@@ -17,6 +17,10 @@ spec:
       -
         name: wso2am-key-manager
         image: wso2/am-api-key-manager-1.9.1:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 9763

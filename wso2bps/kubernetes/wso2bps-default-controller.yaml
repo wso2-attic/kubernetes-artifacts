@@ -17,6 +17,10 @@ spec:
       -
         name: wso2bps-default
         image: wso2/bps-3.5.0:1.0.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
           containerPort: 9763

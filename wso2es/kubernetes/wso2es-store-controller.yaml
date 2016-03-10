@@ -16,6 +16,10 @@ spec:
       containers:
       - name: wso2es-store
         image: wso2/es-store-2.0.0:0.0.1
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
         ports:
         -
          containerPort: 9763
