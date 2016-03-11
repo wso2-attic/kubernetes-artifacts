@@ -25,13 +25,13 @@
     <fileSets>
         <!-- kubernetes -->
         <fileSet>
-            <directory>${project.basedir}/../</directory>
+            <directory>${project.basedir}/</directory>
             <outputDirectory>./${wso2.product.name}/</outputDirectory>
             <includes>
-                <include>kubernetes/*</include>
+                <include>*</include>
             </includes>
             <excludes>
-                <exclude>kubernetes/target</exclude>
+                <exclude>target</exclude>
                 <exclude>**/package.xml</exclude>
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/*.zip</exclude>
@@ -43,22 +43,22 @@
 
         <!-- common -->
         <fileSet>
-            <directory>${project.basedir}/../../common/</directory>
+            <directory>${project.basedir}/../common/</directory>
             <outputDirectory>./common/</outputDirectory>
             <includes>
-                <include>scripts/kubernetes/**</include>
+                <include>scripts/**</include>
             </includes>
         </fileSet>
     </fileSets>
     <files>
         <file>
-            <source>${project.basedir}/../../LICENSE</source>
+            <source>${project.basedir}/../LICENSE</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/../../README.md</source>
+            <source>${project.basedir}/../README.md</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>

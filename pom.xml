@@ -33,41 +33,18 @@
     </licenses>
 
     <modules>
-
-        <module>wso2am/kubernetes</module>
-
-
-        <module>wso2as/kubernetes</module>
-
-
-        <module>wso2bps/kubernetes</module>
-
-
-        <module>wso2brs/kubernetes</module>
-
-
-        <module>wso2cep/kubernetes</module>
-
-
-        <module>wso2das/kubernetes</module>
-
-
-        <module>wso2dss/kubernetes</module>
-
-
-        <module>wso2es/kubernetes</module>
-
-
-        <module>wso2esb/kubernetes</module>
-
-
-        <module>wso2greg/kubernetes</module>
-
-
-        <module>wso2is/kubernetes</module>
-
-
-        <module>wso2mb/kubernetes</module>
+        <module>wso2am</module>
+        <module>wso2as</module>
+        <module>wso2bps</module>
+        <module>wso2brs</module>
+        <module>wso2cep</module>
+        <module>wso2das</module>
+        <module>wso2dss</module>
+        <module>wso2es</module>
+        <module>wso2esb</module>
+        <module>wso2greg</module>
+        <module>wso2is</module>
+        <module>wso2mb</module>
     </modules>
 
     <build>
