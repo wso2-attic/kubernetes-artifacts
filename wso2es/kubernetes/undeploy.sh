@@ -17,15 +17,16 @@
 
 # ------------------------------------------------------------------------
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_folder=$(cd "${script_path}/../../common/scripts/kubernetes/"; pwd)
+
 product_profiles=(store publisher default)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash ${common_folder}/undeploy.sh "wso2es" "$profile"
+        bash "${common_folder}/undeploy.sh" "wso2es" "$profile"
     done
 else
-    bash ${common_folder}/undeploy.sh "wso2es"
+    bash "${common_folder}/undeploy.sh" "wso2es"
 fi

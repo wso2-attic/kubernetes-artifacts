@@ -17,73 +17,57 @@
 
 # ------------------------------------------------------------------------
 
-host=10.245.1.3
+host=172.17.8.102
+default_port=32001
+publisher_port=32001
+store_port=32003
 
-function default (){
-    default_port=32001
-
-    echo "Deploying wso2es default service..."
-    kubectl create -f wso2es-default-service.yaml
-
-    echo "Deploying wso2es default controller..."
-    kubectl create -f wso2es-default-controller.yaml
-
-    echo "Waiting wso2es to launch on http://${host}:${default_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${default_port}); do
-        printf '.'
-        sleep 5
-    done
-
-    echo -e "\nwso2es launched!"
+# Deploy using default profile
+function default {
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "default"
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "default"
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "default" "${host}" "${default_port}"
 }
 
-function distributed (){
-    publisher_port=32001
-    store_port=32003
+# Deploy using separate profiles
+function distributed {
+    # deploy services
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "store"
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "publisher"
 
-    # deploy store
-    echo "Deploying wso2es store service..."
-    kubectl create -f wso2es-store-service.yaml
+    # deploy the controllers
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "publisher"
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "publisher" "${host}" "${publisher_port}"
 
-    echo "Deploying wso2es store controller..."
-    kubectl create -f wso2es-store-controller.yaml
-
-    echo "Waiting wso2es to launch on http://${host}:${store_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${store_port}); do
-        printf '.'
-        sleep 5
-    done
-
-    echo -e "\nwso2es store launched!"
-
-    # deploy publisher
-    echo "Deploying wso2es publisher service..."
-    kubectl create -f wso2es-publisher-service.yaml
-
-    echo "Deploying wso2es publisher controller..."
-    kubectl create -f wso2es-publisher-controller.yaml
-
-    echo "Waiting wso2es to launch on http://${host}:${publisher_port}"
-    until $(curl --output /dev/null --silent --head --fail http://${host}:${publisher_port}); do
-        printf '.'
-        sleep 5
-    done
-
-    echo -e "\nwso2es publisher launched!"
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "store"
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "store" "${host}" "${store_port}"
 }
 
-pattern=$1
-if [ -z "$pattern" ]
-  then
-    pattern='default'
-fi
+function showUsageAndExit () {
+    echo "Usage: ./deploy.sh -d [default|distributed] [OPTIONAL] -h [host IP]"
+    echo "ex: ./deploy.sh -d default"
+    echo "ex: ./deploy.sh -d default -h 172.17.8.103"
+    exit 1
+}
 
-if [ "$pattern" = "default" ]; then
-  default
-elif [ "$pattern" = "distributed" ]; then
-  distributed
+while getopts :d:h: FLAG; do
+    case $FLAG in
+        d)
+            deployment_pattern=$OPTARG
+            ;;
+        h)
+            host=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
+
+if [ "$deployment_pattern" = "default" ]; then
+    default
+elif [ "$deployment_pattern" = "distributed" ]; then
+    distributed
 else
-  echo "Usage: ./deploy.sh [default|distributed]"
-  echo "ex: ./deploy.sh default"
-  exit 1
+    showUsageAndExit
 fi

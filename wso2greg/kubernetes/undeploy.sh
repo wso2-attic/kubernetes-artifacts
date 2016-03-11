@@ -16,15 +16,16 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_folder=$(cd "${script_path}/../../common/scripts/kubernetes/"; pwd)
+
 product_profiles=(default publisher store)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash ${common_folder}/undeploy.sh "wso2greg" "$profile"
+        bash "${common_folder}/undeploy.sh" "wso2greg" "$profile"
     done
 else
-    bash ${common_folder}/undeploy.sh "wso2greg"
+    bash "${common_folder}/undeploy.sh" "wso2greg"
 fi

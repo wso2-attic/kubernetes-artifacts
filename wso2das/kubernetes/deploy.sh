@@ -20,27 +20,33 @@
 host=172.17.8.102
 default_port=32001
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_scripts_folder=$(cd "${script_path}/../../common/scripts/kubernetes/"; pwd)
 
 # Deploy using default profile
 function default {
-  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2das" "default"
-  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2das" "default"
-  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2das" "default" "${host}" "${default_port}"
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2das" "default"
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2das" "default"
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2das" "default" "${host}" "${default_port}"
 }
 
-pattern=$1
-if [ -z "$pattern" ]
-  then
-    pattern='default'
-fi
+function showUsageAndExit () {
+    echo "Usage: ./deploy.sh [OPTIONAL] -h [host IP]"
+    echo "ex: ./deploy.sh"
+    echo "ex: ./deploy.sh -h 172.17.8.103"
+    exit 1
+}
 
-if [ "$pattern" = "default" ]; then
-  default
-else
-  echo "Usage: ./deploy.sh [default]"
-  echo "ex: ./deploy.sh default"
-  exit 1
-fi
+while getopts :h: FLAG; do
+    case $FLAG in
+        h)
+            host=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
+
+default

@@ -22,47 +22,56 @@ default_port=32001
 publisher_port=32001
 store_port=32003
 
-prgdir=`dirname "$0"`
-script_path=`cd "$prgdir"; pwd`
-common_scripts_folder=`cd "${script_path}/../../common/scripts/kubernetes/"; pwd`
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_scripts_folder=$(cd "${script_path}/../../common/scripts/kubernetes/"; pwd)
 
 # Deploy using default profile
 function default {
-  bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "default"
-  bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "default"
-  bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "default" "${host}" "${default_port}"
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2greg" "default"
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2greg" "default"
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2greg" "default" "${host}" "${default_port}"
 }
 
 # Deploy using separate profiles
 function distributed {
-
     # deploy services
-
-    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "store"
-    bash ${common_scripts_folder}/deploy-kubernetes-service.sh "wso2greg" "publisher"
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2greg" "store"
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2greg" "publisher"
 
     # deploy the controllers
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2greg" "store"
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2greg" "store" "${host}" "${store_port}"
 
-    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "store"
-    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "store" "${host}" "${store_port}"
-
-    bash ${common_scripts_folder}/deploy-kubernetes-rc.sh "wso2greg" "publisher"
-    bash ${common_scripts_folder}/wait-until-server-starts.sh "wso2greg" "publisher" "${host}" "${publisher_port}"
-
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2greg" "publisher"
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2greg" "publisher" "${host}" "${publisher_port}"
 }
 
-pattern=$1
-if [ -z "$pattern" ]
-  then
-    pattern='default'
-fi
+function showUsageAndExit () {
+    echo "Usage: ./deploy.sh -d [default|distributed] [OPTIONAL] -h [host IP]"
+    echo "ex: ./deploy.sh -d default"
+    echo "ex: ./deploy.sh -d default -h 172.17.8.103"
+    exit 1
+}
 
-if [ "$pattern" = "default" ]; then
-  default
-elif [ "$pattern" = "distributed" ]; then
-  distributed
+while getopts :d:h: FLAG; do
+    case $FLAG in
+        d)
+            deployment_pattern=$OPTARG
+            ;;
+        h)
+            host=$OPTARG
+            ;;
+        \?)
+            showUsageAndExit
+            ;;
+    esac
+done
+
+if [ "$deployment_pattern" = "default" ]; then
+    default
+elif [ "$deployment_pattern" = "distributed" ]; then
+    distributed
 else
-  echo "Usage: ./deploy.sh [default|distributed]"
-  echo "ex: ./deploy.sh default"
-  exit 1
+    showUsageAndExit
 fi
