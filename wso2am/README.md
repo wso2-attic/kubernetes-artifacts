@@ -23,7 +23,6 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
         + `172.17.8.102       am.wso2.com`
     - To access the management console.
         +  `https://am.wso2.com:32004/carbon`. For example, `https://am.wso2.com:32004/carbon`.
-
           
 * How to deploy in a ditributed manner
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
@@ -34,8 +33,6 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
         + wso2am store
         + wso2am publisher
         + wso2am gateway manager
-    
-## Undeploy script
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
