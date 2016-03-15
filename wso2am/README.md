@@ -26,7 +26,7 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
 
 ## Distributed Deployment
           
-* How to deploy in a ditributed manner
+* How to deploy in a distributed manner
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`

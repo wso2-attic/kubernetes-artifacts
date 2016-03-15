@@ -12,7 +12,7 @@ Quick steps to run WSO2 Complex Event Processor default profile docker image on 
     - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`). 
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+        + `./deploy.sh -d 'default'`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> cep.wso2.com`. For example:
@@ -20,18 +20,12 @@ Quick steps to run WSO2 Complex Event Processor default profile docker image on 
     - To access the management console.
         +  `https://<kubernetes_node_ip>:32002/carbon`. For example, `https://172.17.8.102:32002/carbon`.
 
-## Deploy script
-
-* How to deploy the default deployment
-    - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`).
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
-    - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+## Distributed Deployment
           
-* How to deploy the distributed deployment
+* How to deploy in a distributed manner
     - Navigate to the `kubernetes` folder inside the module wso2cep. (eg: `<REPOSITORY_HOME>/wso2cep/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-          + `./deploy.sh 'distributed'`
+          + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2cep presenter
         + wso2cep worker 
