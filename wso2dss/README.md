@@ -21,7 +21,7 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
     - To access the management console.
         +  `https://dss.wso2.com:32002/carbon`. For example, `https://dss.wso2.com:32002/carbon`.
 
-## Deploy script
+## Distributed Deployment
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
@@ -31,7 +31,7 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
         + wso2dss manager
         + wso2dss worker 
     
-## Undeploy script
+## Undeploying
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
