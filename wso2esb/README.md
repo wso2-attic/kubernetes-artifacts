@@ -12,7 +12,7 @@ Quick steps to run WSO2 Enterprise Service Bus default profile docker image on K
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`). 
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+        + `./deploy.sh -d 'default'`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> esb.wso2.com`. For example:
@@ -20,18 +20,12 @@ Quick steps to run WSO2 Enterprise Service Bus default profile docker image on K
     - To access the management console.
         +  `https://<kubernetes_node_ip>:32004/carbon`. For example, `https://172.17.8.102:32004/carbon`.
 
-## Deploy script
-
-* How to deploy the default deployment
-    - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
-    - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+## Distributed Deployment
           
-* How to deploy the distributed deployment
+* How to deploy in a distributed manner
     - Navigate to the `kubernetes` folder inside the module wso2am. (eg: `<REPOSITORY_HOME>/wso2am/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'distributed'`
+        + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2esb manager
         + wso2esb worker 

@@ -12,7 +12,7 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`). 
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+        + `./deploy.sh -d 'default'`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> es.wso2.com`. For example:
@@ -20,18 +20,12 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
     - To access the management console.
         +  `https://<kubernetes_node_ip>:32002/carbon`. For example, `https://172.17.8.102:32002/carbon`.
 
-## Deploy script
-
-* How to deploy the default deployment
-    - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`).
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
-    - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+## Distributed Deployment
           
-* How to deploy the distributed deployment
+* How to deploy in a distributed manner
     - Navigate to the `kubernetes` folder inside the module wso2es. (eg: `<REPOSITORY_HOME>/wso2es/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'distributed'`
+        + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2es publisher
         + wso2es store

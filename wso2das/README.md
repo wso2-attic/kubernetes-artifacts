@@ -12,21 +12,13 @@ Quick steps to run WSO2 Data Analytics Server default profile docker image on Ku
     - Navigate to the `kubernetes` folder inside the module wso2das. (eg: `<REPOSITORY_HOME>/wso2das/docker`). 
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+        + `./deploy.sh -d 'default'`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> das.wso2.com`. For example:
         + `172.17.8.102       das.wso2.com`
     - To access the management console.
         +  `https://<kubernetes_node_ip>:32002/carbon`. For example, `https://172.17.8.102:32002/carbon`.
-
-## Deploy script
-
-* How to deploy the default deployment
-    - Navigate to the `kubernetes` folder inside the module wso2das. (eg: `<REPOSITORY_HOME>/wso2das/docker`).
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
-    - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
               
 ## Undeploy script
 
