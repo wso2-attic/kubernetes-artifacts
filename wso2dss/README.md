@@ -10,28 +10,23 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
 
 * Deploying default profile
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`). 
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
+    - Ensure the node ip is set correctly to `host` in the `deploy.sh`. 
+      Else you can pass the correct host IP as an argument with -h option.
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
+        + `./deploy.sh -d 'default'`
 
 * Access management console
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> dss.wso2.com`. For example:
         + `172.17.8.102       dss.wso2.com`
     - To access the management console.
-        +  `https://<kubernetes_node_ip>:32002/carbon`. For example, `https://172.17.8.102:32002/carbon`.
+        +  `https://dss.wso2.com:32002/carbon`. For example, `https://dss.wso2.com:32002/carbon`.
 
 ## Deploy script
-
-* How to deploy the default deployment
-    - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
-    - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'default'`
           
 * How to deploy the distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2dss. (eg: `<REPOSITORY_HOME>/wso2dss/docker`).
     - Execute `deploy.sh` script and provide the deployment details.
-        + `./deploy.sh 'distributed'`
+        + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2dss manager
         + wso2dss worker 
