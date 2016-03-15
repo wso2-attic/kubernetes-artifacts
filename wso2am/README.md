@@ -22,7 +22,7 @@ Quick steps to run WSO2 API Manager default profile docker image on Kubernetes
     - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> am.wso2.com`. For example:
         + `172.17.8.102       am.wso2.com`
     - To access the management console.
-        +  `https://am.wso2.com:32004/carbon`. For example, `https://172.17.8.102:32004/carbon`.
+        +  `https://am.wso2.com:32004/carbon`. For example, `https://am.wso2.com:32004/carbon`.
 
           
 * How to deploy in a ditributed manner
