@@ -21,8 +21,6 @@ Quick steps to run WSO2 Identity Server default profile docker image on Kubernet
         + `172.17.8.102       is.wso2.com`
     - To access the management console.
         +  `https://is.wso2.com:32002/carbon`. For example, `https://is.wso2.com:32002/carbon`.
-    
-* Undeploying 
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2is. (eg: `<REPOSITORY_HOME>/wso2is/docker`).
