@@ -8,7 +8,7 @@ Quick steps to run WSO2 Identity Server default profile docker image on Kubernet
     - Ensure default profile of Identity Server docker is built and loaded in the Kubernetes node.
     Instructions on how to build Identity Server docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Identity Server](https://github.com/wso2/kubernetes-artifacts/tree/master/wso2is/docker/README.md#building-the-docker-images).
 
-## Deploying Default Profile
+* Deploying Default Profile
 
     - Navigate to the `kubernetes` folder inside the module wso2is. (eg: `<REPOSITORY_HOME>/wso2is/docker`). 
     - Ensure the node ip is set correctly to `host` in the `deploy.sh`
@@ -22,7 +22,7 @@ Quick steps to run WSO2 Identity Server default profile docker image on Kubernet
     - To access the management console.
         +  `https://is.wso2.com:32002/carbon`. For example, `https://is.wso2.com:32002/carbon`.
     
-## Undeploying 
+* Undeploying 
 
 * How to undeploy the default or distributed deployment
     - Navigate to the `kubernetes` folder inside the module wso2is. (eg: `<REPOSITORY_HOME>/wso2is/docker`).
