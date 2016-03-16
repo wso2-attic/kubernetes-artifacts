@@ -230,7 +230,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             log.warn("No pod names were found for Service: " + serviceName);
         }
 
-        // for each pod name, get the mesos host IP
+        // for each pod name, get the mesos host IP, port tuple
         for (String podName : podNames) {
             String hostIpPortTuple = getHostIpPortTupleForPod(kubernetesMaster, namespace, podName,
                     username, password, definedClusteringPort);
