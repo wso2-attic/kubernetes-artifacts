@@ -138,12 +138,12 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
                     log.info("Found the relevant Service [ " + k8sService.getId() + " ] for the " +
                             "port mapping name: " + HZ_CLUSTERING_PORT_MAPPING_NAME);
                     log.info("Kubernetes service: " +  k8sService.getId() + ", clustering port: " + k8sService.getContainerPort());
-                    List<String> containerIPandPortTuples = findHostIPandPortTuples(kubernetesMaster,
+                    List<String> hostIPandPortTuples = findHostIPandPortTuples(kubernetesMaster,
                             kubernetesNamespace, k8sService.getId(), kubernetesMasterUsername,
                             kubernetesMasterPassword, k8sService.getContainerPort());
-                    for (String containerIP : containerIPandPortTuples) {
-                        tcpIpConfig.addMember(containerIP);
-                        log.info("Member added to cluster configuration: [container-ip] " + containerIP);
+                    for (String hostIPandPortTuple : hostIPandPortTuples) {
+                        tcpIpConfig.addMember(hostIPandPortTuple);
+                        log.info("Member added to cluster configuration: [host-ip,host-port] " + hostIPandPortTuple);
                     }
                 }
             }
@@ -224,7 +224,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         List<String> hostIpPortTuples = new ArrayList<>();
 
         // get the pod names
-        Set<String> podNames = getPodNames(kubernetesMaster, namespace, serviceName, username, password);
+        Set<String> podNames = getPodNamesForService(kubernetesMaster, namespace, serviceName, username, password);
 
         if (podNames.isEmpty()) {
             log.warn("No pod names were found for Service: " + serviceName);
@@ -345,8 +345,8 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
      * @return Set of Pod names corresponding to the Service name specified
      * @throws KubernetesMembershipSchemeException
      */
-    private Set<String> getPodNames (String kubernetesMaster, String namespace, String serviceName,
-                                     String username, String password) throws KubernetesMembershipSchemeException {
+    private Set<String> getPodNamesForService(String kubernetesMaster, String namespace, String serviceName,
+                                              String username, String password) throws KubernetesMembershipSchemeException {
 
         // use the Endpoints API to get the pod name
         final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
