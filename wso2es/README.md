@@ -9,12 +9,12 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
     Instructions on how to build Enterprise Store docker image and load into the Kubernetes node is explained in [Dockerfile for WSO2 Enterprise Store](https://github.com/wso2/dockerfiles/tree/master/wso2es/README.md#building-the-docker-images).
 
 * Deploying default profile
-    - Ensure the node ip is set correctly to `host` in the `deploy.sh`
+    - Ensure that `host` in the `deploy.sh` is set correctly to the node IP  
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'default'`
 
 * Access management console
-    - Add an etc/hosts entry in your local machine for `<kubernetes_node_ip> es.wso2.com`. For example:
+    - Add an `etc/hosts` entry in your local machine for `<kubernetes_node_ip> es.wso2.com`. For example:
         + `172.17.8.102       es.wso2.com`
     - To access the management console.
         +  `https://es.wso2.com:32002/carbon`. For example, `https://es.wso2.com:32002/carbon`.
@@ -34,5 +34,5 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
     - Execute `undeploy.sh` .
         + `./undeploy.sh`    
                
-* The `undeploy.sh` script has the following profiles defined to be undeployed. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
+* The `undeploy.sh` script has the following profiles that will be undeployed by default.. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
     - `product_profiles=(default publisher store)`
