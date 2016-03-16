@@ -22,6 +22,10 @@ default_port=32001
 publisher_port=32001
 store_port=32003
 
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
+
 # Deploy using default profile
 function default {
   bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "default"
