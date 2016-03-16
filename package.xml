@@ -26,7 +26,7 @@
         <!-- kubernetes -->
         <fileSet>
             <directory>${project.basedir}/</directory>
-            <outputDirectory>./${wso2.product.name}/</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/${wso2.product.name}/</outputDirectory>
             <includes>
                 <include>*</include>
             </includes>
@@ -44,7 +44,7 @@
         <!-- common -->
         <fileSet>
             <directory>${project.basedir}/../common/</directory>
-            <outputDirectory>./common/</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/common/</outputDirectory>
             <includes>
                 <include>scripts/**</include>
             </includes>
@@ -53,13 +53,13 @@
     <files>
         <file>
             <source>${project.basedir}/../LICENSE</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
         <file>
             <source>${project.basedir}/../README.md</source>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>${pom.artifactId}-${pom.version}/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
