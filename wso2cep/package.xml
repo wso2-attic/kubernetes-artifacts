@@ -23,16 +23,15 @@
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
     <fileSets>
-        <!-- docker -->
+        <!-- kubernetes -->
         <fileSet>
-            <directory>${project.basedir}/</directory>
+            <directory>${project.basedir}/../</directory>
             <outputDirectory>./</outputDirectory>
             <includes>
-                <include>**/*</include>
+                <include>${wso2.product.name}/*</include>
             </includes>
             <excludes>
-                <exclude>**/kubernetes-membership-scheme/**</exclude>
-                <exclude>**/target/**</exclude>
+                <exclude>${wso2.product.name}/target</exclude>
                 <exclude>**/package.xml</exclude>
                 <exclude>**/pom.xml</exclude>
                 <exclude>**/*.zip</exclude>
@@ -40,21 +39,27 @@
                 <exclude>**/*.tar.gz</exclude>
                 <exclude>**/.git*</exclude>
                 <exclude>**/*.iml</exclude>
-                <exclude>**/*.ipr</exclude>
-                <exclude>**/*.iws</exclude>
             </excludes>
         </fileSet>
-    </fileSets>
 
+        <!-- common -->
+        <fileSet>
+            <directory>${project.basedir}/../common/</directory>
+            <outputDirectory>./common/</outputDirectory>
+            <includes>
+                <include>scripts/**</include>
+            </includes>
+        </fileSet>
+    </fileSets>
     <files>
         <file>
-            <source>${project.basedir}/LICENSE</source>
+            <source>${project.basedir}/../LICENSE</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
         </file>
         <file>
-            <source>${project.basedir}/README.md</source>
+            <source>${project.basedir}/../README.md</source>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
             <fileMode>644</fileMode>
