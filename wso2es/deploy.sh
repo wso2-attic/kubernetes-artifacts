@@ -44,9 +44,17 @@ function distributed {
 }
 
 function showUsageAndExit () {
-    echo "Usage: ./deploy.sh -d [default|distributed] [OPTIONAL] -h [host IP]"
-    echo "ex: ./deploy.sh -d default"
-    echo "ex: ./deploy.sh -d default -h 172.17.8.103"
+    echo "Usage: ./deploy.sh -d [default|distributed] [OPTIONS]"
+    echo
+    echo "Deploy Replication Controllers and Services on Kubernetes"
+    echo
+
+    echo " -d  - [REQUIRED] Deployment pattern"
+    echo " -h  - [OPTIONAL] Node IP of the Kubernetes Cluster"
+    echo
+
+    echo "Ex: ./deploy.sh -d default"
+    echo "Ex: ./deploy.sh -d default -h 172.17.8.103"
     exit 1
 }
 
