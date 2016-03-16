@@ -32,9 +32,15 @@ function default {
 }
 
 function showUsageAndExit () {
-    echo "Usage: ./deploy.sh [OPTIONAL] -h [host IP]"
-    echo "ex: ./deploy.sh"
-    echo "ex: ./deploy.sh -h 172.17.8.103"
+    echo "Usage: ./deploy.sh [OPTIONS]"
+    echo
+    echo "Deploy Replication Controllers and Services on Kubernetes"
+    echo
+
+    echo " -h  - [OPTIONAL] Node IP of the Kubernetes Cluster"
+    echo
+
+    echo "Ex: ./deploy.sh -h 172.17.8.103"
     exit 1
 }
 
