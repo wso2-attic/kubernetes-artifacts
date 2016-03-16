@@ -109,7 +109,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
                 return;
             }
 
-            List<KubernetesService> kubernetesServices = new ArrayList<KubernetesService>();
+            List<KubernetesService> kubernetesServices = new ArrayList<>();
 
             try {
                 TopologyManager.acquireReadLock();
@@ -221,7 +221,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             serviceName, String username, String password, int definedClusteringPort)
             throws KubernetesMembershipSchemeException {
 
-        List<String> hostIpPortTuples = new ArrayList<String>();
+        List<String> hostIpPortTuples = new ArrayList<>();
 
         // get the pod names
         Set<String> podNames = getPodNames(kubernetesMaster, namespace, serviceName, username, password);
@@ -314,7 +314,6 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
      */
     private String getExposedClusteringPort(InputStream inputStream, String definedClusteringPort) {
         // parses the json manually, not good :(
-        // TODO: local member port is hard coded to 4000, make dynamic
         String regex = "(port_TCP_"+ definedClusteringPort +"\":)(\\s*)(\")(\\d*)(\",)";
         //String regex = "(portName_TCP_http-" + definedClusteringPort + "\":)(\\s*)(\")(\\d*)(\",)";
         Pattern r = Pattern.compile(regex);
