@@ -350,7 +350,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
 
         // use the Endpoints API to get the pod name
         final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
-        final Set<String> podNames = new HashSet<String>();
+        final Set<String> podNames = new HashSet<>();
 
         // Create k8s api endpoint URL
         URL apiEndpointUrl = createUrl(kubernetesMaster, apiContext + serviceName);
