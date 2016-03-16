@@ -5,7 +5,7 @@ metadata:
   labels:
     name: wso2es-store
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     name: wso2es-store
   template:
