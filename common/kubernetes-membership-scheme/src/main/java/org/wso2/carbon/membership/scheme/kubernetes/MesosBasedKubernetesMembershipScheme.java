@@ -294,7 +294,8 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         // set host machine IP as the public address of nwConfig,
         // if the pod with name 'podName' is relevant to this JVM
         if (memberId.equals(pod.getMetadata().getAnnotations().getMemberId())) {
-            log.info("Pod name relevant to this JVM: " + podName);
+            log.info("Pod name relevant to this member: " + podName + ", setting host IP " + pod
+                    .getStatus().getHostIP() + " as the public address");
             nwConfig.setPublicAddress(pod.getStatus().getHostIP());
         }
 
