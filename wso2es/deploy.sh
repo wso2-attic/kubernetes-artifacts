@@ -1,7 +1,7 @@
 #!/bin/bash
 # ------------------------------------------------------------------------
 #
-# Copyright 2005-2015 WSO2, Inc. (http://wso2.com)
+# Copyright 2016 WSO2, Inc. (http://wso2.com)
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,6 +21,10 @@ host=172.17.8.102
 default_port=32001
 publisher_port=32001
 store_port=32003
+
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
+common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
 # Deploy using default profile
 function default {

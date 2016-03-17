@@ -11,27 +11,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    name: wso2am-api-publisher
-  name: wso2am-api-publisher
-spec:
-  type: NodePort
-  sessionAffinity: ClientIP
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32012
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32013
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    name: wso2am-api-publisher
+
+begin
+  require 'yaml'
+
+  Dir.glob('**/*.yaml') do |yaml_file|
+    YAML.load_file("#{yaml_file}")
+  end
+
+rescue => e
+  puts "Error during processing: #{$!}"
+end
