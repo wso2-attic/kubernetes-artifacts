@@ -42,5 +42,6 @@
     <properties>
         <wso2.product.name>wso2das</wso2.product.name>
         <wso2.product.fullname>WSO2 Data Analytics Server</wso2.product.fullname>
+        <validation.script.dir>${project.basedir}/../</validation.script.dir>
     </properties>
 </project>

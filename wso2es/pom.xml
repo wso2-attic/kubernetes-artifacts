@@ -35,5 +35,6 @@
     <properties>
         <wso2.product.name>wso2es</wso2.product.name>
         <wso2.product.fullname>WSO2 Enterprise Store</wso2.product.fullname>
+        <validation.script.dir>${project.basedir}/../</validation.script.dir>
     </properties>
 </project>
