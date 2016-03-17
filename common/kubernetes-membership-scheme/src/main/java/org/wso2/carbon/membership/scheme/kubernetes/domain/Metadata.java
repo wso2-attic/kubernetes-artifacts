@@ -22,25 +22,15 @@ package org.wso2.carbon.membership.scheme.kubernetes.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Pod {
+public class Metadata {
 
-    private Metadata metadata;
+    private Annotations annotations;
 
-    private Status status;
-
-    public Status getStatus() {
-        return status;
+    public Annotations getAnnotations() {
+        return annotations;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public Metadata getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Metadata metadata) {
-        this.metadata = metadata;
+    public void setAnnotations(Annotations annotations) {
+        this.annotations = annotations;
     }
 }

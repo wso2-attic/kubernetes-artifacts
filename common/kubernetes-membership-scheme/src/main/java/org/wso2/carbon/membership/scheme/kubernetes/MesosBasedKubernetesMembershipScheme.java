@@ -50,10 +50,14 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
 
     private static final Log log = LogFactory.getLog(MesosBasedKubernetesMembershipScheme.class);
     private static final String HZ_CLUSTERING_PORT_MAPPING_NAME = "hz-clustering";
+    private static final String POD_KIND = "Pod";
 
     private boolean shuttingDown;
+    // this node's member id
+    private String memberId;
     private static final String PARAMETER_NAME_CLUSTER_IDS = "CLUSTER_IDS";
     private static final String PODS_API_CONTEXT = "/api/v1/namespaces/%s/pods/";
+    private static final String PARAMETER_NAME_MEMBER_ID = "MEMBER_ID";
 
     public MesosBasedKubernetesMembershipScheme(Map<String, Parameter> parameters, String primaryDomain,
                                                 Config config, HazelcastInstance primaryHazelcastInstance,
@@ -77,6 +81,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             String kubernetesMasterUsername = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
             String kubernetesMasterPassword = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
             String clusterIds = System.getenv(PARAMETER_NAME_CLUSTER_IDS);
+            memberId = System.getenv(PARAMETER_NAME_MEMBER_ID);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
@@ -100,8 +105,14 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             if (StringUtils.isEmpty(clusterIds)) {
                 clusterIds = getParameterValue(PARAMETER_NAME_CLUSTER_IDS);
             }
+
             if(clusterIds == null) {
                 throw new RuntimeException(PARAMETER_NAME_CLUSTER_IDS + " parameter not found");
+            }
+
+            if (memberId == null) {
+                throw new RuntimeException(PARAMETER_NAME_MEMBER_ID + " parameter not found in " +
+                        "System parameters");
             }
             String[] clusterIdArray = clusterIds.split(",");
 
@@ -283,8 +294,12 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
         log.info("Status of the Pod: " + podName + " -> phase: " + pod.getStatus().getPhase() +
                 ", host IP: " + pod.getStatus().getHostIP());
 
-        // set host machine IP as the public address of nwConfig
-        nwConfig.setPublicAddress(pod.getStatus().getHostIP());
+        // set host machine IP as the public address of nwConfig,
+        // if the pod with name 'podName' is relevant to this JVM
+        if (memberId.equals(pod.getMetadata().getAnnotations().getMemberId())) {
+            log.info("Pod name relevant to this JVM: " + podName);
+            nwConfig.setPublicAddress(pod.getStatus().getHostIP());
+        }
 
         String exposedClusteringPortByHost;
         try {
@@ -375,7 +390,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
                 for (Subset subset : endpoints.getSubsets()) {
                     for (Address address : subset.getAddresses()) {
                         if (address.getTargetRef() != null) {
-                            if ("Pod".equalsIgnoreCase(address.getTargetRef().getKind())) {
+                            if (POD_KIND.equalsIgnoreCase(address.getTargetRef().getKind())) {
                                 podNames.add(address.getTargetRef().getName());
                                 log.info("Added pod: " + address.getTargetRef().getName() + " for service: "+ serviceName);
                             } else {
