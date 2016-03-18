@@ -21,14 +21,15 @@ Quick steps to run WSO2 Data Services Server default profile docker image on Kub
         +  `https://dss.wso2.com:32002/carbon`. For example, `https://dss.wso2.com:32002/carbon`.
 
 ## Distributed Deployment
-          
+
 * How to deploy in distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2dss manager
-        + wso2dss worker 
-    
+        + wso2dss worker
+
 ## Undeploying
 
 * How to undeploy the default or distributed deployment

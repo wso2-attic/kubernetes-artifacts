@@ -20,14 +20,15 @@ Quick steps to run WSO2 Enterprise Service Bus default profile docker image on K
         +  `https://esb.wso2.com:32004/carbon`. For example, `https://esb.wso2.com:32004/carbon`.
 
 ## Distributed Deployment
-          
+
 * How to deploy in a distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2esb manager
-        + wso2esb worker 
-    
+        + wso2esb worker
+
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment

@@ -22,12 +22,13 @@ Quick steps to run WSO2 Business Rules Server default profile docker image on Ku
 ## Distributed Deployment
 
 * How to deploy in a distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2brs manager
-        + wso2brs worker 
-    
+        + wso2brs worker
+
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment

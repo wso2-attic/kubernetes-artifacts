@@ -20,19 +20,20 @@ Quick steps to run WSO2 Enterprise Store default profile docker image on Kuberne
         +  `https://es.wso2.com:32002/carbon`. For example, `https://es.wso2.com:32002/carbon`.
 
 ## Distributed Deployment
-          
+
 * How to deploy in a distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2es publisher
         + wso2es store
-    
+
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment
     - Execute `undeploy.sh` .
         + `./undeploy.sh`    
-               
+
 * The `undeploy.sh` script has the following profiles that will be undeployed by default.. If it is required to undeploy any other profile, then it can be added to the `product_profiles` with a space as the separator.
     - `product_profiles=(default publisher store)`

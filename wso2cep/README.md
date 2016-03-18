@@ -20,14 +20,15 @@ Quick steps to run WSO2 Complex Event Processor default profile docker image on 
         +  `https://cep.wso2.com:32002/carbon`. For example, `https://cep.wso2.com:32002/carbon`.
 
 ## Distributed Deployment
-          
+
 * How to deploy in a distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
           + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2cep presenter
-        + wso2cep worker 
-    
+        + wso2cep worker
+
 ## Undeploy script
 
 * How to undeploy the default or distributed deployment

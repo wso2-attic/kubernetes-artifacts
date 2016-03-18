@@ -22,11 +22,12 @@ Quick steps to run WSO2 Application Server default profile docker image on Kuber
 ## Distributed Deployment
 
 * How to deploy in a distributed manner
+    - Apply Kubernetes Membership Scheme as described in [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
     - Execute `deploy.sh` script and provide the deployment details.
         + `./deploy.sh -d 'distributed'`
     - Distributed deployment will create the following services
         + wso2as manager
-        + wso2as worker 
+        + wso2as worker
 
 * How to undeploy the default or distributed deployment
     - Execute `undeploy.sh` .
