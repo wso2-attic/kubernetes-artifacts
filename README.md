@@ -24,14 +24,10 @@ Kubernetes Service artifacts and Replication Controller artifacts are provided f
 
   - Download JDK 1.7 and WSO2 product
   <br>
-      `wget http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html`<br>
-
-      `cp jdk-7u80-linux-x64.tar.gz   
-      <PUPPET_HOME>/modules/wso2base/files`<br>
-
-      `wget http://wso2.com/products/enterprise-service-bus/`<br>
-
-      `cp wso2esb-4.9.0.zip  <PUPPET_HOME>/modules/wso2esb/files`<br>
+      `wget http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html` <br></br>
+      `cp jdk-7u80-linux-x64.tar.gz <PUPPET_HOME>/modules/wso2base/files`  <br></br>
+      `wget http://wso2.com/products/enterprise-service-bus`  <br></br>
+      `cp wso2esb-4.9.0.zip  <PUPPET_HOME>/modules/wso2esb/files`  <br></br>
 
   - Download latest wso2 dockerfiles and build docker images, save and scp to K8S. Assumes you have a K8S node running in 172.17.8.102 <br>
     `wget https://github.com/wso2/dockerfiles/releases/download/v1.0.0/wso2-dockerfiles-1.0.0.zip` <br>
