@@ -13,7 +13,7 @@ Kubernetes Service artifacts and Replication Controller artifacts are provided f
 [Understand](https://docs.wso2.com/display/KA100/Introduction) the basics of the KA and its architecture.
 
 ##	Quick Start Guide
-  ###### Note: This Quick Start Guide is based on How to deploy WSO2 ESB in Kubernetes. For instructions on other products, refer the README inside each product. <br><br>
+###### Note: This Quick Start Guide is based on How to deploy WSO2 ESB in Kubernetes. For instructions on other products, refer the README inside each product. <br><br>
   - Download latest wso2-puppet-modules release and configure.
   <br>
    `wget  https://github.com/wso2/puppet-modules/releases/download/v1.1.1/wso2-puppet-modules-1.1.1.zip` <br>
