@@ -29,22 +29,18 @@ Kubernetes Service artifacts and Replication Controller artifacts are provided f
       `wget http://wso2.com/products/enterprise-service-bus`  <br></br>
       `cp wso2esb-4.9.0.zip  <PUPPET_HOME>/modules/wso2esb/files`  <br></br>
 
-  - Download latest wso2 dockerfiles and build docker images, save and scp to K8S. Assumes you have a K8S node running in 172.17.8.102 <br>
-    `wget https://github.com/wso2/dockerfiles/releases/download/v1.0.0/wso2-dockerfiles-1.0.0.zip` <br>
+  - Download latest wso2 dockerfiles and build docker images, save and scp to K8S. Assumes you have a K8S node running in 172.17.8.102 <br></br>
+    `wget https://github.com/wso2/dockerfiles/releases/download/v1.0.0/wso2-dockerfiles-1.0.0.zip` <br></br>
 
-    `unzip wso2-dockerfiles-1.0.0.zip -d /opt/dockerfiles` <br>
+    `unzip wso2-dockerfiles-1.0.0.zip -d /opt/dockerfiles` <br></br>
 
-    `export DOCKERFILES_HOME=/opt/dockerfiles/wso2-dockerfiles-1.0.0`
+    `export DOCKERFILES_HOME=/opt/dockerfiles/wso2-dockerfiles-1.0.0` <br></br>
 
-    `cd $DOCKERFILES_HOME/common/base` <br>
+    `cd $DOCKERFILES_HOME/wso2esb` <br></br>
 
-    `./build.sh` <br>
+    `./build.sh -v 4.9.0 -i 1.0.0` <br></br>
 
-    `cd $DOCKERFILES_HOME/wso2esb` <br>
-
-    `./build.sh -v 4.9.0 -i 1.0.0` <br>
-
-    `./save.sh -v 4.9.0 -i 1.0.0`
+    `./save.sh -v 4.9.0 -i 1.0.0` <br></br>
 
     `./scp.sh -h 'core@172.17.8.102' -v 4.9.0 -i 1.0.0`
 
