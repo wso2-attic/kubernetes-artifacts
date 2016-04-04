@@ -30,4 +30,4 @@ until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); 
     sleep 5
 done
 
-echo -e "\nCarbon Server ${product} started successfully, profile: ${profile}"
+echo -e "\n$(echo ${product} | awk '{print toupper($0)}') started successfully, profile: ${profile}"
