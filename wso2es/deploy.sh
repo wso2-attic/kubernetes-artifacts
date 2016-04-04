@@ -17,7 +17,6 @@
 
 # ------------------------------------------------------------------------
 
-host=172.17.8.102
 default_port=32001
 publisher_port=32001
 store_port=32003
@@ -28,58 +27,56 @@ common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
 # Deploy using default profile
 function default {
-  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "default"
-  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "default"
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "default" "${host}" "${default_port}"
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "default" && \
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "default" && \
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "default" "${default_port}"
 }
 
 # Deploy using separate profiles
 function distributed {
     # deploy services
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "store"
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "publisher"
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "store" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2es" "publisher" && \
 
     # deploy the controllers
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "publisher"
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "publisher" "${host}" "${publisher_port}"
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "publisher" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "publisher" "${publisher_port}" && \
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "store"
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "store" "${host}" "${store_port}"
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2es" "store" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2es" "store" "${store_port}"
 }
 
 function showUsageAndExit () {
-    echo "Usage: ./deploy.sh -d [default|distributed] [OPTIONS]"
+    echo "Usage: ./deploy.sh [OPTIONS]"
     echo
     echo "Deploy Replication Controllers and Services on Kubernetes"
     echo
 
-    echo " -d  - [REQUIRED] Deployment pattern"
-    echo " -h  - [OPTIONAL] Node IP of the Kubernetes Cluster"
+    echo " -d  - [OPTIONAL] Deploy distributed pattern"
+    echo " -h  - Help"
     echo
 
-    echo "Ex: ./deploy.sh -d default"
-    echo "Ex: ./deploy.sh -d default -h 172.17.8.103"
+    echo "Ex: ./deploy.sh"
+    echo "Ex: ./deploy.sh -d"
     exit 1
 }
 
-while getopts :d:h: FLAG; do
+while getopts :dh FLAG; do
     case $FLAG in
         d)
-            deployment_pattern=$OPTARG
+            deployment_pattern="distributed"
             ;;
         h)
-            host=$OPTARG
+            showUsageAndExit
             ;;
         \?)
-            showUsageAndExit
+            default
             ;;
     esac
 done
 
-if [ "$deployment_pattern" = "default" ]; then
-    default
-elif [ "$deployment_pattern" = "distributed" ]; then
+if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else
-    showUsageAndExit
+    default
 fi

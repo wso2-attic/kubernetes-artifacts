@@ -17,7 +17,6 @@
 
 # ------------------------------------------------------------------------
 
-host=172.17.8.102
 default_port=32001
 
 prgdir=$(dirname "$0")
@@ -26,9 +25,9 @@ common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
 # Deploy using default profile
 function default {
-  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2das" "default"
-  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2das" "default"
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2das" "default" "${host}" "${default_port}"
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2das" "default" && \
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2das" "default" && \
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2das" "default" "${default_port}"
 }
 
 function showUsageAndExit () {
@@ -37,20 +36,20 @@ function showUsageAndExit () {
     echo "Deploy Replication Controllers and Services on Kubernetes"
     echo
 
-    echo " -h  - [OPTIONAL] Node IP of the Kubernetes Cluster"
+    echo " -h  - Help"
     echo
 
-    echo "Ex: ./deploy.sh -h 172.17.8.103"
+    echo "Ex: ./deploy.sh -h"
     exit 1
 }
 
-while getopts :h: FLAG; do
+while getopts :h FLAG; do
     case $FLAG in
         h)
-            host=$OPTARG
+            showUsageAndExit
             ;;
         \?)
-            showUsageAndExit
+            default
             ;;
     esac
 done

@@ -28,3 +28,4 @@ prod_dir=$(cd "${script_path}/../../${product}"; pwd)
 
 echo "Deploying ${product} ${profile} Service..."
 kubectl create -f "${prod_dir}/${product}-${profile}-service.yaml"
+exit $?

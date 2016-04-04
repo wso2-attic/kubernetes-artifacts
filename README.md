@@ -16,7 +16,7 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 ##### 3. Deploy Kubernetes Artifacts
 Change the `spec.template.spec.containers.image` field in the relevant Replication Controller `yaml` definition to match the Docker image for the required product. Afterwards, run `deploy.sh` that will deploy the Service and the Replication Controller on the Kubernetes deployment.
 
-> For more detailed instructions refer to README files in the product folder.
+> For more detailed instructions on deploying a particular WSO2 product on Kubernetes refer to README file in the relevant product folder.
 
 # Documentation
 * [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)

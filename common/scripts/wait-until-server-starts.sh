@@ -18,10 +18,16 @@
 # ------------------------------------------------------------------------
 
 set -e
+self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source "${self_path}/base.sh"
 
+function getLastKubernetesNode() {
+    kubectl get nodes | tail -1 | awk '{print $1}'
+}
+
+host=$(getLastKubernetesNode)
 product=$1
 profile=$2
-host=$3
 port=$4
 
 echo "Waiting ${product} to launch on http://${host}:${port}"
@@ -30,4 +36,4 @@ until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); 
     sleep 5
 done
 
-echo -e "\n$(echo ${product} | awk '{print toupper($0)}') started successfully, profile: ${profile}"
+echoSuccess -e "\n$(echo ${product} | awk '{print toupper($0)}') started successfully, profile: ${profile}"
