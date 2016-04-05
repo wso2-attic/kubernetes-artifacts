@@ -57,6 +57,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     private final List<ClusteringMessage> messageBuffer;
     private HazelcastInstance primaryHazelcastInstance;
     private HazelcastCarbonClusterImpl carbonCluster;
+    private boolean skipMasterVerification;
 
     public KubernetesMembershipScheme(Map<String, Parameter> parameters,
                                       String primaryDomain,
@@ -99,6 +100,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             String kubernetesServices = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
             String kubernetesMasterUsername = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
             String kubernetesMasterPassword = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
+            String skipMasterVerificationValue = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_VERIFICATION);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
@@ -125,8 +127,14 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
                 kubernetesMasterPassword = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
             }
 
-            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s",
-                    kubernetesMaster, kubernetesNamespace, kubernetesServices));
+            if (StringUtils.isEmpty(skipMasterVerificationValue)){
+                skipMasterVerificationValue = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_VERIFICATION, "false");
+            }
+
+            skipMasterVerification = Boolean.parseBoolean(skipMasterVerificationValue);
+
+            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s [skipVerification] %s",
+                    kubernetesMaster, kubernetesNamespace, kubernetesServices, skipMasterVerification));
 
             String[] kubernetesServicesArray = kubernetesServices.split(",");
             for (String kubernetesService : kubernetesServicesArray) {
@@ -223,7 +231,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         KubernetesApiEndpoint apiEndpoint;
 
         if (url.getProtocol().equalsIgnoreCase("https")) {
-            apiEndpoint = new KubernetesHttpsApiEndpoint(url);
+            apiEndpoint = new KubernetesHttpsApiEndpoint(url, skipMasterVerification);
         } else if (url.getProtocol().equalsIgnoreCase("http")) {
             apiEndpoint = new KubernetesHttpApiEndpoint(url);
         } else {
