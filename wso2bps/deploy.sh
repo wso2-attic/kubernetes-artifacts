@@ -24,41 +24,20 @@ default_port=32003
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
-
-# Deploy using default profile
-function default {
-  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2bps" "default" && \
-  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2bps" "default" && \
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2bps" "default" "${default_port}"
-}
+source "${common_scripts_folder}/base.sh"
 
 # Deploy using separate profiles
 function distributed {
     # deploy services
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2bps" "manager" && \
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2bps" "worker" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "manager" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "worker" && \
 
     # deploy the controllers
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2bps" "manager" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2bps" "manager" "${manager_port}" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "manager" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "manager" "${manager_port}" && \
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2bps" "worker" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2bps" "worker" "${worker_port}"
-}
-
-function showUsageAndExit () {
-    echo "Usage: ./deploy.sh [OPTIONS]"
-    echo
-    echo "Deploy Replication Controllers and Services on Kubernetes"
-    echo
-
-    echo " -d  - [OPTIONAL] Deploy distributed pattern"
-    echo " -h  - Help"
-    echo
-
-    echo "Ex: ./deploy.sh"
-    echo "Ex: ./deploy.sh -d"
-    exit 1
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "worker" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "worker" "${worker_port}"
 }
 
 while getopts :dh FLAG; do
@@ -67,7 +46,7 @@ while getopts :dh FLAG; do
             deployment_pattern="distributed"
             ;;
         h)
-            showUsageAndExit
+            showUsageAndExitDistributed
             ;;
         \?)
             default
@@ -75,6 +54,7 @@ while getopts :dh FLAG; do
     esac
 done
 
+validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else

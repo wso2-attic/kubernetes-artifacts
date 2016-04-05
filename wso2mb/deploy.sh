@@ -22,31 +22,12 @@ default_port=32001
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
-
-# Deploy using default profile
-function default {
-  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2mb" "default" && \
-  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2mb" "default" && \
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2mb" "default" "${default_port}"
-}
-
-function showUsageAndExit () {
-    echo "Usage: ./deploy.sh [OPTIONS]"
-    echo
-    echo "Deploy Replication Controllers and Services on Kubernetes"
-    echo
-
-    echo " -h  - Help"
-    echo
-
-    echo "Ex: ./deploy.sh -h"
-    exit 1
-}
+source "${common_scripts_folder}/base.sh"
 
 while getopts :h FLAG; do
     case $FLAG in
         h)
-            showUsageAndExit
+            showUsageAndExitDefault
             ;;
         \?)
             default
@@ -54,4 +35,5 @@ while getopts :h FLAG; do
     esac
 done
 
+validateKubeCtlConfig
 default

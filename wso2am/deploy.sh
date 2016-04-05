@@ -26,49 +26,28 @@ gateway_port=32007
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
-
-# Deploy using default profile
-function default {
-  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2am" "default" && \
-  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2am" "default" && \
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2am" "default" "${default_port}"
-}
+source "${common_scripts_folder}/base.sh"
 
 # Deploy using separate profiles
 function distributed {
     # deploy services
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2am" "api-key-manager" && \
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2am" "api-store" && \
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2am" "api-publisher" && \
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "wso2am" "gateway-manager" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-key-manager" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-store" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-publisher" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-manager" && \
 
     # deploy the controllers
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2am" "api-key-manager" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2am" "api-key-manager" "${km_port}" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "api-key-manager" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "api-key-manager" "${km_port}" && \
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2am" "api-store" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2am" "api-store" "${store_port}" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "api-store" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "api-store" "${store_port}" && \
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2am" "api-publisher" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2am" "api-publisher" "${publisher_port}" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "api-publisher" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "api-publisher" "${publisher_port}" && \
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "wso2am" "gateway-manager" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "wso2am" "gateway-manager" "${gateway_port}"
-}
-
-function showUsageAndExit () {
-    echo "Usage: ./deploy.sh [OPTIONS]"
-    echo
-    echo "Deploy Replication Controllers and Services on Kubernetes"
-    echo
-
-    echo " -d  - [OPTIONAL] Deploy distributed pattern"
-    echo " -h  - Help"
-    echo
-
-    echo "Ex: ./deploy.sh"
-    echo "Ex: ./deploy.sh -d"
-    exit 1
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-manager" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-manager" "${gateway_port}"
 }
 
 while getopts :dh FLAG; do
@@ -77,7 +56,7 @@ while getopts :dh FLAG; do
             deployment_pattern="distributed"
             ;;
         h)
-            showUsageAndExit
+            showUsageAndExitDistributed
             ;;
         \?)
             default
@@ -85,6 +64,7 @@ while getopts :dh FLAG; do
     esac
 done
 
+validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else

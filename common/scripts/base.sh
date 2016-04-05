@@ -17,6 +17,8 @@
 
 # ------------------------------------------------------------------------
 
+export product_name=${PWD##*/}
+
 function echoDim () {
     if [ -z "$2" ]; then
         echo $'\e[2m'"${1}"$'\e[0m'
@@ -39,4 +41,52 @@ function echoDot () {
 
 function echoBold () {
     echo $'\e[1m'"${1}"$'\e[0m'
+}
+
+function validateKubeCtlConfig() {
+    {
+        kubectl get nodes > /dev/null 2>&1
+    } || {
+        echoError "kubectl doesn't seem to work. Are Kubernetes Master details correctly configured?"
+        exit 1
+    }
+}
+
+# Deploy using default profile
+function default {
+  bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "default" && \
+  bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "default" && \
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "default" "${default_port}"
+}
+
+function showUsageAndExitDistributed () {
+    echoBold "Usage: ./deploy.sh [OPTIONS]"
+    echo
+    echo "Deploy Replication Controllers and Services on Kubernetes for $(echo $product_name | awk '{print toupper($0)}')"
+    echo
+
+    echoBold "Options:"
+    echo
+    echo -e " \t-d  - [OPTIONAL] Deploy distributed pattern"
+    echo -e " \t-h  - Show usage"
+    echo
+
+    echoBold "Ex: ./deploy.sh"
+    echoBold "Ex: ./deploy.sh -d"
+    echo
+    exit 1
+}
+
+function showUsageAndExitDefault () {
+    echoBold "Usage: ./deploy.sh [OPTIONS]"
+    echo
+    echo "Deploy Replication Controllers and Services on Kubernetes for $(echo $product_name | awk '{print toupper($0)}')"
+    echo
+
+    echoBold "Options:"
+    echo -e " \t-h  - Show usage"
+    echo
+
+    echoBold "Ex: ./deploy.sh"
+    exit 1
 }
