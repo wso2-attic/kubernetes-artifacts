@@ -57,7 +57,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     private final List<ClusteringMessage> messageBuffer;
     private HazelcastInstance primaryHazelcastInstance;
     private HazelcastCarbonClusterImpl carbonCluster;
-    private boolean skipMasterVerification;
+    private boolean skipMasterSSLVerification;
 
     public KubernetesMembershipScheme(Map<String, Parameter> parameters,
                                       String primaryDomain,
@@ -100,7 +100,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             String kubernetesServices = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
             String kubernetesMasterUsername = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
             String kubernetesMasterPassword = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
-            String skipMasterVerificationValue = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_VERIFICATION);
+            String skipMasterVerificationValue = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
@@ -128,13 +128,13 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             }
 
             if (StringUtils.isEmpty(skipMasterVerificationValue)){
-                skipMasterVerificationValue = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_VERIFICATION, "false");
+                skipMasterVerificationValue = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION, "false");
             }
 
-            skipMasterVerification = Boolean.parseBoolean(skipMasterVerificationValue);
+            skipMasterSSLVerification = Boolean.parseBoolean(skipMasterVerificationValue);
 
-            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s [skipVerification] %s",
-                    kubernetesMaster, kubernetesNamespace, kubernetesServices, skipMasterVerification));
+            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s [skip-master-ssl-verification] %s",
+                    kubernetesMaster, kubernetesNamespace, kubernetesServices, skipMasterSSLVerification));
 
             String[] kubernetesServicesArray = kubernetesServices.split(",");
             for (String kubernetesService : kubernetesServicesArray) {
@@ -231,7 +231,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         KubernetesApiEndpoint apiEndpoint;
 
         if (url.getProtocol().equalsIgnoreCase("https")) {
-            apiEndpoint = new KubernetesHttpsApiEndpoint(url, skipMasterVerification);
+            apiEndpoint = new KubernetesHttpsApiEndpoint(url, skipMasterSSLVerification);
         } else if (url.getProtocol().equalsIgnoreCase("http")) {
             apiEndpoint = new KubernetesHttpApiEndpoint(url);
         } else {

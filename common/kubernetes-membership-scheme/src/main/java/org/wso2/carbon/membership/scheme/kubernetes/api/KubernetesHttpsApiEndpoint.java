@@ -32,9 +32,9 @@ public class KubernetesHttpsApiEndpoint extends KubernetesApiEndpoint {
 
     private static final Log log = LogFactory.getLog(KubernetesHttpsApiEndpoint.class);
 
-    public KubernetesHttpsApiEndpoint(URL url, boolean skipMasterVerification) {
+    public KubernetesHttpsApiEndpoint(URL url, boolean skipMasterSSLVerification) {
         super(url);
-        if (skipMasterVerification) {
+        if (skipMasterSSLVerification) {
             disableCertificateValidation();
         }
     }
