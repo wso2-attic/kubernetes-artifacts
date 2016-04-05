@@ -21,4 +21,10 @@ public class KubernetesMembershipSchemeConstants {
     public static final String BEARER_TOKEN_FILE_LOCATION = "/var/run/secrets/kubernetes.io/serviceaccount/token";
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    public static final String PARAMETER_NAME_KUBERNETES_MASTER = "KUBERNETES_MASTER";
+    public static final String PARAMETER_NAME_KUBERNETES_MASTER_USERNAME = "KUBERNETES_MASTER_USERNAME";
+    public static final String PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD = "KUBERNETES_MASTER_PASSWORD";
+    public static final String PARAMETER_NAME_KUBERNETES_NAMESPACE = "KUBERNETES_NAMESPACE";
+    public static final String PARAMETER_NAME_KUBERNETES_SERVICES = "KUBERNETES_SERVICES";
+    public static final String ENDPOINTS_API_CONTEXT = "/api/v1/namespaces/%s/endpoints/";
 }

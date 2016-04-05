@@ -52,13 +52,6 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
 
     private static final Log log = LogFactory.getLog(KubernetesMembershipScheme.class);
 
-    protected static final String PARAMETER_NAME_KUBERNETES_MASTER = "KUBERNETES_MASTER";
-    protected static final String PARAMETER_NAME_KUBERNETES_MASTER_USERNAME = "KUBERNETES_MASTER_USERNAME";
-    protected static final String PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD = "KUBERNETES_MASTER_PASSWORD";
-    protected static final String PARAMETER_NAME_KUBERNETES_NAMESPACE = "KUBERNETES_NAMESPACE";
-    protected static final String PARAMETER_NAME_KUBERNETES_SERVICES = "KUBERNETES_SERVICES";
-    protected static final String ENDPOINTS_API_CONTEXT = "/api/v1/namespaces/%s/endpoints/";
-
     private final Map<String, Parameter> parameters;
     protected final NetworkConfig nwConfig;
     private final List<ClusteringMessage> messageBuffer;
@@ -101,35 +94,35 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             tcpIpConfig.setEnabled(true);
 
             // Try to read parameters from env variables
-            String kubernetesMaster = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER);
-            String kubernetesNamespace = System.getenv(PARAMETER_NAME_KUBERNETES_NAMESPACE);
-            String kubernetesServices = System.getenv(PARAMETER_NAME_KUBERNETES_SERVICES);
-            String kubernetesMasterUsername = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
-            String kubernetesMasterPassword = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
+            String kubernetesMaster = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
+            String kubernetesNamespace = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE);
+            String kubernetesServices = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
+            String kubernetesMasterUsername = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
+            String kubernetesMasterPassword = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
-                kubernetesMaster = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER);
+                kubernetesMaster = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
                 if(StringUtils.isEmpty(kubernetesMaster)) {
                     throw new ClusteringFault("Kubernetes master parameter not found");
                 }
             }
             if(StringUtils.isEmpty(kubernetesNamespace)) {
-                kubernetesNamespace = getParameterValue(PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
+                kubernetesNamespace = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
             }
             if(StringUtils.isEmpty(kubernetesServices)) {
-                kubernetesServices = getParameterValue(PARAMETER_NAME_KUBERNETES_SERVICES);
+                kubernetesServices = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
                 if(StringUtils.isEmpty(kubernetesServices)) {
                     throw new ClusteringFault("Kubernetes services parameter not found");
                 }
             }
 
             if(StringUtils.isEmpty(kubernetesMasterUsername)) {
-                kubernetesMasterUsername = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
+                kubernetesMasterUsername = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
             }
 
             if(StringUtils.isEmpty(kubernetesMasterPassword)) {
-                kubernetesMasterPassword = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
+                kubernetesMasterPassword = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
             }
 
             log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s",
@@ -170,7 +163,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     protected List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
                                           String username, String password) throws KubernetesMembershipSchemeException {
 
-        final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
+        final String apiContext = String.format(KubernetesMembershipSchemeConstants.ENDPOINTS_API_CONTEXT, namespace);
         final List<String> containerIPs = new ArrayList<String>();
 
         // Create k8s api endpoint URL

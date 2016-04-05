@@ -73,30 +73,30 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
             tcpIpConfig.setEnabled(true);
 
             // Try to read parameters from env variables
-            String kubernetesMaster = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER);
-            String kubernetesNamespace = System.getenv(PARAMETER_NAME_KUBERNETES_NAMESPACE);
-            String kubernetesMasterUsername = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
-            String kubernetesMasterPassword = System.getenv(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
+            String kubernetesMaster = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
+            String kubernetesNamespace = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE);
+            String kubernetesMasterUsername = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
+            String kubernetesMasterPassword = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
             String clusterIds = System.getenv(PARAMETER_NAME_CLUSTER_IDS);
             memberId = System.getenv(PARAMETER_NAME_MEMBER_ID);
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesMaster)) {
-                kubernetesMaster = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER);
+                kubernetesMaster = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
                 if(StringUtils.isEmpty(kubernetesMaster)) {
                     throw new ClusteringFault("Kubernetes master parameter not found");
                 }
             }
             if(StringUtils.isEmpty(kubernetesNamespace)) {
-                kubernetesNamespace = getParameterValue(PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
+                kubernetesNamespace = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
             }
 
             if(StringUtils.isEmpty(kubernetesMasterUsername)) {
-                kubernetesMasterUsername = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
+                kubernetesMasterUsername = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
             }
 
             if(StringUtils.isEmpty(kubernetesMasterPassword)) {
-                kubernetesMasterPassword = getParameterValue(PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
+                kubernetesMasterPassword = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
             }
 
             if (StringUtils.isEmpty(clusterIds)) {
@@ -362,7 +362,7 @@ public class MesosBasedKubernetesMembershipScheme extends KubernetesMembershipSc
                                               String username, String password) throws KubernetesMembershipSchemeException {
 
         // use the Endpoints API to get the pod name
-        final String apiContext = String.format(ENDPOINTS_API_CONTEXT, namespace);
+        final String apiContext = String.format(KubernetesMembershipSchemeConstants.ENDPOINTS_API_CONTEXT, namespace);
         final Set<String> podNames = new HashSet<>();
 
         // Create k8s api endpoint URL
