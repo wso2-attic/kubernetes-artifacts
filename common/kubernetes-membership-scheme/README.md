@@ -1,16 +1,16 @@
 ## Kubernetes Membership Scheme
 
-Kubernetes membership scheme provides features for automatically discovering WSO2 carbon server clusters on Kubernetes.
+Kubernetes membership scheme provides features for automatically discovering WSO2 Carbon server clusters on Kubernetes.
 
-### How it works
+### How It Works
 Once a Carbon server starts it will query container IP addresses in the given cluster via Kubernetes API using the given Kubernetes services. Thereafter Hazelcast network configuration will be updated with the above IP addresses. As a result the Hazelcast instance will get connected all the other members in the cluster. In addition once a new member is added to the cluster, all the other members will get connected to the new member.
 
 ### Installation
 
-1. Apply Carbon kernel patch0012. This includes a modification in the Carbon Core component for
-allowing to add third party membership schemes.
+1. For Kubernetes Membership Scheme to work, Hazelcast configuration should be made pluggable. This has to be enabled in the products in different ways. For WSO2 products that are based on Carbon 4.2.0, [apply kernel patch0012](https://docs.wso2.com/display/Carbon420/Applying+a+Patch+to+the+Kernel). For Carbon 4.4.1 based products apply [patch0005](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip). These patches include a modification in the Carbon Core component for
+allowing to add third party membership schemes. WSO2 products that are based on Carbon versions later than 4.4.1 do not need any patches to be applied (To determine the Carbon version of a particular product, please refer to the [WSO2 Release Matrix](http://wso2.com/products/carbon/release-matrix/)).
 
-2. Copy following JAR files to the repository/components/lib directory of the Carbon server:
+2. Copy following JAR files to the `repository/components/lib` directory of the Carbon server:
 
    ```
       jackson-core-2.5.4.jar
@@ -19,9 +19,9 @@ allowing to add third party membership schemes.
       kubernetes-membership-scheme-<version>.jar
    ```
 
-3. Update axis2.xml with the following configuration:
+3. Update `axis2.xml` with the following configuration:
 
-   ```
+   ```xml
    <clustering class="org.wso2.carbon.core.clustering.hazelcast.HazelcastClusteringAgent" enable="true">
       <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
       <parameter name="membershipScheme">kubernetes</parameter>
