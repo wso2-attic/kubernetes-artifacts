@@ -17,7 +17,7 @@
 
 # ------------------------------------------------------------------------
 self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-source "${self_path}/base.sh"
+source "${self_path}/common/scripts/base.sh"
 
 function showUsageAndExit() {
         echoBold "Usage: ./load-images.sh [OPTIONS]"
@@ -68,7 +68,7 @@ while getopts :u:p:h FLAG; do
     esac
 done
 
-wso2_docker_images=($(sudo docker images | grep "${search_pattern}" | awk '{print $1 ":" $2}'))
+wso2_docker_images=($(docker images | grep "${search_pattern}" | awk '{print $1 ":" $2}'))
 
 if [ "${#wso2_docker_images[@]}" -lt 1 ]; then
     echo "No Docker images with name \"wso2\" found."
@@ -78,14 +78,14 @@ fi
 for wso2_image_name in "${wso2_docker_images[@]}"
 do
     if [ "${wso2_image_name//[[:space:]]/}" != "" ]; then
-        wso2_image=$(sudo docker images $wso2_image_name | awk '{if (NR!=1) print}')
+        wso2_image=$(docker images $wso2_image_name | awk '{if (NR!=1) print}')
         echo -n $(echo $wso2_image | awk '{print $1 ":" $2, "(" $3 ")"}') " - "
         askBold "Transfer? (y/n): "
         read -r xfer_v
         if [ "$xfer_v" == "y" ]; then
             image_id=$(echo $wso2_image | awk '{print $3}')
             echoDim "Saving image ${wso2_image_name}..."
-            sudo docker save $image_id > /tmp/$image_id.tar
+            docker save $image_id > /tmp/$image_id.tar
 
             for kube_node in "${kube_nodes[@]}"
             do
