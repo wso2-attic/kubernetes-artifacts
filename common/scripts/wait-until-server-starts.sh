@@ -26,9 +26,9 @@ function getLastKubernetesNode() {
 }
 
 host=$(getLastKubernetesNode)
-product=$1
-profile=$2
-port=$4
+product=${PWD##*/}
+profile=$1
+port=$2
 
 echo "Waiting ${product} to launch on http://${host}:${port}"
 until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); do

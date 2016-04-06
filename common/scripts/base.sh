@@ -60,7 +60,7 @@ function validateKubeCtlConfig() {
 function default {
   bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "default" && \
   bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "default" && \
-  bash "${common_scripts_folder}/wait-until-server-starts.sh" "default" "${default_port}"
+  bash "${common_scripts_folder}/wait-until-server-starts.sh" "default" "${1}"
 }
 
 function showUsageAndExitDistributed () {

@@ -59,7 +59,7 @@ while getopts :dh FLAG; do
             showUsageAndExitDistributed
             ;;
         \?)
-            default
+            default $default_port
             ;;
     esac
 done
@@ -68,5 +68,5 @@ validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else
-    default
+    default $default_port
 fi

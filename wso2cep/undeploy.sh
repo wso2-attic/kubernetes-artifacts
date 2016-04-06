@@ -24,8 +24,8 @@ product_profiles=(default presenter worker)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash "${common_folder}/undeploy.sh" "wso2cep" "$profile"
+        bash "${common_folder}/undeploy.sh" "$profile"
     done
 else
-    bash "${common_folder}/undeploy.sh" "wso2cep"
+    bash "${common_folder}/undeploy.sh"
 fi
