@@ -101,12 +101,6 @@
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.stratos</groupId>
-            <artifactId>org.apache.stratos.messaging</artifactId>
-            <version>${ppaas.version}</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
