@@ -16,7 +16,7 @@ allowing to add third party membership schemes. WSO2 products that are based on 
       jackson-core-2.5.4.jar
       jackson-databind-2.5.4.jar
       jackson-annotations-2.5.4.jar
-      kubernetes-membership-scheme-<version>.jar
+      kubernetes-membership-scheme-1.0.0.jar
    ```
 
 3. Update `axis2.xml` with the following configuration:

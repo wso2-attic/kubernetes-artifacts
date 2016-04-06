@@ -43,6 +43,10 @@ function echoBold () {
     echo $'\e[1m'"${1}"$'\e[0m'
 }
 
+function askBold () {
+    echo -n $'\e[1m'"${1}"$'\e[0m'
+}
+
 function validateKubeCtlConfig() {
     {
         kubectl get nodes > /dev/null 2>&1
