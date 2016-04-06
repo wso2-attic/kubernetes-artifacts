@@ -24,8 +24,8 @@ product_profiles=(default publisher store)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash "${common_folder}/undeploy.sh" "wso2greg" "$profile"
+        bash "${common_folder}/undeploy.sh" "$profile"
     done
 else
-    bash "${common_folder}/undeploy.sh" "wso2greg"
+    bash "${common_folder}/undeploy.sh"
 fi

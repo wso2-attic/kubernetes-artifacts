@@ -19,8 +19,8 @@
 
 set -e
 
-product_name=$1
-product_profile=$2
+product_name=${PWD##*/}
+product_profile=$1
 
 if [[ ! -z $product_profile ]]; then
     kubectl delete rc,services,pods -l name="${product_name}-${product_profile}"

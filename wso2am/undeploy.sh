@@ -24,8 +24,8 @@ product_profiles=(default api-key-manager api-store api-publisher gateway-manage
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash "${common_folder}/undeploy.sh" "wso2am" "$profile"
+        bash "${common_folder}/undeploy.sh" "$profile"
     done
 else
-    bash "${common_folder}/undeploy.sh" "wso2am"
+    bash "${common_folder}/undeploy.sh"
 fi

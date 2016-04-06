@@ -30,10 +30,10 @@ while getopts :h FLAG; do
             showUsageAndExitDefault
             ;;
         \?)
-            default
+            default $default_port
             ;;
     esac
 done
 
 validateKubeCtlConfig
-default
+default $default_port

@@ -24,8 +24,8 @@ product_profiles=(default)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
-        bash "${common_folder}/undeploy.sh" "wso2das" "$profile"
+        bash "${common_folder}/undeploy.sh" "$profile"
     done
 else
-    bash "${common_folder}/undeploy.sh" "wso2das"
+    bash "${common_folder}/undeploy.sh"
 fi
