@@ -31,9 +31,10 @@ profile=$1
 port=$2
 
 echo "Waiting ${product} to launch on http://${host}:${port}"
+sleep 1
 until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); do
     printf '.'
-    sleep 5
+    sleep 3
 done
-
-echoSuccess -e "\n$(echo ${product} | awk '{print toupper($0)}') started successfully, profile: ${profile}"
+echo
+echoSuccess "$(echo ${product} | awk '{print toupper($0)}') started successfully, profile: ${profile}"
