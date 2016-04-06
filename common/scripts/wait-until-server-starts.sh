@@ -31,7 +31,7 @@ profile=$1
 port=$2
 
 echo "Waiting ${product} to launch on http://${host}:${port}"
-sleep 1
+sleep 2
 until $(curl --output /dev/null --silent --head --fail http://${host}:${port}); do
     printf '.'
     sleep 3
