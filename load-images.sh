@@ -85,7 +85,7 @@ do
         if [ "$xfer_v" == "y" ]; then
             image_id=$(echo $wso2_image | awk '{print $3}')
             echoDim "Saving image ${wso2_image_name}..."
-            docker save $image_id > /tmp/$image_id.tar
+            docker save ${wso2_image_name} > /tmp/$image_id.tar
 
             for kube_node in "${kube_nodes[@]}"
             do
