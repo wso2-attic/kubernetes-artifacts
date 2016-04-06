@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2das-default
-        image: wso2/das-3.0.1:1.0.0
+        image: wso2das:3.0.1
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD

@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2is-default
-        image: wso2/is-5.1.0:1.0.0
+        image: wso2is:5.1.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD

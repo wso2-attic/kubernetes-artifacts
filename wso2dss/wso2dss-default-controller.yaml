@@ -29,7 +29,7 @@ spec:
       containers:
       -
         name: wso2dss-default
-        image: wso2/dss-3.5.0:1.0.0
+        image: wso2dss:3.5.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD

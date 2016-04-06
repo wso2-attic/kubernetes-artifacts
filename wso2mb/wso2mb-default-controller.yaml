@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2mb-default
-        image: wso2/mb-3.1.0:1.0.0
+        image: wso2mb:3.1.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD

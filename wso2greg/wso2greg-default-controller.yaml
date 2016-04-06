@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2greg-default
-        image: wso2/greg-5.1.0:1.0.0
+        image: wso2greg:5.1.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD
