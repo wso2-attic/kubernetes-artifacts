@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2es-publisher
-        image: wso2/es-publisher-2.0.0:0.0.1
+        image: wso2es-publisher:2.0.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD

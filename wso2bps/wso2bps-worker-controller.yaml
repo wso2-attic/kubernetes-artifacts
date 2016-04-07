@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2bps-worker
-        image: wso2/bps-worker-3.5.0:1.0.0
+        image: wso2bps-worker:3.5.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD
