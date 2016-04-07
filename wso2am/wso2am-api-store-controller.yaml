@@ -29,7 +29,7 @@ spec:
       containers:
       -
         name: wso2am-store
-        image: wso2/am-api-store-1.10.0:1.0.0
+        image: wso2am-api-store:1.10.0
 #        env:
 #        -
 #          name: KEY_STORE_PASSWORD
