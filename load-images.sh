@@ -90,10 +90,13 @@ do
             for kube_node in "${kube_nodes[@]}"
             do
                 echoDim "Copying saved image to ${kube_node}..."
-                scp /tmp/$image_id.tar $kub_username@$kube_node:.
+                IFS=$','
+                node_ips=($(kubectl describe nodes $kube_node | grep "Addresses:" | awk '{print $2}'))
+                # TODO: handle known_host issue
+                scp /tmp/$image_id.tar $kub_username"@${node_ips[0]}":.
                 echoDim "Loading copied image..."
-                ssh $kub_username@$kube_node "docker load < ${image_id}.tar"
-                ssh $kub_username@$kube_node "rm -rf ${image_id}.tar"
+                ssh $kub_username"@${node_ips[0]}" "docker load < ${image_id}.tar"
+                ssh $kub_username"@${node_ips[0]}" "rm -rf ${image_id}.tar"
             done
 
             echoDim "Cleaning..."
