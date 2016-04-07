@@ -23,7 +23,7 @@ source "${self_path}/base.sh"
 
 IFS=$'\n'
 kube_nodes=($(getKubeNodes))
-host=$(getKubeNodeIP "${host[0]}")
+host=$(getKubeNodeIP "${kube_nodes[0]}")
 product=${PWD##*/}
 profile=$1
 port=$2
