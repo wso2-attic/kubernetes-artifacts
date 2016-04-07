@@ -47,7 +47,7 @@ kub_username="core"
 search_pattern="wso2"
 IFS=$'\n'
 
-kube_nodes=($(kubectl get nodes | awk '{if (NR!=1) print $1}'))
+kube_nodes=($(getKubeNodes))
 if [ "${#kube_nodes[@]}" -lt 1 ]; then
     echoError "No Kubernetes Nodes found."
     exit 1
@@ -90,13 +90,12 @@ do
             for kube_node in "${kube_nodes[@]}"
             do
                 echoDim "Copying saved image to ${kube_node}..."
-                IFS=$','
-                node_ips=($(kubectl describe nodes $kube_node | grep "Addresses:" | awk '{print $2}'))
+                node_ip=$(getKubeNodeIP $kube_node)
                 # TODO: handle known_host issue
-                scp /tmp/$image_id.tar $kub_username"@${node_ips[0]}":.
+                scp /tmp/$image_id.tar $kub_username@$node_ip:.
                 echoDim "Loading copied image..."
-                ssh $kub_username"@${node_ips[0]}" "docker load < ${image_id}.tar"
-                ssh $kub_username"@${node_ips[0]}" "rm -rf ${image_id}.tar"
+                ssh $kub_username@$node_ip "docker load < ${image_id}.tar"
+                ssh $kub_username@$node_ip "rm -rf ${image_id}.tar"
             done
 
             echoDim "Cleaning..."

@@ -21,11 +21,9 @@ set -e
 self_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source "${self_path}/base.sh"
 
-function getLastKubernetesNode() {
-    kubectl get nodes | tail -1 | awk '{print $1}'
-}
-
-host=$(getLastKubernetesNode)
+IFS=$'\n'
+kube_nodes=($(getKubeNodes))
+host=$(getKubeNodeIP "${host[0]}")
 product=${PWD##*/}
 profile=$1
 port=$2

@@ -56,6 +56,17 @@ function validateKubeCtlConfig() {
     }
 }
 
+function getKubeNodes() {
+    # kubectl get nodes | tail -1 | awk '{print $1}'
+    kubectl get nodes | awk '{if (NR!=1) print $1}'
+}
+
+function getKubeNodeIP() {
+    IFS=$','
+    node_ips=($(kubectl describe nodes $1 | grep "Addresses:" | awk '{print $2}'))
+    echo "${node_ips[0]}"
+}
+
 # Deploy using default profile
 function default {
   bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "default" && \
