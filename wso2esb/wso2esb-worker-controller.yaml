@@ -35,8 +35,14 @@ spec:
 #          value: wso2carbon
         ports:
         -
+          containerPort: 8280
+          protocol: "TCP"
+        -
           containerPort: 8243
           protocol: "TCP"
         -
-          containerPort: 8280
+          containerPort: 9763
+          protocol: "TCP"
+        -
+          containerPort: 9443
           protocol: "TCP"
