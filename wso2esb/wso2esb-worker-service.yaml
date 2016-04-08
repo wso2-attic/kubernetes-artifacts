@@ -25,11 +25,21 @@ spec:
       name: 'pass-through-http'
       port: 8280
       targetPort: 8280
-      nodePort: 32093
+      nodePort: 32091
     -
       name: 'pass-through-https'
       port: 8243
       targetPort: 8243
+      nodePort: 32092
+    -
+      name: 'servlet-http'
+      port: 32093
+      targetPort: 9763
+      nodePort: 32093
+    -
+      name: 'servlet-https'
+      port: 32094
+      targetPort: 9443
       nodePort: 32094
   # label keys and values that must match in order to receive traffic for this service
   selector: 
