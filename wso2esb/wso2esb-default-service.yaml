@@ -26,22 +26,22 @@ spec:
       name: 'pass-through-http'
       port: 8280
       targetPort: 8280
-      nodePort: 32001
+      nodePort: 32091
     -
       name: 'pass-through-https'
       port: 8243
       targetPort: 8243
-      nodePort: 32002
+      nodePort: 32092
     -
       name: 'servlet-http'
       port: 32003
       targetPort: 9763
-      nodePort: 32003
+      nodePort: 32093
     -
       name: 'servlet-https'
       port: 32004
       targetPort: 9443
-      nodePort: 32004
+      nodePort: 32094
   # label keys and values that must match in order to receive traffic for this service
   selector:
     name: wso2esb-default

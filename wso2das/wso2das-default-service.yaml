@@ -26,22 +26,22 @@ spec:
       name: 'servlet-http'
       port: 9763
       targetPort: 9763
-      nodePort: 32001
+      nodePort: 32061
     -
       name: 'servlet-https'
       port: 9443
       targetPort: 9443
-      nodePort: 32002
+      nodePort: 32062
     -
       name: 'thrift'
       port: 7611
       targetPort: 7611
-      nodePort: 32007
+      nodePort: 32067
     -
       name: 'thrift-ssl'
       port: 7711
       targetPort: 7711
-      nodePort: 32008
+      nodePort: 32068
   # label keys and values that must match in order to receive traffic for this service
   selector:
     name: wso2das-default
