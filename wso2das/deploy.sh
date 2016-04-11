@@ -17,7 +17,7 @@
 
 # ------------------------------------------------------------------------
 
-default_port=32001
+default_port=32061
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
