@@ -20,7 +20,7 @@ prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
 common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-product_profiles=(default api-key-manager api-store api-publisher gateway-manager)
+product_profiles=(default api-key-manager api-store api-publisher gateway-manager gateway-worker)
 
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
