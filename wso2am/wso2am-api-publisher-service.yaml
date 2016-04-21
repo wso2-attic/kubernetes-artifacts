@@ -26,12 +26,12 @@ spec:
       name: 'servlet-http'
       port: 9763
       targetPort: 9763
-      nodePort: 32012
+      nodePort: 32016
     -
       name: 'servlet-https'
       port: 9443
       targetPort: 9443
-      nodePort: 32013
+      nodePort: 32017
   # label keys and values that must match in order to receive traffic for this service
   selector:
     name: wso2am-api-publisher

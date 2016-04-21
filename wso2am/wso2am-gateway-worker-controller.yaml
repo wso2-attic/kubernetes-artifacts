@@ -12,26 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 apiVersion: v1
-kind: Service
+kind: ReplicationController
 metadata:
+  name: wso2am-gateway-worker
   labels:
-    name: wso2am-api-store
-  name: wso2am-api-store
+    name: wso2am-gateway-worker
 spec:
-  type: NodePort
-  sessionAffinity: ClientIP
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'servlet-http'
-      port: 9763
-      targetPort: 9763
-      nodePort: 32018
-    -
-      name: 'servlet-https'
-      port: 9443
-      targetPort: 9443
-      nodePort: 32019
-  # label keys and values that must match in order to receive traffic for this service
+  replicas: 1
   selector:
-    name: wso2am-api-store
+    name: wso2am-gateway-worker
+  template:
+    metadata:
+      labels:
+        name: wso2am-gateway-worker
+    spec:
+      containers:
+      -
+        name: wso2am-gateway-worker
+        image: wso2am-gateway-worker:1.10.0
+#        env:
+#        -
+#          name: KEY_STORE_PASSWORD
+#          value: wso2carbon
+        ports:
+        -
+          containerPort: 8280
+          protocol: "TCP"
+        -
+          containerPort: 8243
+          protocol: "TCP"

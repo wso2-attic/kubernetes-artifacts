@@ -18,10 +18,11 @@
 # ------------------------------------------------------------------------
 
 default_port=32003
-km_port=32009
-publisher_port=32012
-store_port=32014
-gateway_port=32007
+km_port=32013
+publisher_port=32016
+store_port=32018
+gateway_manager_port=32007
+gateway_worker_port=32011
 
 prgdir=$(dirname "$0")
 script_path=$(cd "$prgdir"; pwd)
@@ -35,6 +36,7 @@ function distributed {
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-store" && \
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-publisher" && \
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-manager" && \
+    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-worker" && \
 
     # deploy the controllers
     bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "api-key-manager" && \
@@ -47,7 +49,10 @@ function distributed {
     bash "${common_scripts_folder}/wait-until-server-starts.sh" "api-publisher" "${publisher_port}" && \
 
     bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-manager" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-manager" "${gateway_port}"
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-manager" "${gateway_manager_port}" && \
+
+    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-worker" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-worker" "${gateway_worker_port}"
 }
 
 while getopts :dh FLAG; do
