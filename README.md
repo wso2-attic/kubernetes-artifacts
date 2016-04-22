@@ -1,9 +1,9 @@
 # WSO2 Kubernetes Artifacts
-WSO2 Kubernetes Artifacts enables you to run WSO2 products seamlessly on [Kubernetes] (https://kubernetes.io) using Docker. This repository contains artifacts (Service and Replication Controller definitions) to deploy WSO2 products on Kubernetes.
+WSO2 Kubernetes Artifacts enable you to run WSO2 products seamlessly on [Kubernetes] (https://kubernetes.io) using Docker. This repository contains artifacts (Service and Replication Controller definitions) to deploy WSO2 products on Kubernetes.
 
 ## Getting Started
-To deploy a WSO2 product on Kubernetes, the following overall steps have to be done.
-* Build Docker images
+To deploy a WSO2 product on Kubernetes, the following steps have to be done.
+* Build relevant Docker images
 * Copy the images to the Kubernetes Nodes
 * Run `deploy.sh` inside the relevant product folder, which will deploy the Service and the Replication Controllers
 
@@ -13,10 +13,29 @@ Dockerfiles for WSO2 products are available at [`wso2/dockerfiles`](https://gith
 ##### 2. Copy the Images to Kubernetes Nodes/Registry
 Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker save` to create a tarball of the required image, `scp` the tarball to each node, and use `docker load` to reload the images from the copied tarballs on the nodes). Alternatively, if a private Docker registry is used, transfer the images there.
 
-##### 3. Deploy Kubernetes Artifacts
-Change the `spec.template.spec.containers.image` field in the relevant Replication Controller `yaml` definition to match the Docker image for the required product. Afterwards, run `deploy.sh` that will deploy the Service and the Replication Controller on the Kubernetes deployment.
+You can make use of the `load-images.sh` helper script to transfer images to the Kubernetes nodes. It will search for any Docker images with `wso2` as a part of its name on your local machine, and ask for verification to transfer them to the Kubernetes nodes. `kubectl` has to be functioning on your local machine in order for the script to retrieve the list of Kubernetes nodes. You can optionally provide a search pattern if you want to override the default `wso2` string.
 
-> For more detailed instructions on deploying a particular WSO2 product on Kubernetes refer to README file in the relevant product folder.
+**`load-images.sh` Usage**
+```
+Usage: ./load-images.sh [OPTIONS]
+
+Transfer Docker images to Kubernetes Nodes
+Options:
+
+  -u	[OPTIONAL] Username to be used to connect to Kubernetes Nodes. If not provided, default "core" is used.
+  -p	[OPTIONAL] Optional search pattern to search for Docker images. If not provided, default "wso2" is used.
+  -h	[OPTIONAL] Show help text.
+
+Ex: ./load-images.sh
+Ex: ./load-images.sh -u ubuntu
+Ex: ./load-images.sh -p wso2is
+```
+
+
+##### 3. Deploy Kubernetes Artifacts
+If you created the Docker images with custom image names, change the `spec.template.spec.containers.image` field in the relevant Replication Controller YAML definition to match the Docker image for the required product (If you did not specify a custom image name, the Replication Controller definitions do not have to be changed, since they have the default image names used by `wso2/dockerfiles` to build the Docker images). Afterward, run `deploy.sh`. The script will deploy the Service and the Replication Controller on the Kubernetes deployment, and notify once the intended service starts running on the Pod.
+
+> For more detailed instructions on deploying a particular WSO2 product on Kubernetes, refer to the README file in the relevant product folder.
 
 # Documentation
 * [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)

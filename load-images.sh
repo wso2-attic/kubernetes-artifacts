@@ -41,6 +41,21 @@ function showUsageAndExit() {
         exit 1
 }
 
+# TODO: handle flag provided, but no value
+while getopts :u:p:h FLAG; do
+    case $FLAG in
+        u)
+        kub_username=$OPTARG
+        ;;
+        p)
+        search_pattern=$OPTARG
+        ;;
+        h)
+        showUsageAndExit
+        ;;
+    esac
+done
+
 validateKubeCtlConfig
 
 kub_username="core"
@@ -53,20 +68,6 @@ if [ "${#kube_nodes[@]}" -lt 1 ]; then
     exit 1
 fi
 
-# TODO: handle flag provided, but no value
-while getopts :u:p:h FLAG; do
-    case $FLAG in
-        u)
-            kub_username=$OPTARG
-            ;;
-        p)
-            search_pattern=$OPTARG
-            ;;
-        h)
-            showUsageAndExit
-            ;;
-    esac
-done
 
 wso2_docker_images=($(docker images | grep "${search_pattern}" | awk '{print $1 ":" $2}'))
 
@@ -80,7 +81,7 @@ do
     if [ "${wso2_image_name//[[:space:]]/}" != "" ]; then
         wso2_image=$(docker images $wso2_image_name | awk '{if (NR!=1) print}')
         echo -n $(echo $wso2_image | awk '{print $1 ":" $2, "(" $3 ")"}') " - "
-        askBold "Transfer? (y/n): "
+        askBold "Transfer? ( [y]es / [n]o / [e]xit ): "
         read -r xfer_v
         if [ "$xfer_v" == "y" ]; then
             image_id=$(echo $wso2_image | awk '{print $3}')
@@ -101,6 +102,9 @@ do
             echoDim "Cleaning..."
             rm -rf /tmp/$image_id.tar
             echoBold "Done"
+        elif [ "$xfer_v" == "e" ]; then
+            echoBold "Done"
+            exit 0
         fi
     fi
 done
