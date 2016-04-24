@@ -104,9 +104,9 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
 
             // If not available read from clustering configuration
             if(StringUtils.isEmpty(kubernetesApiServerUrl)) {
-                kubernetesApiServerUrl = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER);
+                kubernetesApiServerUrl = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER, "");
                 if(StringUtils.isEmpty(kubernetesApiServerUrl)) {
-                    log.info(String.format("Environment variable %s not found, checking %s & %s",
+                    log.info(String.format("Parameter %s not found, checking %s & %s",
                             Constants.PARAMETER_NAME_KUBERNETES_API_SERVER,
                             Constants.KUBERNETES_SERVICE_HOST,
                             Constants.KUBERNETES_SERVICE_PORT_HTTPS));
