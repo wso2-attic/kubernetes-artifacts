@@ -95,50 +95,68 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
             tcpIpConfig.setEnabled(true);
 
             // Try to read parameters from env variables
-            String kubernetesMaster = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
-            String kubernetesNamespace = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE);
-            String kubernetesServices = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
-            String kubernetesMasterUsername = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME);
-            String kubernetesMasterPassword = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD);
-            String skipMasterVerificationValue = System.getenv(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION);
+            String kubernetesApiServerUrl = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER);
+            String kubernetesNamespace = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_NAMESPACE);
+            String kubernetesServices = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_SERVICES);
+            String kubernetesMasterUsername = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER_USERNAME);
+            String kubernetesMasterPassword = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER_PASSWORD);
+            String skipMasterVerificationValue = System.getenv(Constants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION);
 
             // If not available read from clustering configuration
-            if(StringUtils.isEmpty(kubernetesMaster)) {
-                kubernetesMaster = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER);
-                if(StringUtils.isEmpty(kubernetesMaster)) {
-                    throw new ClusteringFault("Kubernetes master parameter not found");
+            if(StringUtils.isEmpty(kubernetesApiServerUrl)) {
+                kubernetesApiServerUrl = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER);
+                if(StringUtils.isEmpty(kubernetesApiServerUrl)) {
+                    log.info(String.format("Environment variable %s not found, checking %s & %s",
+                            Constants.PARAMETER_NAME_KUBERNETES_API_SERVER,
+                            Constants.KUBERNETES_SERVICE_HOST,
+                            Constants.KUBERNETES_SERVICE_PORT_HTTPS));
+
+                    String kubernetesServiceHost = System.getenv(Constants.KUBERNETES_SERVICE_HOST);
+                    if(StringUtils.isEmpty(kubernetesServiceHost)) {
+                        throw new ClusteringFault(String.format("Environment variable %s not found",
+                                Constants.KUBERNETES_SERVICE_HOST));
+                    }
+                    String kubernetesServiceHttpsPortStr = System.getenv(Constants.KUBERNETES_SERVICE_PORT_HTTPS);
+                    if(StringUtils.isEmpty(kubernetesServiceHttpsPortStr)) {
+                        throw new ClusteringFault(String.format("Environment variable %s not found",
+                                Constants.KUBERNETES_SERVICE_PORT_HTTPS));
+                    }
+                    int kubernetesServiceHttpsPort = Integer.parseInt(kubernetesServiceHttpsPortStr);
+                    kubernetesApiServerUrl = new URL(Constants.PROTOCOL_HTTPS, kubernetesServiceHost, kubernetesServiceHttpsPort, "").toString();
                 }
             }
+
             if(StringUtils.isEmpty(kubernetesNamespace)) {
-                kubernetesNamespace = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
+                kubernetesNamespace = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_NAMESPACE, "default");
             }
+
             if(StringUtils.isEmpty(kubernetesServices)) {
-                kubernetesServices = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_SERVICES);
+                kubernetesServices = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_SERVICES);
                 if(StringUtils.isEmpty(kubernetesServices)) {
                     throw new ClusteringFault("Kubernetes services parameter not found");
                 }
             }
 
             if(StringUtils.isEmpty(kubernetesMasterUsername)) {
-                kubernetesMasterUsername = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_USERNAME, "");
+                kubernetesMasterUsername = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER_USERNAME, "");
             }
 
             if(StringUtils.isEmpty(kubernetesMasterPassword)) {
-                kubernetesMasterPassword = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_PASSWORD, "");
+                kubernetesMasterPassword = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_API_SERVER_PASSWORD, "");
             }
 
             if (StringUtils.isEmpty(skipMasterVerificationValue)){
-                skipMasterVerificationValue = getParameterValue(KubernetesMembershipSchemeConstants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION, "false");
+                skipMasterVerificationValue = getParameterValue(Constants.PARAMETER_NAME_KUBERNETES_MASTER_SKIP_SSL_VERIFICATION, "false");
             }
 
             skipMasterSSLVerification = Boolean.parseBoolean(skipMasterVerificationValue);
 
-            log.info(String.format("Kubernetes clustering configuration: [master] %s [namespace] %s [services] %s [skip-master-ssl-verification] %s",
-                    kubernetesMaster, kubernetesNamespace, kubernetesServices, skipMasterSSLVerification));
+            log.info(String.format("Kubernetes clustering configuration: [api-server] %s [namespace] %s [services] %s [skip-master-ssl-verification] %s",
+                    kubernetesApiServerUrl, kubernetesNamespace, kubernetesServices, skipMasterSSLVerification));
 
             String[] kubernetesServicesArray = kubernetesServices.split(",");
             for (String kubernetesService : kubernetesServicesArray) {
-                List<String> containerIPs = findContainerIPs(kubernetesMaster,
+                List<String> containerIPs = findContainerIPs(kubernetesApiServerUrl,
                         kubernetesNamespace, kubernetesService, kubernetesMasterUsername, kubernetesMasterPassword);
                 for(String containerIP : containerIPs) {
                     tcpIpConfig.addMember(containerIP);
@@ -171,7 +189,7 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
     protected List<String> findContainerIPs(String kubernetesMaster, String namespace, String serviceName,
                                           String username, String password) throws KubernetesMembershipSchemeException {
 
-        final String apiContext = String.format(KubernetesMembershipSchemeConstants.ENDPOINTS_API_CONTEXT, namespace);
+        final String apiContext = String.format(Constants.ENDPOINTS_API_CONTEXT, namespace);
         final List<String> containerIPs = new ArrayList<String>();
 
         // Create k8s api endpoint URL

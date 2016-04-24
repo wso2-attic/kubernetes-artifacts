@@ -18,7 +18,7 @@ package org.wso2.carbon.membership.scheme.kubernetes.api;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipSchemeConstants;
+import org.wso2.carbon.membership.scheme.kubernetes.Constants;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class KubernetesHttpsApiEndpoint extends KubernetesApiEndpoint {
     public void createConnection() throws IOException {
         log.debug("Connecting to Kubernetes API server...");
         connection = (HttpsURLConnection) url.openConnection();
-        connection.addRequestProperty(KubernetesMembershipSchemeConstants.AUTHORIZATION_HEADER, "Bearer " + getServiceAccountToken());
+        connection.addRequestProperty(Constants.AUTHORIZATION_HEADER, "Bearer " + getServiceAccountToken());
         log.debug("Connected successfully");
     }
 
@@ -96,6 +96,6 @@ public class KubernetesHttpsApiEndpoint extends KubernetesApiEndpoint {
     }
 
     private String getServiceAccountToken() throws IOException {
-        return new String(Files.readAllBytes(Paths.get(KubernetesMembershipSchemeConstants.BEARER_TOKEN_FILE_LOCATION)));
+        return new String(Files.readAllBytes(Paths.get(Constants.BEARER_TOKEN_FILE_LOCATION)));
     }
 }
