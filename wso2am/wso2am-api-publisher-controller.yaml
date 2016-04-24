@@ -30,10 +30,13 @@ spec:
       -
         name: wso2am-api-publisher
         image: wso2am-api-publisher:1.10.0
-#        env:
-#        -
-#          name: KEY_STORE_PASSWORD
-#          value: wso2carbon
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
+          # -
+          # name: KEY_STORE_PASSWORD
+          # value: wso2carbon
         ports:
         -
           containerPort: 9763
