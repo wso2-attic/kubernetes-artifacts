@@ -41,6 +41,9 @@ function showUsageAndExit() {
         exit 1
 }
 
+kub_username="core"
+search_pattern="wso2"
+
 # TODO: handle flag provided, but no value
 while getopts :u:p:h FLAG; do
     case $FLAG in
@@ -57,9 +60,6 @@ while getopts :u:p:h FLAG; do
 done
 
 validateKubeCtlConfig
-
-kub_username="core"
-search_pattern="wso2"
 IFS=$'\n'
 
 kube_nodes=($(getKubeNodes))
