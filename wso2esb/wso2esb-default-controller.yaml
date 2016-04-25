@@ -30,7 +30,10 @@ spec:
       -
         name: wso2esb-default
         image: wso2esb:4.9.0
-#        env:
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
 #        -
 #          name: KEY_STORE_PASSWORD
 #          value: wso2carbon
