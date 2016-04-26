@@ -16,21 +16,17 @@
 # limitations under the License
 
 # ------------------------------------------------------------------------
-prgdir=$(dirname "$0")
-script_path=$(cd "$prgdir"; pwd)
-common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
-product_profiles=(default worker manager)
+set -e
 
-if [[ ! -z $product_profiles ]]; then
-    for profile in ${product_profiles[@]}; do
-        bash "${common_folder}/undeploy.sh" "$profile"
-    done
-else
-    bash "${common_folder}/undeploy.sh"
-fi
+echo "Deploying MySQL Governance DB Service..."
+kubectl create -f "mysql-govdb-service.yaml"
 
-sleep 5
+echo "Deploying MySQL Governance DB Replication Controller..."
+kubectl create -f "mysql-govdb-controller.yaml"
 
-# undeploy DB service, rc and pods
-kubectl delete rc,services,pods -l name="mysql-esb-db"
+echo "Deploying MySQL User DB Service..."
+kubectl create -f "mysql-userdb-service.yaml"
+
+echo "Deploying MySQL User DB Replication Controller..."
+kubectl create -f "mysql-userdb-controller.yaml"

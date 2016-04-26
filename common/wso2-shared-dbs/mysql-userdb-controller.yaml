@@ -14,20 +14,20 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2-mysql-db
+  name: mysql-userdb
   labels:
-    name: wso2-mysql-db
+    name: mysql-userdb
 spec:
   replicas: 1
   selector:
-    name: wso2-mysql-db
+    name: mysql-userdb
   template:
     metadata:
       labels:
-        name: wso2-mysql-db
+        name: mysql-userdb
     spec:
       containers:
-      - name: wso2-mysql-db
+      - name: mysql-userdb
         image: mysql:5.5
         env:
         -
@@ -35,7 +35,7 @@ spec:
           value: root
         -
           name: MYSQL_DATABASE
-          value: WSO2_DB
+          value: WSO2_USER_DB
         -
           name: MYSQL_USER
           value: wso2carbon

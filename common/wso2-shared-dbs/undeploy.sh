@@ -19,8 +19,6 @@
 
 set -e
 
-echo "Undeploying MySQL database Service..."
-kubectl delete service "wso2-mysql-db"
+kubectl delete rc,services,pods -l name="mysql-govdb"
 
-echo "Undeploying MySQL database Replication Controller..."
-kubectl delete rc "wso2-mysql-db"
+kubectl delete rc,services,pods -l name="mysql-userdb"

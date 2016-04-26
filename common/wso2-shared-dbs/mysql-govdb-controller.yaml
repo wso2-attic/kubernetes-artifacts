@@ -12,17 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 apiVersion: v1
-kind: Service
+kind: ReplicationController
 metadata:
+  name: mysql-govdb
   labels:
-    name: wso2-mysql-db
-  name: wso2-mysql-db
+    name: mysql-govdb
 spec:
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'mysql-port'
-      port: 3306
-  # label keys and values that must match in order to receive traffic for this service
+  replicas: 1
   selector:
-    name: wso2-mysql-db
+    name: mysql-govdb
+  template:
+    metadata:
+      labels:
+        name: mysql-govdb
+    spec:
+      containers:
+      - name: mysql-govdb
+        image: mysql:5.5
+        env:
+        -
+          name: MYSQL_ROOT_PASSWORD
+          value: root
+        -
+          name: MYSQL_DATABASE
+          value: WSO2_GOV_DB
+        -
+          name: MYSQL_USER
+          value: wso2carbon
+        -
+          name: MYSQL_PASSWORD
+          value: wso2carbon
+        ports:
+        -
+          containerPort: 3306
+          protocol: "TCP"
