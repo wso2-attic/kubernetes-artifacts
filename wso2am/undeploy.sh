@@ -29,3 +29,8 @@ if [[ ! -z $product_profiles ]]; then
 else
     bash "${common_folder}/undeploy.sh"
 fi
+
+sleep 5
+
+# undeploy DB service, rc and pods
+kubectl delete rc,services,pods -l name="mysql-apim-db"

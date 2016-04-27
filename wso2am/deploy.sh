@@ -29,6 +29,17 @@ script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 source "${common_scripts_folder}/base.sh"
 
+# deploy DB service and rc
+echo "Deploying APIM database Service..."
+kubectl create -f "mysql-apimdb-service.yaml"
+
+echo "Deploying APIM database Replication Controller..."
+kubectl create -f "mysql-apimdb-controller.yaml"
+
+# wait till mysql is started
+# TODO: find a better way to do this
+sleep 10
+
 # Deploy using separate profiles
 function distributed {
     # deploy services
@@ -36,7 +47,7 @@ function distributed {
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-store" && \
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "api-publisher" && \
     bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-manager" && \
-    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-worker" && \
+#    bash "${common_scripts_folder}/deploy-kubernetes-service.sh" "gateway-worker" && \
 
     # deploy the controllers
     bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "api-key-manager" && \
@@ -49,10 +60,10 @@ function distributed {
     bash "${common_scripts_folder}/wait-until-server-starts.sh" "api-publisher" "${publisher_port}" && \
 
     bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-manager" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-manager" "${gateway_manager_port}" && \
+    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-manager" "${gateway_manager_port}"
 
-    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-worker" && \
-    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-worker" "${gateway_worker_port}"
+#    bash "${common_scripts_folder}/deploy-kubernetes-rc.sh" "gateway-worker" && \
+#    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-worker" "${gateway_worker_port}"
 }
 
 while getopts :dh FLAG; do
