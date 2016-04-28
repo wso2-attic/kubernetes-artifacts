@@ -14,38 +14,35 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2das-default
+  name: mysql-das-db
   labels:
-    name: wso2das-default
+    name: mysql-das-db
 spec:
   replicas: 1
   selector:
-    name: wso2das-default
+    name: mysql-das-db
   template:
     metadata:
       labels:
-        name: wso2das-default
+        name: mysql-das-db
     spec:
       containers:
-      - name: wso2das-default
-        image: wso2das:3.0.1
+      - name: mysql-das-db
+        image: mysql:5.5
         env:
         -
-          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
-          value: "true"
-#        -
-#          name: KEY_STORE_PASSWORD
-#          value: wso2carbon
+          name: MYSQL_ROOT_PASSWORD
+          value: root
+        -
+          name: MYSQL_DATABASE
+          value: DAS_DB
+        -
+          name: MYSQL_USER
+          value: wso2carbon
+        -
+          name: MYSQL_PASSWORD
+          value: wso2carbon
         ports:
         -
-          containerPort: 9443
-          protocol: "TCP"
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 7611
-          protocol: "TCP"
-        -
-          containerPort: 7711
+          containerPort: 3306
           protocol: "TCP"
