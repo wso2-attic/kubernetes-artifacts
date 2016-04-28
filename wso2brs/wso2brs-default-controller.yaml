@@ -30,7 +30,10 @@ spec:
       -
         name: wso2brs-default
         image: wso2brs:2.2.0
-#        env:
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
 #        -
 #          name: KEY_STORE_PASSWORD
 #          value: wso2carbon
