@@ -32,4 +32,4 @@ else
 fi
 
 # undeploy DB service, rc and pods
-kubectl delete rc,services,pods -l name="mysql-esb-db"
+kubectl delete rc,services,pods -l name="mysql-esdb"

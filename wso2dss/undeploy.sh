@@ -29,3 +29,6 @@ if [[ ! -z $product_profiles ]]; then
 else
     bash "${common_folder}/undeploy.sh"
 fi
+
+# undeploy DB service, rc and pods
+kubectl delete rc,services,pods -l name="mysql-dssdb"
