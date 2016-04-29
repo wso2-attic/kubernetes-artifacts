@@ -24,6 +24,17 @@ script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 source "${common_scripts_folder}/base.sh"
 
+# deploy DB service and rc
+echo "Deploying MB database Service..."
+kubectl create -f "mysql-mbdb-service.yaml"
+
+echo "Deploying MB database Replication Controller..."
+kubectl create -f "mysql-mbdb-controller.yaml"
+
+# wait till mysql is started
+# TODO: find a better way to do this
+sleep 10
+
 while getopts :h FLAG; do
     case $FLAG in
         h)
