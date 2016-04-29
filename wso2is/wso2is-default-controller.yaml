@@ -18,7 +18,7 @@ metadata:
   labels:
     name: wso2is-default
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     name: wso2is-default
   template:
