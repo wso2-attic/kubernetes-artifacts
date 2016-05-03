@@ -12,6 +12,8 @@ allowing to add third party membership schemes. WSO2 products that are based on 
 
 2. Copy following JAR files to the `repository/components/lib` directory of the Carbon server:
 
+> These JAR files are packaged with the ZIP distribution of the Kubernetes Membership Scheme, inside the `lib` folder.
+
    ```
       jackson-core-2.5.4.jar
       jackson-databind-2.5.4.jar
