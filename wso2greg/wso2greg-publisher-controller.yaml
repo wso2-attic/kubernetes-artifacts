@@ -29,7 +29,10 @@ spec:
       containers:
       - name: wso2greg-publisher
         image: wso2greg-publisher:5.1.0
-#        env:
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
 #        -
 #          name: KEY_STORE_PASSWORD
 #          value: wso2carbon
