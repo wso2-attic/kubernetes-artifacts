@@ -29,7 +29,10 @@ spec:
       containers:
       - name: wso2dss-manager
         image: wso2dss-manager:3.5.0
-#        env:
+        env:
+        -
+          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
+          value: "true"
 #        -
 #          name: KEY_STORE_PASSWORD
 #          value: wso2carbon
