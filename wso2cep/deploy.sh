@@ -28,10 +28,10 @@ source "${common_scripts_folder}/base.sh"
 
 
 # deploy DB service and rc
-echo "Deploying ESB database Service..."
+echo "Deploying CEP database Service..."
 kubectl create -f "mysql-cepdb-service.yaml"
 
-echo "Deploying ESB database Replication Controller..."
+echo "Deploying CEP database Replication Controller..."
 kubectl create -f "mysql-cepdb-controller.yaml"
 
 # wait till mysql is started
