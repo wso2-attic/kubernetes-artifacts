@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>1</version>
+        <version>3</version>
     </parent>
 
     <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
@@ -317,7 +317,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kubernetes.artifacts.version>1.0.0</kubernetes.artifacts.version>
+        <kubernetes.artifacts.version>1.0.0-SNAPSHOT</kubernetes.artifacts.version>
         <validation.script.dir>${project.basedir}</validation.script.dir>
         <!-- dependencies-->
         <carbon.version>4.2.0</carbon.version>
