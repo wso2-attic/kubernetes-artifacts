@@ -33,10 +33,10 @@
         </fileSet>
         <!-- dependencies -->
         <fileSet>
-            <directory>${project.build.directory}</directory>
+            <directory>${project.build.directory}/dependencies</directory>
             <outputDirectory>/</outputDirectory>
             <includes>
-                <include>dependencies/**</include>
+                <include>**/*.jar</include>
             </includes>
         </fileSet>
 
