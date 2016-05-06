@@ -23,12 +23,13 @@
     <parent>
         <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
         <artifactId>wso2-kubernetes-artifacts</artifactId>
-        <version>${kubernetes.artifacts.version}</version>
+        <version>1.0.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>kubernetes-membership-scheme</artifactId>
-    <name>Kubernetes Membership Scheme for Carbon 4.2.0 and 4.4.x</name>
+    <name>WSO2 Kubernetes Membership Scheme</name>
+    <description>Kubernetes Membership Scheme for Carbon 4.2.0 and 4.4.x</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
