@@ -19,18 +19,38 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.wso2.kubernetes</groupId>
+        <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
         <artifactId>wso2-kubernetes-artifacts</artifactId>
         <version>${kubernetes.artifacts.version}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>org.wso2.kubernetes-artifacts</groupId>
     <artifactId>${wso2.product.name}-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
     <version>${kubernetes.artifacts.version}</version>
     <name>${wso2.product.fullname} Kubernetes Artifacts</name>
     <description>${wso2.product.fullname} Kubernetes Artifacts</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <descriptor>package.xml</descriptor>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>create-archive</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <wso2.product.name>wso2am</wso2.product.name>

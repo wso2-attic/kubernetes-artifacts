@@ -21,10 +21,10 @@
     <parent>
         <groupId>org.wso2</groupId>
         <artifactId>wso2</artifactId>
-        <version>4</version>
+        <version>1</version>
     </parent>
 
-    <groupId>org.wso2.kubernetes</groupId>
+    <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
     <artifactId>wso2-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
     <version>${kubernetes.artifacts.version}</version>
@@ -39,6 +39,7 @@
     </licenses>
 
     <modules>
+        <module>common/kubernetes-membership-scheme</module>
         <module>wso2am</module>
         <module>wso2as</module>
         <module>wso2bps</module>
@@ -57,11 +58,12 @@
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <inherited>true</inherited>
+                <!--inherited>true</inherited-->
                 <version>2.5.3</version>
                 <configuration>
                     <descriptor>package.xml</descriptor>
                     <appendAssemblyId>false</appendAssemblyId>
+                    <!--runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot-->
                 </configuration>
                 <executions>
                     <execution>
