@@ -325,5 +325,6 @@
         <hazelcast.version>3.2.6.wso2v3</hazelcast.version>
         <jackson.version>2.5.4</jackson.version>
         <ppaas.version>4.1.5</ppaas.version>
+        <project.scm.id>my-scm-server</project.scm.id>
     </properties>
 </project>
