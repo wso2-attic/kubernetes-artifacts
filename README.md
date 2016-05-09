@@ -18,9 +18,7 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
   4. navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
   5. build the Dockerfile with the following command:
   
-          ```
-          ./build.sh -v [product-version] -s kubernetes
-          ```
+          `./build.sh -v [product-version] -s kubernetes`
           
   note the '-s kubernetes' flag, denoting kubernetes platform.
   
@@ -53,17 +51,13 @@ Ex: ./load-images.sh -p wso2is
   1. Navigate to `KUBERNETES_ARTIFACTS_HOME/common/wso2-shared-dbs` location.
   2. run the deploy.sh script:
   
-            ```
-            ./deploy.sh`
-            ```
+            `./deploy.sh`
             
       This will create mysql DB pods for common databases used by WSO2 products. Please note that each kubernetes node needs the mysql:5.5 docker image in the local docker registry.
   3. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
   4. run the deploy.sh script:
   
-            ```
-            ./deploy.sh
-            ```
+            `\./deploy.sh`
             
       This will deploy the standalone product in Kubernetes, using the image available in kubernetes nodes, and notify once the intended service starts running on the pod. 
 
