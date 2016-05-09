@@ -53,7 +53,7 @@ Ex: ./load-images.sh -p wso2is
   
             `./deploy.sh`
             
-      This will create mysql DB pods for common databases used by WSO2 products. Please note that each kubernetes node needs the mysql:5.5 docker image in the local docker registry.
+      This will create mysql DB pods for common databases used by WSO2 products. Please note that each kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) docker image in the local docker registry.
   3. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
   4. run the deploy.sh script:
   
