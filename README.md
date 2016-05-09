@@ -17,7 +17,9 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
   iii. set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine. 
   iv. navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
   v. build the Dockerfile with the following command:
-          `./build.sh -v [product-version] -s kubernetes`
+          ```
+          ./build.sh -v [product-version] -s kubernetes
+          ```
   note the '-s kubernetes' flag, denoting kubernetes platform.
   
   This will build the standalone product for kubernetes platform, using configuration specified in puppet. Please note its possible to build relevant profiles of the products similarly. Refer build.sh scrip usage.
@@ -28,7 +30,8 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 
 You can make use of the `load-images.sh` helper script to transfer images to the Kubernetes nodes. It will search for any Docker images with `wso2` as a part of its name on your local machine, and ask for verification to transfer them to the Kubernetes nodes. `kubectl` has to be functioning on your local machine in order for the script to retrieve the list of Kubernetes nodes. You can optionally provide a search pattern if you want to override the default `wso2` string.
 
-**`load-images.sh` Usage**
+**`load-images.sh` 
+Usage**
 ```
 Usage: ./load-images.sh [OPTIONS]
 
@@ -47,11 +50,15 @@ Ex: ./load-images.sh -p wso2is
 ##### 3. Deploy Kubernetes Artifacts
   i. Navigate to `KUBERNETES_ARTIFACTS_HOME/common/wso2-shared-dbs` location.
   ii. run the deploy.sh script:
-            `./deploy.sh`
+            ```
+            ./deploy.sh`
+            ```
       This will create mysql DB pods for common databases used by WSO2 products. Please note that each kubernetes node needs the mysql:5.5 docker image in the local docker registry.
   iii. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
   iv. run the deploy.sh script:
-            `./deploy.sh`
+            ```
+            ./deploy.sh
+            ```
       This will deploy the standalone product in Kubernetes, using the image available in kubernetes nodes, and notify once the intended service starts running on the pod. 
 
 > For more detailed instructions on deploying a particular WSO2 product on Kubernetes, refer to the README file in the relevant product folder.
