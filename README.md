@@ -57,7 +57,7 @@ Ex: ./load-images.sh -p wso2is
   3. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
   4. run the deploy.sh script:
   
-            `\./deploy.sh`
+            `./deploy.sh`
             
       This will deploy the standalone product in Kubernetes, using the image available in kubernetes nodes, and notify once the intended service starts running on the pod. 
 
