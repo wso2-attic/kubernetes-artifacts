@@ -24,6 +24,17 @@ script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 source "${common_scripts_folder}/base.sh"
 
+while getopts :h FLAG; do
+    case $FLAG in
+        h)
+            showUsageAndExitDefault
+            ;;
+        \?)
+            showUsageAndExitDefault
+            ;;
+    esac
+done
+
 # deploy DB service and rc
 echo "Deploying IS database Service..."
 kubectl create -f "mysql-isdb-service.yaml"
@@ -34,17 +45,6 @@ kubectl create -f "mysql-isdb-controller.yaml"
 # wait till mysql is started
 # TODO: find a better way to do this
 sleep 10
-
-while getopts :h FLAG; do
-    case $FLAG in
-        h)
-            showUsageAndExitDefault
-            ;;
-        \?)
-            default "${default_port}"
-            ;;
-    esac
-done
 
 validateKubeCtlConfig
 default "${default_port}"

@@ -26,18 +26,6 @@ script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 source "${common_scripts_folder}/base.sh"
 
-
-# deploy DB service and rc
-echo "Deploying CEP database Service..."
-kubectl create -f "mysql-cepdb-service.yaml"
-
-echo "Deploying CEP database Replication Controller..."
-kubectl create -f "mysql-cepdb-controller.yaml"
-
-# wait till mysql is started
-# TODO: find a better way to do this
-sleep 10
-
 # Deploy using separate profiles
 function distributed {
     # deploy services
@@ -61,10 +49,21 @@ while getopts :dh FLAG; do
             showUsageAndExitDistributed
             ;;
         \?)
-            default "${default_port}"
+            showUsageAndExitDistributed
             ;;
     esac
 done
+
+# deploy DB service and rc
+echo "Deploying CEP database Service..."
+kubectl create -f "mysql-cepdb-service.yaml"
+
+echo "Deploying CEP database Replication Controller..."
+kubectl create -f "mysql-cepdb-controller.yaml"
+
+# wait till mysql is started
+# TODO: find a better way to do this
+sleep 10
 
 validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
