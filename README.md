@@ -50,16 +50,16 @@ Ex: ./load-images.sh -p wso2is
 ```
 
 ##### 3. Deploy Kubernetes Artifacts
-  i. Navigate to `KUBERNETES_ARTIFACTS_HOME/common/wso2-shared-dbs` location.
-  ii. run the deploy.sh script:
+  1. Navigate to `KUBERNETES_ARTIFACTS_HOME/common/wso2-shared-dbs` location.
+  2. run the deploy.sh script:
   
             ```
             ./deploy.sh`
             ```
             
       This will create mysql DB pods for common databases used by WSO2 products. Please note that each kubernetes node needs the mysql:5.5 docker image in the local docker registry.
-  iii. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
-  iv. run the deploy.sh script:
+  3. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
+  4. run the deploy.sh script:
   
             ```
             ./deploy.sh
