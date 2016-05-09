@@ -41,6 +41,11 @@ function showUsageAndExit() {
         exit 1
 }
 
+function handleKnownHosts() {
+    echo "Removing known_hosts entry ${1}..."
+    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R ${1}
+}
+
 kub_username="core"
 search_pattern="wso2"
 
@@ -92,7 +97,14 @@ do
             do
                 echoDim "Copying saved image to ${kube_node}..."
                 node_ip=$(getKubeNodeIP $kube_node)
-                # TODO: handle known_host issue
+
+                # Checking if a known_hosts entry already exists
+                host_known=$(ssh-keygen -H -F $node_ip)
+                if [ ! -z "${host_known}" ]; then
+                    # host known and might cause clashes, remove entry
+                    handleKnownHosts $node_ip
+                fi
+
                 scp /tmp/$image_id.tar $kub_username@$node_ip:.
                 echoDim "Loading copied image..."
                 ssh $kub_username@$node_ip "docker load < ${image_id}.tar"
