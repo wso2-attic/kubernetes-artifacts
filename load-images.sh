@@ -41,11 +41,6 @@ function showUsageAndExit() {
         exit 1
 }
 
-function handleKnownHosts() {
-    echo "Removing known_hosts entry ${1}..."
-    ssh-keygen -f "${HOME}/.ssh/known_hosts" -R ${1}
-}
-
 kub_username="core"
 search_pattern="wso2"
 
@@ -53,14 +48,14 @@ search_pattern="wso2"
 while getopts :u:p:h FLAG; do
     case $FLAG in
         u)
-        kub_username=$OPTARG
-        ;;
+            kub_username=$OPTARG
+            ;;
         p)
-        search_pattern=$OPTARG
-        ;;
+            search_pattern=$OPTARG
+            ;;
         h)
-        showUsageAndExit
-        ;;
+            showUsageAndExit
+            ;;
     esac
 done
 
@@ -99,10 +94,17 @@ do
                 node_ip=$(getKubeNodeIP $kube_node)
 
                 # Checking if a known_hosts entry already exists
+                echoDim "Checking SSH communication to Node ${node_ip}..."
                 host_known=$(ssh-keygen -H -F $node_ip)
                 if [ ! -z "${host_known}" ]; then
-                    # host known and might cause clashes, remove entry
-                    handleKnownHosts $node_ip
+                    # host known, check if up to date
+                    key_scheme=$(ssh-keygen -H -F $node_ip | awk '{print $2}')
+                    host_key=$(ssh-keygen -H -F $node_ip | awk '{print $3}')
+                    server_key=$(ssh-keyscan -t $key_scheme $node_ip | awk '{print $3}')
+                    if [ $host_key != $server_key ]; then
+                        echo "Removing known_hosts entry ${node_ip}..."
+                        ssh-keygen -f "${HOME}/.ssh/known_hosts" -R $node_ip
+                    fi
                 fi
 
                 scp /tmp/$image_id.tar $kub_username@$node_ip:.
