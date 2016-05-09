@@ -12,11 +12,11 @@ To deploy a WSO2 product on Kubernetes, the following steps have to be done.
 To manage configurations and artifacts when building Docker images, WSO2 recommends to use [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) as the provisioning method. A specific data set for Kubernetes platform is available in wso2 puppet modules. To try out, it's possible to use this data set to build Dockerfiles for wso2 products for Kubernetes with minimum configuration changes.
 
 Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
-  i. clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternately you can download the released artifacts using the release page of the gitub repository).
-  ii. copy the [`dependency jars`] for clustering (https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
-  iii. set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine. 
-  iv. navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
-  v. build the Dockerfile with the following command:
+  1. clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternately you can download the released artifacts using the release page of the gitub repository).
+  2. copy the [`dependency jars`] for clustering (https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
+  3. set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine. 
+  4. navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
+  5. build the Dockerfile with the following command:
           ```
           ./build.sh -v [product-version] -s kubernetes
           ```
