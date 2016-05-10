@@ -25,9 +25,9 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
   4. Navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
   5. Build the Dockerfile with the following command:
 
-    **`./build.sh -v [product-version] -s kubernetes`**
+    **`./build.sh -v [product-version] -s kubernetes -r puppet`**
 
-  Note that `-s kubernetes` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
+  Note that `-s kubernetes and -r puppet` flags denotes the Kubernetes platform and Puppet provisioning method.
 
   This will build the standalone product for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
 
@@ -65,11 +65,11 @@ Ex: ./load-images.sh -p wso2is
       This will deploy the standalone product in Kubernetes, using the image available in Kubernetes nodes, and notify once the intended service starts running on the pod.
       __Please note that each Kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) docker image in the node's docker registry.__
 
-##### 3. Access Management Console
+##### 4. Access Management Console
   1. Add an host entry (in Linux, using the `/etc/hosts` file) for `<product_name>-default`, resolving to the Kubernetes node IP.
   2. Access the Carbon Management Console URL using `https://<product_name>-default:<node_port>/carbon/`
 
-##### 3. Undeploying
+##### 5. Undeploying
   1. Navigate to relevant product directory in Kubernetes repository; `KUBERNETES_HOME/<product>` location.
   2. run the `undeploy.sh` script:
 
