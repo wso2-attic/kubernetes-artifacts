@@ -1,4 +1,4 @@
-# Kubernetes Artifacts for WSO2 Business Rule Server #
+# Kubernetes Artifacts for WSO2 Business Rules Server #
 These Kubernetes Artifacts provide the resources and instructions to deploy WSO2 Business Rule Server on Kubernetes.
 
 ## Getting Started
