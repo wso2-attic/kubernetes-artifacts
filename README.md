@@ -1,5 +1,8 @@
 # WSO2 Kubernetes Artifacts
+
 WSO2 Kubernetes Artifacts enable you to run WSO2 products seamlessly on [Kubernetes] (https://kubernetes.io) using Docker. This repository contains artifacts (Service and Replication Controller definitions) to deploy WSO2 products on Kubernetes.
+
+Note: In the context of this document, `KUBERNETES_HOME`, `DOCKERFILES_HOME` and `PUPPET_HOME` will refer to local copies of [`wso2/kubernetes artifacts`](https://github.com/wso2/kubernetes-artifacts/), [`wso2/dockcerfiles`](https://github.com/wso2/dockerfiles/) and [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) repositories. 
 
 ## Getting Started
 To deploy a WSO2 product on Kubernetes, the following steps have to be done.
@@ -7,11 +10,13 @@ To deploy a WSO2 product on Kubernetes, the following steps have to be done.
 * Copy the images to the Kubernetes Nodes
 * Run `deploy.sh` inside the relevant product folder, which will deploy the Service and the Replication Controllers
 
+
 ##### 1. Build Docker Images
 
 To manage configurations and artifacts when building Docker images, WSO2 recommends to use [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) as the provisioning method. A specific data set for Kubernetes platform is available in wso2 puppet modules. To try out, it's possible to use this data set to build Dockerfiles for wso2 products for Kubernetes with minimum configuration changes.
 
 Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
+
   1. clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternately you can download the released artifacts using the release page of the gitub repository).
   2. copy the [`dependency jars`](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
   3. set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine. 
@@ -23,6 +28,7 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
   note the '-s kubernetes' flag, denoting kubernetes platform.
   
   This will build the standalone product for kubernetes platform, using configuration specified in puppet. Please note its possible to build relevant profiles of the products similarly. Refer build.sh scrip usage.
+
 
 ##### 2. Copy the Images to Kubernetes Nodes/Registry
 
@@ -46,6 +52,7 @@ Ex: ./load-images.sh
 Ex: ./load-images.sh -u ubuntu
 Ex: ./load-images.sh -p wso2is
 ```
+
 
 ##### 3. Deploy Kubernetes Artifacts
   1. Navigate to `KUBERNETES_ARTIFACTS_HOME/common/wso2-shared-dbs` location.
