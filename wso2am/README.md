@@ -20,7 +20,7 @@ Buidling WSO2 API Manager Dockerfile using Puppet, for Kubernetes:
   3. Copy  [`kernel patch0005`](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip) to `PUPPET_HOME/modules/wso2as/files/patches/repository/components/patches` folder.
   4. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
   5. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/wso2am/files/configs/repository/components/lib` location.
-  6. Copy the product zip file to `PUPPET_HOME/modules/wso2am/files` location.
+  6. Copy the product zip [`wso2am-1.10.0.zip`](http://wso2.com/products/api-manager/) file to `PUPPET_HOME/modules/wso2am/files` location.
   7. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   8. Navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/wso2am`.
   9. Build the Dockerfile with the following command:
