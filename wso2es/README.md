@@ -62,11 +62,11 @@ Ex: ./load-images.sh -p wso2is
       This will deploy the WSO2 Enterprise Store 2.0.0 default profile in Kubernetes, using the image available in Kubernetes nodes, and notify once the intended service starts running on the pod.
       __Please note that each Kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) Docker image in the node's Docker registry.__
 
-##### 3. Access Management Console
+#### 4. Access Management Console
   1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2es-default`, resolving to the Kubernetes node IP.
   2. Access the Carbon Management Console URL using `https://wso2es-default:32082/carbon/`
 
-##### 3. Undeploying
+#### 5. Undeploying
   1. Navigate to `wso2es` directory in Kubernetes repository; `KUBERNETES_HOME/wso2es` location.
   2. run the `undeploy.sh` script:
 
