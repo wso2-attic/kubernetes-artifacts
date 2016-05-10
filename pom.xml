@@ -181,9 +181,9 @@
     </profiles>
 
     <scm>
-        <url>https://github.com/wso2/carbon4-kernel.git</url>
-        <developerConnection>scm:git:https://github.com/wso2/carbon4-kernel.git</developerConnection>
-        <connection>scm:git:https://github.com/wso2/carbon4-kernel.git</connection>
+        <url>https://github.com/wso2/kubernetes-artifacts.git</url>
+        <developerConnection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</connection>
         <tag>HEAD</tag>
     </scm>
 
