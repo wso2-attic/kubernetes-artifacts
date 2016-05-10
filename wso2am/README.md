@@ -37,8 +37,9 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 
 You can make use of the `load-images.sh` helper script to transfer images to the Kubernetes nodes. It will search for any Docker images with `wso2` as a part of its name on your local machine, and ask for verification to transfer them to the Kubernetes nodes. `kubectl` has to be functioning on your local machine in order for the script to retrieve the list of Kubernetes nodes. You can optionally provide a search pattern if you want to override the default `wso2` string.
 
-**`load-images.sh`
-Usage**
+**`load-images.sh -p wso2am`**
+
+**Usage**
 ```
 Usage: ./load-images.sh [OPTIONS]
 
