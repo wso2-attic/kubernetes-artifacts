@@ -29,8 +29,8 @@ Building WSO2 Application Server Docker images using Puppet for Kubernetes:
 
   Note that `-s kubernetes` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
 
-  This will build the default profile of WSO2 Application Server 5.3.0 for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
-
+  This will build the default profile of WSO2 Application Server 5.3.0 for Kubernetes platform, using configuration specified in Puppet. 
+  
 #### 2. Copy the Images to Kubernetes Nodes/Registry
 
 Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker save` to create a tarball of the required image, `scp` the tarball to each node, and use `docker load` to reload the images from the copied tarballs on the nodes). Alternatively, if a private Docker registry is used, transfer the images there.
