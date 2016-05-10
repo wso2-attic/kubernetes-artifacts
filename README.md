@@ -57,25 +57,26 @@ Ex: ./load-images.sh -p wso2is
 
 
 ##### 3. Deploy Kubernetes Artifacts
-  1. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
+  1. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_HOME/<product>` location.
   2. run the deploy.sh script:
 
     **`./deploy.sh`**
 
-      This will deploy the standalone product in Kubernetes, using the image available in kubernetes nodes, and notify once the intended service starts running on the pod.
-      __Please note that each kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) docker image in the node's docker registry.__
+      This will deploy the standalone product in Kubernetes, using the image available in Kubernetes nodes, and notify once the intended service starts running on the pod.
+      __Please note that each Kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) docker image in the node's docker registry.__
 
 ##### 3. Access Management Console
-  1. Add an host entry (in Linux, using the /etc/hosts file) for `<product_name>-default`, resolving to the kubernetes node IP.
-  2. Access the Mgt Console URL using `https://<product_name>-default:<node_port>/carbon/`
+  1. Add an host entry (in Linux, using the `/etc/hosts` file) for `<product_name>-default`, resolving to the Kubernetes node IP.
+  2. Access the Carbon Management Console URL using `https://<product_name>-default:<node_port>/carbon/`
 
 ##### 3. Undeploying
-  1. Navigate to relevant product directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/<product>` location.
-  2. run the undeploy.sh script:
+  1. Navigate to relevant product directory in Kubernetes repository; `KUBERNETES_HOME/<product>` location.
+  2. run the `undeploy.sh` script:
 
     **`./undeploy.sh`**
 
-      This will undeploy the product specific DB pod, kubernetes replication controllers and kubernetes services.  
+      This will undeploy the product specific DB pod, Kubernetes Replication Controllers, and Kubernetes services. Additionally if `-f` flag is provided when running `undeploy.sh`, it will also undeploy the shared Governance and User DB pods, Replication Controllers, and Services.
+      **`./undeploy.sh -f`**
 
 > For more detailed instructions on deploying a particular WSO2 product on Kubernetes, refer to the README file in the relevant product folder.
 
