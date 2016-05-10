@@ -27,10 +27,9 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
 
     **`./build.sh -v [product-version] -s kubernetes -r puppet`**
 
-  Note that `-s kubernetes and -r puppet` flags denotes the Kubernetes platform and Puppet provisioning method.
+  Note that `-s kubernetes` and `-r puppet` flags denotes the Kubernetes platform and Puppet provisioning method.
 
   This will build the standalone product for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
-
 
 ##### 2. Copy the Images to Kubernetes Nodes/Registry
 
