@@ -67,7 +67,7 @@ Ex: ./load-images.sh -p wso2is
   2. Access the Mgt Console URL using `https://wso2am-default:32004/carbon/` 
     * Publisher URL: `https://wso2am-default:32004/publisher`
     * Store URL: `https://wso2am-default:32004/store`
-    * API endpoint URL: `https://wso2am-default:32002/<api_name>`
+    * API endpoint URL: `https://wso2am-default:32002/<api_context>/<api_version>`
 
 ##### 5. Undeploying
   1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
