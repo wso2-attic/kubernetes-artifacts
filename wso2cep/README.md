@@ -75,3 +75,9 @@ Ex: ./load-images.sh -p wso2is
 
       This will undeploy the WSO2 Complex Event Processor specific DB pod (`mysql-cepdb`), Kubernetes Replication Controllers, and Kubernetes services. Additionally if `-f` flag is provided when running `undeploy.sh`, it will also undeploy the shared Governance and User DB pods, Replication Controllers, and Services.
       **`./undeploy.sh -f`**
+
+For more detailed instructions on deploying WSO2 Complex Event Processor on Kubernetes, please refer the wiki links under the Documentation section below.
+
+# Documentation
+* [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
+* [Tutorials](https://docs.wso2.com/display/KA100/Tutorials)
