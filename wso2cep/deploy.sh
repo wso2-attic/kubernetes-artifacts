@@ -40,10 +40,15 @@ function distributed {
     bash "${common_scripts_folder}/wait-until-server-starts.sh" "worker" "${worker_port}"
 }
 
+full_deployment=false
+
 while getopts :dh FLAG; do
     case $FLAG in
         d)
             deployment_pattern="distributed"
+            ;;
+        f)
+            full_deployment=true
             ;;
         h)
             showUsageAndExitDistributed
@@ -53,6 +58,13 @@ while getopts :dh FLAG; do
             ;;
     esac
 done
+
+validateKubeCtlConfig
+
+if [ $full_deployment == true ]; then
+    echo "Deploying MySQL Services and RCs for Conf and Gov remote mounting..."
+    bash $script_path/../common/wso2-shared-dbs/deploy.sh
+fi
 
 # deploy DB service and rc
 echo "Deploying CEP database Service..."
@@ -65,7 +77,6 @@ kubectl create -f "mysql-cepdb-controller.yaml"
 # TODO: find a better way to do this
 sleep 10
 
-validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else

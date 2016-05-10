@@ -55,7 +55,9 @@ function distributed {
     #    bash "${common_scripts_folder}/wait-until-server-starts.sh" "gateway-worker" "${gateway_worker_port}"
 }
 
-while getopts :dh FLAG; do
+full_deployment=false
+
+while getopts :dfh FLAG; do
     case $FLAG in
         d)
             deployment_pattern="distributed"
@@ -63,11 +65,21 @@ while getopts :dh FLAG; do
         h)
             showUsageAndExitDistributed
             ;;
+        f)
+            full_deployment=true
+            ;;
         \?)
             showUsageAndExitDistributed
             ;;
     esac
 done
+
+validateKubeCtlConfig
+
+if [ $full_deployment == true ]; then
+    echo "Deploying MySQL Services and RCs for Conf and Gov remote mounting..."
+    bash $script_path/../common/wso2-shared-dbs/deploy.sh
+fi
 
 # deploy DB service and rc
 echo "Deploying APIM database Service..."
@@ -80,7 +92,6 @@ kubectl create -f "mysql-apimdb-controller.yaml"
 # TODO: find a better way to do this
 sleep 10
 
-validateKubeCtlConfig
 if [ "$deployment_pattern" = "distributed" ]; then
     distributed
 else

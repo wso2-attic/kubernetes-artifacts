@@ -22,12 +22,29 @@ common_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 
 product_profiles=(default presenter worker)
 
+full_deployment=false
+
+while getopts :f FLAG; do
+    case $FLAG in
+        f)
+            full_deployment=true
+            ;;
+    esac
+done
+
 if [[ ! -z $product_profiles ]]; then
     for profile in ${product_profiles[@]}; do
         bash "${common_folder}/undeploy.sh" "$profile"
     done
 else
     bash "${common_folder}/undeploy.sh"
+fi
+
+sleep 5
+
+if [ $full_deployment == true ]; then
+    echo "Undeploying MySQL Services and RCs for Conf and Gov remote mounting..."
+    bash $script_path/../common/wso2-shared-dbs/undeploy.sh
 fi
 
 # undeploy DB service, rc and pods

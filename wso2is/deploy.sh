@@ -24,16 +24,28 @@ script_path=$(cd "$prgdir"; pwd)
 common_scripts_folder=$(cd "${script_path}/../common/scripts/"; pwd)
 source "${common_scripts_folder}/base.sh"
 
+full_deployment=false
+
 while getopts :h FLAG; do
     case $FLAG in
         h)
             showUsageAndExitDefault
+            ;;
+        f)
+            full_deployment=true
             ;;
         \?)
             showUsageAndExitDefault
             ;;
     esac
 done
+
+validateKubeCtlConfig
+
+if [ $full_deployment == true ]; then
+    echo "Deploying MySQL Services and RCs for Conf and Gov remote mounting..."
+    bash $script_path/../common/wso2-shared-dbs/deploy.sh
+fi
 
 # deploy DB service and rc
 echo "Deploying IS database Service..."
@@ -46,5 +58,4 @@ kubectl create -f "mysql-isdb-controller.yaml"
 # TODO: find a better way to do this
 sleep 10
 
-validateKubeCtlConfig
 default "${default_port}"
