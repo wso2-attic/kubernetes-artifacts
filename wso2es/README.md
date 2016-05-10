@@ -29,7 +29,7 @@ Building WSO2 Enterprise Store Docker images using Puppet for Kubernetes:
 
   Note that `-s kubernetes` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
 
-  This will build the default profile of WSO2 Enterprise Store 2.0.0 for Kubernetes platform, using configuration specified in Puppet.
+  This will build the default profile of WSO2 Enterprise Store 2.0.0 for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
 
 #### 2. Copy the Images to Kubernetes Nodes/Registry
 
