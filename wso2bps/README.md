@@ -20,12 +20,12 @@ Building WSO2 Business Process Server Docker images using Puppet for Kubernetes:
   3. Copy  [`kernel patch0005`](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip) to `PUPPET_HOME/modules/wso2bps/files/patches/repository/components/patches` folder.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
   4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/wso2bps/files/configs/repository/components/lib` location.
-  5. Copy the WSO2 Business Process Server 3.5.1 product pack file to `PUPPET_HOME/modules/wso2bps/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
+  5. Copy the WSO2 Business Process Server 3.5.0 product pack file to `PUPPET_HOME/modules/wso2bps/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
   6. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   7. Navigate to `wso2bps` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2bps`.
   8. Build the Dockerfile with the following command:
 
-    **`./build.sh -v 3.5.1 -s kubernetes`**
+    **`./build.sh -v 3.5.0 -s kubernetes`**
 
   Note that `-s kubernetes` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
 
