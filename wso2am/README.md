@@ -29,8 +29,7 @@ Buidling WSO2 API Manager Dockerfile using Puppet, for Kubernetes:
 
   Note that `-s kubernetes` and `-r puppet` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
 
-  This will build the standalone WSO2 API Manager for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
-
+  This will build the standalone WSO2 API Manager for Kubernetes platform, using configuration specified in Puppet. 
 
 ##### 2. Copy the Images to Kubernetes Nodes/Registry
 
