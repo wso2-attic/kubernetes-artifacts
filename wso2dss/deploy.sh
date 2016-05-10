@@ -40,15 +40,10 @@ function distributed {
     bash "${common_scripts_folder}/wait-until-server-starts.sh" "worker" "${worker_port}"
 }
 
-full_deployment=false
-
 while getopts :dh FLAG; do
     case $FLAG in
         d)
             deployment_pattern="distributed"
-            ;;
-        f)
-            full_deployment=true
             ;;
         h)
             showUsageAndExitDistributed
@@ -61,10 +56,7 @@ done
 
 validateKubeCtlConfig
 
-if [ $full_deployment == true ]; then
-    echo "Deploying MySQL Services and RCs for Conf and Gov remote mounting..."
-    bash $script_path/../common/wso2-shared-dbs/deploy.sh
-fi
+bash $script_path/../common/wso2-shared-dbs/deploy.sh
 
 # deploy DB service and rc
 echo "Deploying DSS database Service..."

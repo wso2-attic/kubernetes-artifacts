@@ -17,16 +17,30 @@
 
 # ------------------------------------------------------------------------
 
-set -e
 
-echo "Deploying MySQL Governance DB Service..."
-kubectl create -f "mysql-govdb-service.yaml"
+prgdir=$(dirname "$0")
+script_path=$(cd "$prgdir"; pwd)
 
-echo "Deploying MySQL Governance DB Replication Controller..."
-kubectl create -f "mysql-govdb-controller.yaml"
+kubectl get rc | grep mysql-govdb > /dev/null 2>&1
 
-echo "Deploying MySQL User DB Service..."
-kubectl create -f "mysql-userdb-service.yaml"
+if [ $? -ne 0 ]; then
+  echo "Deploying MySQL Governance DB Service..."
+  kubectl create -f "${script_path}/mysql-govdb-service.yaml"
 
-echo "Deploying MySQL User DB Replication Controller..."
-kubectl create -f "mysql-userdb-controller.yaml"
+  echo "Deploying MySQL Governance DB Replication Controller..."
+  kubectl create -f "${script_path}/mysql-govdb-controller.yaml"
+else
+  echo "MySQL Governance DB is already deployed."
+fi
+
+kubectl get rc | grep mysql-userdb > /dev/null 2>&1
+
+if [ $? -ne 0 ]; then
+  echo "Deploying MySQL User DB Service..."
+  kubectl create -f "${script_path}/mysql-userdb-service.yaml"
+
+  echo "Deploying MySQL User DB Replication Controller..."
+  kubectl create -f "${script_path}/mysql-userdb-controller.yaml"
+else
+  echo "MySQL User DB is already deployed"
+fi
