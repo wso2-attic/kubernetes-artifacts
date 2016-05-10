@@ -18,7 +18,7 @@ Building WSO2 Message Broker Docker images using Puppet for Kubernetes:
   1. Clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternatively you can download the released artifacts using the release page of the GitHub repository).
   2. Copy the [dependency jars](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
-  4. Copy the WSO2 Message Broker 3.1.0 product pack file to `PUPPET_HOME/modules/wso2mb/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changes to match).
+  4. Copy the WSO2 Message Broker 3.1.0 product pack file to `PUPPET_HOME/modules/wso2mb/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
   3. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   4. Navigate to `wso2mb` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2mb`.
   5. Build the Dockerfile with the following command:
@@ -67,7 +67,7 @@ Ex: ./load-images.sh -p wso2is
   2. Access the Carbon Management Console URL using `https://wso2mb-default:32122/carbon/`
 
 ##### 3. Undeploying
-  1. Navigate to relevant product directory in Kubernetes repository; `KUBERNETES_HOME/wso2mb` location.
+  1. Navigate to `wso2mb` directory in Kubernetes repository; `KUBERNETES_HOME/wso2mb` location.
   2. run the `undeploy.sh` script:
 
     **`./undeploy.sh`**
