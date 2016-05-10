@@ -2,25 +2,24 @@
 
 WSO2 Kubernetes Artifacts enable you to run WSO2 products seamlessly on [Kubernetes] (https://kubernetes.io) using Docker. This repository contains artifacts (Service and Replication Controller definitions) to deploy WSO2 products on Kubernetes.
 
-Note: In the context of this document, `KUBERNETES_HOME`, `DOCKERFILES_HOME` and `PUPPET_HOME` will refer to local copies of [`wso2/kubernetes artifacts`](https://github.com/wso2/kubernetes-artifacts/), [`wso2/dockcerfiles`](https://github.com/wso2/dockerfiles/) and [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) repositories respectively.
-
 ## Getting Started
+>In the context of this document, `KUBERNETES_HOME`, `DOCKERFILES_HOME` and `PUPPET_HOME` will refer to local copies of [`wso2/kubernetes artifacts`](https://github.com/wso2/kubernetes-artifacts/), [`wso2/dockcerfiles`](https://github.com/wso2/dockerfiles/) and [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) repositories respectively.
+
 To deploy a WSO2 product on Kubernetes, the following steps have to be done.
 * Build relevant Docker images
 * Copy the images to the Kubernetes Nodes
 * Run `deploy.sh` inside the relevant product folder, which will deploy the Service and the Replication Controllers
 
-
 ##### 1. Build Docker Images
 
-To manage configurations and artifacts when building Docker images, WSO2 recommends to use [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) as the provisioning method. A specific data set for Kubernetes platform is available in wso2 puppet modules. To try out, it's possible to use this data set to build Dockerfiles for wso2 products for Kubernetes with minimum configuration changes.
+To manage configurations and artifacts when building Docker images, WSO2 recommends to use [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) as the provisioning method. A specific data set for Kubernetes platform is available in WSO2 Puppet Modules. It's possible to use this data set to build Dockerfiles for wso2 products for Kubernetes with minimum configuration changes.
 
-Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
+Building WSO2 Docker images using Puppet for Kubernetes:
 
   1. Clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternatively you can download the released artifacts using the release page of the GitHub repository).
   2. Copy the [`dependency jars`](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
-  4. Copy the product zip file to `PUPPET_HOME/modules/wso2am/files` location.
+  4. Copy the product zip file to `PUPPET_HOME/modules/wso2{product}/files` location.
   3. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   4. Navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
   5. Build the Dockerfile with the following command:
