@@ -53,7 +53,6 @@ Ex: ./load-images.sh -u ubuntu
 Ex: ./load-images.sh -p wso2is
 ```
 
-
 ##### 3. Deploy API Manager Kubernetes Artifacts
   1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
   2. run the deploy.sh script:
@@ -63,14 +62,14 @@ Ex: ./load-images.sh -p wso2is
       This will deploy the standalone product in Kubernetes, using the image available in kubernetes nodes, and notify once the intended service starts running on the pod.
       __Please note that each kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) docker image in the node's docker registry.__
 
-##### 3. Access Management Console
+##### 4. Access Management Console
   1. Add an host entry (in Linux, using the /etc/hosts file) for `wso2am-default`, resolving to the kubernetes node IP.
   2. Access the Mgt Console URL using `https://wso2am-default:32004/carbon/`. 
     * Publisher URL: `https://wso2am-default:32004/publisher`
     * Store URL: `https://wso2am-default:32004/store`
     * API endpoint URL: `https://wso2am-default:32002/<api_name>`.
 
-##### 3. Undeploying
+##### 5. Undeploying
   1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
   2. run the undeploy.sh script:
 
@@ -78,22 +77,8 @@ Ex: ./load-images.sh -p wso2is
 
       This will undeploy the API Manager specific DB pod, kubernetes replication controllers and kubernetes services.  
 
-> For more detailed instructions on deploying a particular WSO2 product on Kubernetes, refer to the README file in the relevant product folder.
+> For more detailed instructions on deploying WSO2 API Manager on Kubernetes, please refer the wiki.
 
 # Documentation
 * [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
 * [Tutorials](https://docs.wso2.com/display/KA100/Tutorials)
- [here](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon)
-    - Execute `deploy.sh` script with the `-d` flag that deploys the product in the clustered distributed mode.
-        + `./deploy.sh -d`
-    - Distributed deployment will create the following services
-        + `wso2am-key-manager`
-        + `wso2am-store`
-        + `wso2am-publisher`
-        + `wso2am-gateway-manager`
-
-## Undeploying
-* To undeploy the Services and the Replication Controllers for the default or distributed deployment, execute `undeploy.sh`.
-
-* The `undeploy.sh` script has the following profiles that will be undeployed by default. If it is required to undeploy any other profile, then it can be added to the `product_profiles` variable with a space as the separator.
-    - `product_profiles=(default api-key-manager api-store api-publisher gateway-manager)`
