@@ -16,12 +16,13 @@ To manage configurations and artifacts when building Docker images, WSO2 recomme
 Building WSO2 Data Services Server Docker images using Puppet for Kubernetes:
 
   1. Clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternatively you can download the released artifacts using the release page of the GitHub repository).
-  2. Copy the [dependency jars](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
+  2. Copy the [dependency jars](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/wso2dss/files/configs/repository/components/lib` location.
+  3. Copy  [`kernel patch0005`](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip) to `PUPPET_HOME/modules/wso2dss/files/patches/repository/components/patches` folder.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
-  4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
-  5. Copy the WSO2 Data Services Server 3.5.0 product pack file to `PUPPET_HOME/modules/wso2das/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
+  4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/wso2dss/files/configs/repository/components/lib` location.
+  5. Copy the WSO2 Data Services Server 3.5.0 product pack file to `PUPPET_HOME/modules/wso2dss/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
   6. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
-  7. Navigate to `wso2das` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2das`.
+  7. Navigate to `wso2dss` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2dss`.
   8. Build the Dockerfile with the following command:
 
     **`./build.sh -v 3.5.0 -s kubernetes`**
@@ -36,7 +37,7 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 
 You can make use of the `load-images.sh` helper script to transfer images to the Kubernetes nodes. It will search for any Docker images with `wso2` as a part of its name on your local machine, and ask for verification to transfer them to the Kubernetes nodes. `kubectl` has to be functioning on your local machine in order for the script to retrieve the list of Kubernetes nodes. You can optionally provide a search pattern if you want to override the default `wso2` string.
 
-**`load-images.sh -p wso2das`**
+**`load-images.sh -p wso2dss`**
 
 **Usage**
 ```
@@ -55,7 +56,7 @@ Ex: ./load-images.sh -p wso2is
 ```
 
 #### 3. Deploy Kubernetes Artifacts
-  1. Navigate to `wso2das` directory in kubernetes repository; `KUBERNETES_HOME/wso2das` location.
+  1. Navigate to `wso2dss` directory in kubernetes repository; `KUBERNETES_HOME/wso2dss` location.
   2. run the deploy.sh script:
 
     **`./deploy.sh`**
@@ -64,11 +65,11 @@ Ex: ./load-images.sh -p wso2is
       __Please note that each Kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) Docker image in the node's Docker registry.__
 
 #### 4. Access Management Console
-  1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2das-default`, resolving to the Kubernetes node IP.
-  2. Access the Carbon Management Console URL using `https://wso2das-default:32062/carbon/`
+  1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2dss-default`, resolving to the Kubernetes node IP.
+  2. Access the Carbon Management Console URL using `https://wso2dss-default:32062/carbon/`
 
 #### 5. Undeploying
-  1. Navigate to `wso2das` directory in Kubernetes repository; `KUBERNETES_HOME/wso2das` location.
+  1. Navigate to `wso2dss` directory in Kubernetes repository; `KUBERNETES_HOME/wso2dss` location.
   2. run the `undeploy.sh` script:
 
     **`./undeploy.sh`**

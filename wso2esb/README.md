@@ -16,9 +16,10 @@ To manage configurations and artifacts when building Docker images, WSO2 recomme
 Building WSO2 Enterprise Service Bus Docker images using Puppet for Kubernetes:
 
   1. Clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternatively you can download the released artifacts using the release page of the GitHub repository).
-  2. Copy the [dependency jars](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
+  2. Copy the [dependency jars](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/wso2esb/files/configs/repository/components/lib` location.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
-  4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
+  3. Copy  [`kernel patch0005`](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip) to `PUPPET_HOME/modules/wso2esb/files/patches/repository/components/patches` folder.
+  4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/wso2esb/files/configs/repository/components/lib` location.
   5. Copy the WSO2 Enterprise Service Bus 4.9.0 product pack file to `PUPPET_HOME/modules/wso2esb/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
   6. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   7. Navigate to `wso2esb` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2esb`.
