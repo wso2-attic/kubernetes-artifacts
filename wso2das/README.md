@@ -79,5 +79,4 @@ Ex: ./load-images.sh -p wso2is
 For more detailed instructions on deploying WSO2 Data Analytics Server on Kubernetes, please refer the wiki links under the Documentation section below.
 
 # Documentation
-* [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
-* [Tutorials](https://docs.wso2.com/display/KA100/Tutorials)
+* [WSO2 Kubernetes Artifacts Wiki](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
