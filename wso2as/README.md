@@ -77,7 +77,7 @@ Ex: ./load-images.sh -p wso2is
       **`./undeploy.sh -f`**
 
 
-For more detailed instructions on deploying WSO2 Application Server on Kubernetes, please refer the wiki links below.
+For more detailed instructions on deploying WSO2 Application Server on Kubernetes, please refer the wiki links under the Documentation section below.
 
 # Documentation
 * [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
