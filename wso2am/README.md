@@ -79,7 +79,7 @@ Ex: ./load-images.sh -p wso2is
       This will undeploy API Manager specific DB pod, Kubernetes Replication Controllers, and Kubernetes services. Additionally if `-f` flag is provided when running `undeploy.sh`, it will also undeploy the shared Governance and User DB pods, Replication Controllers, and Services.
       **`./undeploy.sh -f`** 
 
-> For more detailed instructions on deploying WSO2 API Manager on Kubernetes, please refer the wiki.
+> For more detailed instructions on deploying WSO2 API Manager on Kubernetes, please refer the wiki links below.
 
 # Documentation
 * [Introduction](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
