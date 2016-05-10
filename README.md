@@ -68,7 +68,7 @@ Ex: ./load-images.sh -p wso2is
   1. Add an host entry (in Linux, using the `/etc/hosts` file) for `<product_name>-default`, resolving to the Kubernetes node IP.
   2. Access the Carbon Management Console URL using `https://<product_name>-default:<node_port>/carbon/`
 
-##### 5. Undeploying
+##### 5. Undeploy
   1. Navigate to relevant product directory in Kubernetes repository; `KUBERNETES_HOME/<product>` location.
   2. run the `undeploy.sh` script:
 
