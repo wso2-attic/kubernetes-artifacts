@@ -23,9 +23,9 @@ Buidling WSO2 API Manager Dockerfile using Puppet, for Kubernetes:
   4. Navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/wso2am`.
   5. Build the Dockerfile with the following command:
 
-    **`./build.sh -v 1.10.0 -s kubernetes`**
+    **`./build.sh -v 1.10.0 -s kubernetes -r puppet`**
 
-  Note that `-s kubernetes` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
+  Note that `-s kubernetes` and `-r puppet` flag denotes the Kubernetes platform, when it comes to selecting the configuration from Puppet.
 
   This will build the standalone WSO2 API Manager for Kubernetes platform, using configuration specified in Puppet. Please note it's possible to build relevant profiles of the products similarly. Refer `build.sh` script usage (`./build.sh -h`).
 
@@ -64,10 +64,10 @@ Ex: ./load-images.sh -p wso2is
 
 ##### 4. Access Management Console
   1. Add an host entry (in Linux, using the /etc/hosts file) for `wso2am-default`, resolving to the kubernetes node IP.
-  2. Access the Mgt Console URL using `https://wso2am-default:32004/carbon/`. 
+  2. Access the Mgt Console URL using `https://wso2am-default:32004/carbon/` 
     * Publisher URL: `https://wso2am-default:32004/publisher`
     * Store URL: `https://wso2am-default:32004/store`
-    * API endpoint URL: `https://wso2am-default:32002/<api_name>`.
+    * API endpoint URL: `https://wso2am-default:32002/<api_name>`
 
 ##### 5. Undeploying
   1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
@@ -75,7 +75,8 @@ Ex: ./load-images.sh -p wso2is
 
     **`./undeploy.sh`**
 
-      This will undeploy the API Manager specific DB pod, kubernetes replication controllers and kubernetes services.  
+      This will undeploy API Manager specific DB pod, Kubernetes Replication Controllers, and Kubernetes services. Additionally if `-f` flag is provided when running `undeploy.sh`, it will also undeploy the shared Governance and User DB pods, Replication Controllers, and Services.
+      **`./undeploy.sh -f`** 
 
 > For more detailed instructions on deploying WSO2 API Manager on Kubernetes, please refer the wiki.
 
