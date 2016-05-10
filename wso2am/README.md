@@ -9,7 +9,7 @@ To deploy a WSO2 API Manager on Kubernetes, the following steps have to be done.
 * Copy the images to the Kubernetes Nodes
 * Run `deploy.sh` inside the `KUBERNETES_HOME/wso2am` directory, which will deploy the Service and the Replication Controllers
 
-##### 1. Build Docker Images
+##### 1. Build API Manager Docker Images
 
 To manage configurations and artifacts when building Docker images, WSO2 recommends to use [`wso2/puppet modules`](https://github.com/wso2/puppet-modules) as the provisioning method. A specific data set for Kubernetes platform is available in wso2 puppet modules. To try out, it's possible to use this data set to build Dockerfiles for wso2 products for Kubernetes with minimum configuration changes.
 
@@ -54,7 +54,7 @@ Ex: ./load-images.sh -p wso2is
 ```
 
 
-##### 3. Deploy Kubernetes Artifacts
+##### 3. Deploy API Manager Kubernetes Artifacts
   1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
   2. run the deploy.sh script:
 
@@ -66,12 +66,12 @@ Ex: ./load-images.sh -p wso2is
 ##### 3. Access Management Console
   1. Add an host entry (in Linux, using the /etc/hosts file) for `wso2am-default`, resolving to the kubernetes node IP.
   2. Access the Mgt Console URL using `https://wso2am-default:32004/carbon/`. 
-        * Publisher URL: `https://wso2am-default:32004/publisher`
-        * Store URL: `https://wso2am-default:32004/store`
-        * API endpoint URL: `https://wso2am-default:32002/<api_name>`.
+    * Publisher URL: `https://wso2am-default:32004/publisher`
+    * Store URL: `https://wso2am-default:32004/store`
+    * API endpoint URL: `https://wso2am-default:32002/<api_name>`.
 
 ##### 3. Undeploying
-  1. navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
+  1. Navigate to wso2am directory in kubernetes repository; `KUBERNETES_ARTIFACTS_HOME/wso2am` location.
   2. run the undeploy.sh script:
 
     **`./undeploy.sh`**
