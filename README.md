@@ -19,6 +19,8 @@ Buidling WSO2 Dockerfiles using Puppet for Kubernetes:
 
   1. Clone `wso2/puppet modules` and `wso2/dockerfiles` repositories (alternatively you can download the released artifacts using the release page of the GitHub repository).
   2. Copy the [`dependency jars`](https://docs.wso2.com/display/KA100/Kubernetes+Membership+Scheme+for+WSO2+Carbon) for clustering to `PUPPET_HOME/modules/<product>/files/configs/repository/components/lib` location.
+  3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
+  4. Copy the product zip file to `PUPPET_HOME/modules/wso2am/files` location.
   3. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
   4. Navigate to the relevant product directory in the dockerfiles repository; `DOCKERFILES_HOME/<product>`.
   5. Build the Dockerfile with the following command:
