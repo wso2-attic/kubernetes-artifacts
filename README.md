@@ -80,4 +80,4 @@ Ex: ./load-images.sh -p wso2is
 > For more detailed instructions on deploying a particular WSO2 product on Kubernetes, refer to the README file in the relevant product folder.
 
 # Documentation
-* [WSO2 Kubernetes Artifacts Wiki](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts))
+* [WSO2 Kubernetes Artifacts Wiki](https://docs.wso2.com/display/KA100/WSO2+Kubernetes+Artifacts)
