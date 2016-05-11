@@ -27,7 +27,7 @@
     <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
     <artifactId>wso2-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>WSO2 Kubernetes Artifacts</name>
     <description>WSO2 Kubernetes Artifacts</description>
 
@@ -184,7 +184,7 @@
         <url>https://github.com/wso2/kubernetes-artifacts.git</url>
         <developerConnection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</connection>
-        <tag>v1.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <repositories>
