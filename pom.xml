@@ -27,7 +27,7 @@
     <groupId>org.wso2.carbon.kubernetes.artifacts</groupId>
     <artifactId>wso2-kubernetes-artifacts</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>WSO2 Kubernetes Artifacts</name>
     <description>WSO2 Kubernetes Artifacts</description>
 
@@ -124,7 +124,7 @@
                                 <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
                                     <licenseFamilyCategory>WSO2</licenseFamilyCategory>
                                     <licenseFamilyName>WSO2 License 1.0</licenseFamilyName>
-                                    <notes></notes>
+                                    <notes />
                                     <patterns>
                                         <pattern>Copyright WSO2 Inc. (http://www.wso2.org) All Rights Reserved.</pattern>
                                         <pattern>WSO2 Inc. (http://www.wso2.org) All Rights Reserved.</pattern>
@@ -184,7 +184,7 @@
         <url>https://github.com/wso2/kubernetes-artifacts.git</url>
         <developerConnection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
     <repositories>
