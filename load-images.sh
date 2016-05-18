@@ -43,9 +43,10 @@ function showUsageAndExit() {
 
 kub_username="core"
 search_pattern="wso2"
+skip_confirmation="false"
 
 # TODO: handle flag provided, but no value
-while getopts :u:p:h FLAG; do
+while getopts :u:p:h:y: FLAG; do
     case $FLAG in
         u)
             kub_username=$OPTARG
@@ -55,6 +56,9 @@ while getopts :u:p:h FLAG; do
             ;;
         h)
             showUsageAndExit
+            ;;
+        y)
+            skip_confirmation="true"
             ;;
     esac
 done
@@ -81,8 +85,12 @@ do
     if [ "${wso2_image_name//[[:space:]]/}" != "" ]; then
         wso2_image=$(docker images $wso2_image_name | awk '{if (NR!=1) print}')
         echo -n $(echo $wso2_image | awk '{print $1 ":" $2, "(" $3 ")"}') " - "
-        askBold "Transfer? ( [y]es / [n]o / [e]xit ): "
-        read -r xfer_v
+        if [ "$skip_confirmation" == "false" ]; then
+            askBold "Transfer? ( [y]es / [n]o / [e]xit ): "
+            read -r xfer_v
+        else
+            xfer_v="y"
+        fi
         if [ "$xfer_v" == "y" ]; then
             image_id=$(echo $wso2_image | awk '{print $3}')
             echoDim "Saving image ${wso2_image_name}..."
