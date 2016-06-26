@@ -29,7 +29,7 @@ spec:
       containers:
       -
         name: wso2am-store
-        image: wso2am-api-store:1.10.0
+        image: wso2am-api-store-kubernetes:1.10.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
