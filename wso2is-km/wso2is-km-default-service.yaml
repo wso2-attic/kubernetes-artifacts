@@ -26,22 +26,22 @@ spec:
       name: 'servlet-http'
       port: 9763
       targetPort: 9763
-      nodePort: 32111
+      nodePort: 32141
     -
       name: 'servlet-https'
       port: 9443
       targetPort: 9443
-      nodePort: 32112
+      nodePort: 32142
     -
       name: 'kdc-server'
       port: 8000
       targetPort: 8000
-      nodePort: 32113
+      nodePort: 32143
     -
       name: 'thrift-entitlement'
       port: 10500
       targetPort: 10500
-      nodePort: 32114
+      nodePort: 32144
   # label keys and values that must match in order to receive traffic for this service
   selector:
     name: wso2is-km-default
