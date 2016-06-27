@@ -12,35 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 apiVersion: v1
-kind: ReplicationController
+kind: Service
 metadata:
-  name: wso2am-api-publisher
   labels:
-    name: wso2am-api-publisher
+    name: wso2is-km-default
+  name: wso2is-km-default
 spec:
-  replicas: 1
+  type: NodePort
+  sessionAffinity: ClientIP
+  ports:
+    # ports that this service should serve on
+    -
+      name: 'servlet-http'
+      port: 9763
+      targetPort: 9763
+      nodePort: 32141
+    -
+      name: 'servlet-https'
+      port: 9443
+      targetPort: 9443
+      nodePort: 32142
+    -
+      name: 'kdc-server'
+      port: 8000
+      targetPort: 8000
+      nodePort: 32143
+    -
+      name: 'thrift-entitlement'
+      port: 10500
+      targetPort: 10500
+      nodePort: 32144
+  # label keys and values that must match in order to receive traffic for this service
   selector:
-    name: wso2am-api-publisher
-  template:
-    metadata:
-      labels:
-        name: wso2am-api-publisher
-    spec:
-      containers:
-      -
-        name: wso2am-api-publisher
-        image: wso2am-api-publisher-kubernetes:1.10.0
-        env:
-        -
-          name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
-          value: "true"
-          # -
-          # name: KEY_STORE_PASSWORD
-          # value: wso2carbon
-        ports:
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 9443
-          protocol: "TCP"
+    name: wso2is-km-default
