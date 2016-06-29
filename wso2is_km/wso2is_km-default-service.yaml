@@ -15,8 +15,8 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: wso2is-km-default
-  name: wso2is-km-default
+    name: wso2is_km-default
+  name: wso2is_km-default
 spec:
   type: NodePort
   sessionAffinity: ClientIP
@@ -44,4 +44,4 @@ spec:
       nodePort: 32144
   # label keys and values that must match in order to receive traffic for this service
   selector:
-    name: wso2is-km-default
+    name: wso2is_km-default
