@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2esb-manager
-        image: wso2esb-manager:4.9.0
+        image: wso2esb-manager-kubernetes:4.9.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
