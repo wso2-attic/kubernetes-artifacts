@@ -306,7 +306,8 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
 
             // Send all cluster messages
             carbonCluster.memberAdded(member);
-            log.info("Member joined [" + member.getUuid() + "]: " + member.getSocketAddress().toString());
+            log.info(String.format("Member joined: [UUID] %s, [Address] %s", member.getUuid(),
+                    member.getSocketAddress().toString()));
             // Wait for sometime for the member to completely join before replaying messages
             try {
                 Thread.sleep(5000);
@@ -319,14 +320,16 @@ public class KubernetesMembershipScheme implements HazelcastMembershipScheme {
         public void memberRemoved(MembershipEvent membershipEvent) {
             Member member = membershipEvent.getMember();
             carbonCluster.memberRemoved(member);
-            log.info("Member left [" + member.getUuid() + "]: " + member.getSocketAddress().toString());
+            log.info(String.format("Member left: [UUID] %s, [Address] %s", member.getUuid(),
+                    member.getSocketAddress().toString()));
         }
 
         @Override
         public void memberAttributeChanged(MemberAttributeEvent memberAttributeEvent) {
             if (log.isDebugEnabled()) {
-                log.debug("Member attribute changed: [" + memberAttributeEvent.getKey() + "] " +
-                        memberAttributeEvent.getValue());
+                log.debug(String.format("Member attribute changed: [Key] %s, [Value] %s",
+                        memberAttributeEvent.getKey(),
+                        memberAttributeEvent.getValue()));
             }
         }
     }
