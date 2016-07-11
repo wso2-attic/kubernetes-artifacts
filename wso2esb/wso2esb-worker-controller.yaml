@@ -43,9 +43,3 @@ spec:
         -
           containerPort: 8243
           protocol: "TCP"
-        -
-          containerPort: 9763
-          protocol: "TCP"
-        -
-          containerPort: 9443
-          protocol: "TCP"
