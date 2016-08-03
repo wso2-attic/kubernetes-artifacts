@@ -51,7 +51,7 @@
         <module>wso2esb</module>
         <module>wso2greg</module>
         <module>wso2is</module>
-        <module>wso2is_km</module>
+        <module>wso2is-km</module>
         <module>wso2mb</module>
     </modules>
 

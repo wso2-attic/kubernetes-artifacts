@@ -14,21 +14,21 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: wso2is_km-default
+  name: wso2is-km-default
   labels:
-    name: wso2is_km-default
+    name: wso2is-km-default
 spec:
   replicas: 1
   selector:
-    name: wso2is_km-default
+    name: wso2is-km-default
   template:
     metadata:
       labels:
-        name: wso2is_km-default
+        name: wso2is-km-default
     spec:
       containers:
-      - name: wso2is_km-default
-        image: wso2is_km-kubernetes:5.1.0
+      - name: wso2is-km-default
+        image: wso2is-km-kubernetes:5.1.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

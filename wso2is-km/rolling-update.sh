@@ -17,4 +17,4 @@
 
 # ------------------------------------------------------------------------
 
-kubectl rolling-update --update-period=5s wso2is_km-default wso2is_km-default-v2 --image=wso2is_km-kubernetes:5.1.0-v2
+kubectl rolling-update --update-period=5s wso2is-km-default wso2is-km-default-v2 --image=wso2is-km-kubernetes:5.1.0-v2

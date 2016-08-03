@@ -20,9 +20,9 @@ Building WSO2 Identity Server Key Manager Docker images using Puppet for Kuberne
   3. Copy  [`kernel patch0005`](http://product-dist.wso2.com/downloads/carbon/4.4.1/patch0005/WSO2-CARBON-PATCH-4.4.1-0005.zip) to `PUPPET_HOME/modules/wso2is_km/files/patches/repository/components/patches` folder.
   3. Copy the JDK [`jdk-7u80-linux-x64.tar.gz`](http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html) to `PUPPET_HOME/modules/wso2base/files` location.
   4. Copy the [`mysql-connector-java-5.1.36-bin.jar`](http://mvnrepository.com/artifact/mysql/mysql-connector-java/5.1.36) file to `PUPPET_HOME/modules/wso2is_km/files/configs/repository/components/lib` location.
-  5. Rename the WSO2 Identity Server 5.1.0 product distribution which has Key Manager feature installed as `wso2is_km-5.1.0` and copy it to `PUPPET_HOME/modules/wso2is_km/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
+  5. Copy the WSO2 Identity Server 5.1.0 product distribution to `PUPPET_HOME/modules/wso2is_km/files` location (Note that if you use a different product version, the `-v` flag provided to the subsequent scripts have to be changed to match).
   6. Set the environment variable `PUPPET_HOME` pointing to location of the puppet modules in local machine.
-  7. Navigate to `wso2is_km` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2is_km`.
+  7. Navigate to `wso2is-km` directory in the Dockerfiles repository; `DOCKERFILES_HOME/wso2is-km`.
   8. Build the Dockerfile with the following command:
 
     **`./build.sh -v 5.1.0 -s kubernetes`**
@@ -37,7 +37,7 @@ Copy the required Docker images over to the Kubernetes Nodes (ex: use `docker sa
 
 You can make use of the `load-images.sh` helper script to transfer images to the Kubernetes nodes. It will search for any Docker images with `wso2` as a part of its name on your local machine, and ask for verification to transfer them to the Kubernetes nodes. `kubectl` has to be functioning on your local machine in order for the script to retrieve the list of Kubernetes nodes. You can optionally provide a search pattern if you want to override the default `wso2` string.
 
-**`load-images.sh -p wso2is_km`**
+**`load-images.sh -p wso2is-km-kubernetes`**
 
 **Usage**
 ```
@@ -52,11 +52,11 @@ Options:
 
 Ex: ./load-images.sh
 Ex: ./load-images.sh -u ubuntu
-Ex: ./load-images.sh -p wso2is_km
+Ex: ./load-images.sh -p wso2is
 ```
 
 #### 3. Deploy Kubernetes Artifacts
-  1. Navigate to `wso2is_km` directory in kubernetes repository; `KUBERNETES_HOME/wso2is_km` location.
+  1. Navigate to `wso2is-km` directory in kubernetes repository; `KUBERNETES_HOME/wso2is-km` location.
   2. run the deploy.sh script:
 
     **`./deploy.sh`**
@@ -65,11 +65,11 @@ Ex: ./load-images.sh -p wso2is_km
       __Please note that each Kubernetes node needs the [`mysql:5.5`](https://hub.docker.com/_/mysql/) Docker image in the node's Docker registry.__
 
 #### 4. Access Management Console
-  1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2is_km-default`, resolving to the Kubernetes node IP.
-  2. Access the Carbon Management Console URL using `https://wso2is_km-default:32112/carbon/`
+  1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2is-km-default`, resolving to the Kubernetes node IP.
+  2. Access the Carbon Management Console URL using `https://wso2is-km-default:32112/carbon/`
 
 #### 5. Undeploying
-  1. Navigate to `wso2is_km` directory in Kubernetes repository; `KUBERNETES_HOME/wso2is_km` location.
+  1. Navigate to `wso2is-km` directory in Kubernetes repository; `KUBERNETES_HOME/wso2is-km` location.
   2. run the `undeploy.sh` script:
 
     **`./undeploy.sh`**
