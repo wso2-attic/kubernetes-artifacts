@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2das-default
-        image: wso2das:3.0.1
+        image: wso2das-kubernetes:3.0.1
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

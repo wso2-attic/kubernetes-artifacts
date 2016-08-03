@@ -29,7 +29,7 @@ spec:
       containers:
       -
         name: wso2dss-default
-        image: wso2dss:3.5.0
+        image: wso2dss-kubernetes:3.5.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

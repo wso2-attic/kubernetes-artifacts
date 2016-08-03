@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2greg-store
-        image: wso2greg-store:5.1.0
+        image: wso2greg-store-kubernetes:5.1.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

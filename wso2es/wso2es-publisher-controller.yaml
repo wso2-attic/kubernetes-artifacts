@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2es-publisher
-        image: wso2es-publisher:2.0.0
+        image: wso2es-publisher-kubernetes:2.0.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

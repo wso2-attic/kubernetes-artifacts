@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2bps-worker
-        image: wso2bps-worker:3.5.0
+        image: wso2bps-worker-kubernetes:3.5.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

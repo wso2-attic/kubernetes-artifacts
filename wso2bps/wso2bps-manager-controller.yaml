@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2bps-manager
-        image: wso2bps-manager:3.5.0
+        image: wso2bps-manager-kubernetes:3.5.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

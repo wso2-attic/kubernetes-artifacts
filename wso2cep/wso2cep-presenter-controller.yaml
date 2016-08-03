@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2cep-presenter
-        image: wso2cep-presenter:4.0.0
+        image: wso2cep-presenter-kubernetes:4.0.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION

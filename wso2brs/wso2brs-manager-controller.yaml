@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: wso2brs-manager
-        image: wso2brs-manager:2.2.0
+        image: wso2brs-manager-kubernetes:2.2.0
         env:
         -
           name: KUBERNETES_MASTER_SKIP_SSL_VERIFICATION
