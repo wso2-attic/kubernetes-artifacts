@@ -185,7 +185,7 @@
         <url>https://github.com/wso2/kubernetes-artifacts.git</url>
         <developerConnection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</developerConnection>
         <connection>scm:git:https://github.com/wso2/kubernetes-artifacts.git</connection>
-        <tag>HEAD</tag>
+        <tag>v1.0.0</tag>
     </scm>
 
     <repositories>
@@ -313,6 +313,16 @@
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mock-server</groupId>
+                <artifactId>mockserver-netty</artifactId>
+                <version>${mockserver.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -326,6 +336,8 @@
         <hazelcast.version>3.2.6.wso2v3</hazelcast.version>
         <jackson.version>2.5.4</jackson.version>
         <ppaas.version>4.1.5</ppaas.version>
+        <mockserver.version>3.10.4</mockserver.version>
+        <testng.version>6.9.9</testng.version>
         <project.scm.id>my-scm-server</project.scm.id>
     </properties>
 </project>

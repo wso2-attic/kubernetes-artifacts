@@ -19,12 +19,16 @@ package org.wso2.carbon.membership.scheme.kubernetes.api;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.membership.scheme.kubernetes.Constants;
+import org.wso2.carbon.utils.xml.StringUtils;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
@@ -65,14 +69,16 @@ public class KubernetesHttpsApiEndpoint extends KubernetesApiEndpoint {
 
     private static void disableCertificateValidation() {
 
-        TrustManager[] dummyTrustMgr = new TrustManager[] {
+        TrustManager[] dummyTrustMgr = new TrustManager[]{
                 new X509TrustManager() {
                     public X509Certificate[] getAcceptedIssuers() {
                         return new X509Certificate[0];
                     }
+
                     public void checkClientTrusted(X509Certificate[] certs, String authType) {
                         // do nothing
                     }
+
                     public void checkServerTrusted(X509Certificate[] certs, String authType) {
                         // do nothing
                     }
@@ -92,10 +98,15 @@ public class KubernetesHttpsApiEndpoint extends KubernetesApiEndpoint {
             sc.init(null, dummyTrustMgr, new SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             HttpsURLConnection.setDefaultHostnameVerifier(dummyHostVerifier);
-        } catch (Exception ignored) {}
+        } catch (NoSuchAlgorithmException | KeyManagementException ignored) {
+        }
     }
 
     private String getServiceAccountToken() throws IOException {
-        return new String(Files.readAllBytes(Paths.get(Constants.BEARER_TOKEN_FILE_LOCATION)));
+        String bearerTokenFileLocation = System.getenv("BEARER_TOKEN_FILE_LOCATION");
+        if (StringUtils.isEmpty(bearerTokenFileLocation)) {
+            bearerTokenFileLocation = Constants.BEARER_TOKEN_FILE_LOCATION;
+        }
+        return new String(Files.readAllBytes(Paths.get(bearerTokenFileLocation)), StandardCharsets.UTF_8);
     }
 }

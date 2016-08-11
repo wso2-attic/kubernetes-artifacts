@@ -23,32 +23,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public abstract class KubernetesApiEndpoint {
 
     private static final Log log = LogFactory.getLog(KubernetesApiEndpoint.class);
 
-    protected URL url;
-    protected HttpURLConnection connection;
+    URL url;
+    HttpURLConnection connection;
 
-    public KubernetesApiEndpoint(URL url) {
+    KubernetesApiEndpoint(URL url) {
         this.url = url;
     }
 
-    public abstract void createConnection () throws IOException;
+    public abstract void createConnection() throws IOException;
 
-    public abstract void createConnection (String username, String password) throws IOException;
+    public abstract void createConnection(String username, String password) throws IOException;
 
-    public InputStream read () throws IOException {
+    public InputStream read() throws IOException {
         return connection.getInputStream();
     }
 
-    public abstract void disconnect ();
+    public abstract void disconnect();
 
-    protected void createBasicAuthenticationHeader(String username, String password) {
+    void createBasicAuthenticationHeader(String username, String password) {
         log.debug("Generating basic auth header...");
         String userpass = username + ":" + password;
-        String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.printBase64Binary(userpass.getBytes());
+        String basicAuth = "Basic " + javax.xml.bind.DatatypeConverter.
+                printBase64Binary(userpass.getBytes(StandardCharsets.UTF_8));
         connection.setRequestProperty("Authorization", basicAuth);
         log.debug("Basic auth header generated");
     }
