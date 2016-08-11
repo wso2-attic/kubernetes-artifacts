@@ -27,6 +27,7 @@ import java.util.List;
 public class Subset {
 
     private List<Address> addresses;
+    private List<Address> notReadyAddresses;
 
     public List<Address> getAddresses() {
         return addresses;
@@ -34,5 +35,13 @@ public class Subset {
 
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public List<Address> getNotReadyAddresses() {
+        return notReadyAddresses;
+    }
+
+    public void setNotReadyAddresses(List<Address> notReadyAddresses) {
+        this.notReadyAddresses = notReadyAddresses;
     }
 }
