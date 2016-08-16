@@ -63,8 +63,12 @@ function getKubeNodes() {
 
 function getKubeNodeIP() {
     IFS=$','
-    node_ips=($(kubectl describe nodes $1 | grep "Addresses:" | awk '{print $2}'))
-    echo "${node_ips[0]}"
+    node_ip=$(kubectl get node $1 -o template --template='{{range.status.addresses}}{{if eq .type "ExternalIP"}}{{.address}}{{end}}{{end}}')
+    if [ -z $node_ip ]; then
+      echo $(kubectl get node $1 -o template --template='{{range.status.addresses}}{{if eq .type "InternalIP"}}{{.address}}{{end}}{{end}}')
+    else
+      echo $node_ip
+    fi
 }
 
 # Deploy using default profile
