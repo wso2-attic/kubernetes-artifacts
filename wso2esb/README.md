@@ -66,7 +66,7 @@ Ex: ./load-images.sh -p wso2is
 
 #### 4. Access Management Console
   1. Add an host entry (in Linux, using the `/etc/hosts` file) for `wso2esb-default`, resolving to the Kubernetes node IP.
-  2. Access the Carbon Management Console URL using `https://wso2esb-default:32122/carbon/`
+  2. Access the Carbon Management Console URL using `https://wso2esb-default:32094/carbon/`
 
 #### 5. Undeploying
   1. Navigate to `wso2esb` directory in Kubernetes repository; `KUBERNETES_HOME/wso2esb` location.
