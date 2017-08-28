@@ -21,7 +21,9 @@ allowing to add third party membership schemes. WSO2 products that are based on 
       kubernetes-membership-scheme-1.0.0.jar
    ```
 
-3. Update `axis2.xml` with the following configuration: Please note that you don't need to change localMemberHost value as it will be read from API call.
+3. Update `axis2.xml` with the following configuration: Please note that you need to change localMemberHost value 
+with pod's local ip address before starting the server. Please refer [entrypoint.sh](https://github.com/wso2-attic/dockerfiles/blob/master/common/scripts/entrypoint.sh#L34-L41).
+to see how it is done at server startup.
    ```xml
    <clustering class="org.wso2.carbon.core.clustering.hazelcast.HazelcastClusteringAgent"
                    enable="true">
