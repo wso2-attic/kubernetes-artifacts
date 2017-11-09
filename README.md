@@ -1,5 +1,13 @@
 # WSO2 Kubernetes Artifacts
 
+---
+
+## Note
+
+We have moved WSO2 Kubernetes Artifacts to separate product specific repositories and as a result this repository has been deprecated. A new [kubernetes-common](https://github.com/wso2/kubernetes-common) repository has been introduced for Kubernetes Membership Scheme. Please find the new repository list [here](https://github.com/wso2?utf8=%E2%9C%93&q=kubernetes&type=&language=).
+
+---
+
 WSO2 Kubernetes Artifacts enable you to run WSO2 products seamlessly on [Kubernetes] (https://kubernetes.io) using Docker. This repository contains artifacts (Service and Replication Controller definitions) to deploy WSO2 products on Kubernetes.
 
 ## Getting Started
